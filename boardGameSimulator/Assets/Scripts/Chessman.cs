@@ -10,6 +10,7 @@ public class Chessman : MonoBehaviour
     //Positions
     private int xBoard = -1;
     private int yBoard = -1;
+    private int is_attack = -1;
 
     //Keep track of "black" player or "White" player
     private string player;
@@ -18,7 +19,18 @@ public class Chessman : MonoBehaviour
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
     public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
 
+    //Sounds
+    public AudioClip Sound_Move;
+    public AudioClip Sound_Eat;
+    public AudioClip Sound_Capture;
+    private AudioSource audio_source;
+
     //Functions
+
+    void Start()
+    {
+        audio_source = GetComponent<AudioSource>();
+    }
     public void Activate() 
     {
         //Getting access to controller
@@ -92,6 +104,15 @@ public class Chessman : MonoBehaviour
     public void DestroyMovePlates()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        if (is_attack == 0)
+        {
+            audio_source.PlayOneShot(Sound_Move, 0.7F);
+            is_attack = -1;
+        } else if (is_attack == 1)
+        {
+            audio_source.PlayOneShot(Sound_Eat, 0.7F);
+            is_attack = -1;
+        }
         for (int i = 0;  i < movePlates.Length; i++)
         {
             Destroy(movePlates[i]);
@@ -100,6 +121,7 @@ public class Chessman : MonoBehaviour
 
     public void InitiateMovePlates()
     {
+        audio_source.PlayOneShot(Sound_Capture, 0.7F);
         switch(this.name)
         {
             case "black_queen":
@@ -244,6 +266,7 @@ public class Chessman : MonoBehaviour
 
         //Keep Track of everything in the script.
         MovePlate mpScript = mp.GetComponent<MovePlate>();
+        is_attack = 0;
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
     }
@@ -264,6 +287,7 @@ public class Chessman : MonoBehaviour
         //Keep Track of everything in the script.
         MovePlate mpScript = mp.GetComponent<MovePlate>();
         mpScript.attack = true;
+        is_attack = 1;
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
     }
