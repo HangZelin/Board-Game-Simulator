@@ -6,18 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Home.unity
     guid: 521ac94c446f4914e8c271888c0979b7
   - enabled: 1
     path: Assets/Scenes/SetName.unity
     guid: 7f57ae03bc3337a4b99bde13b5370c02
-  - enabled: 1
-    path: Assets/Scenes/Chess (2D).unity
+  - enabled: 0
+    path: Assets/Scenes/chess2d.unity
     guid: 9ff1ecd9a6094724981ae3f881ea5862
   - enabled: 1
     path: Assets/Scenes/NewGame.unity
     guid: 7b09bf76d8ebab140a1de04581f9499c
+  - enabled: 1
+    path: Assets/Scenes/Chess (2D).unity
+    guid: d2178112f3e24a9468d07a5ae5580a9e
   m_configObjects: {}

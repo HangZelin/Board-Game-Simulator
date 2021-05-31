@@ -42,19 +42,19 @@ public class Chessman : MonoBehaviour
         //Chesspiece switch to a correct image used
         switch(this.name)
         {
-            case "black_queen": this.GetComponent<SpriteRenderer>().sprite = black_queen; player = "Orca";  break;
-            case "black_knight": this.GetComponent<SpriteRenderer>().sprite = black_knight; player = "Orca"; break;
-            case "black_bishop": this.GetComponent<SpriteRenderer>().sprite = black_bishop; player = "Orca"; break;
-            case "black_king":this.GetComponent<SpriteRenderer>().sprite = black_king; player = "Orca"; break;
-            case "black_rook": this.GetComponent<SpriteRenderer>().sprite = black_rook; player = "Orca"; break;
-            case "black_pawn": this.GetComponent<SpriteRenderer>().sprite = black_pawn; player = "Orca"; break;
+            case "black_queen": this.GetComponent<SpriteRenderer>().sprite = black_queen; player = GameStatus.GetNameOfPlayer(2);  break;
+            case "black_knight": this.GetComponent<SpriteRenderer>().sprite = black_knight; player =  GameStatus.GetNameOfPlayer(2); break;
+            case "black_bishop": this.GetComponent<SpriteRenderer>().sprite = black_bishop; player = GameStatus.GetNameOfPlayer(2); break;
+            case "black_king":this.GetComponent<SpriteRenderer>().sprite = black_king; player = GameStatus.GetNameOfPlayer(2); break;
+            case "black_rook": this.GetComponent<SpriteRenderer>().sprite = black_rook; player = GameStatus.GetNameOfPlayer(2); break;
+            case "black_pawn": this.GetComponent<SpriteRenderer>().sprite = black_pawn; player = GameStatus.GetNameOfPlayer(2); break;
 
-            case "white_queen": this.GetComponent<SpriteRenderer>().sprite = white_queen; player = "Rockets"; break;
-            case "white_knight": this.GetComponent<SpriteRenderer>().sprite = white_knight; player = "Rockets"; break;
-            case "white_bishop": this.GetComponent<SpriteRenderer>().sprite = white_bishop; player = "Rockets"; break;
-            case "white_king": this.GetComponent<SpriteRenderer>().sprite = white_king; player = "Rockets"; break;
-            case "white_rook": this.GetComponent<SpriteRenderer>().sprite = white_rook; player = "Rockets"; break;
-            case "white_pawn": this.GetComponent<SpriteRenderer>().sprite = white_pawn; player = "Rockets"; break;
+            case "white_queen": this.GetComponent<SpriteRenderer>().sprite = white_queen; player = GameStatus.GetNameOfPlayer(1); break;
+            case "white_knight": this.GetComponent<SpriteRenderer>().sprite = white_knight; player = GameStatus.GetNameOfPlayer(1); break;
+            case "white_bishop": this.GetComponent<SpriteRenderer>().sprite = white_bishop; player = GameStatus.GetNameOfPlayer(1); break;
+            case "white_king": this.GetComponent<SpriteRenderer>().sprite = white_king; player = GameStatus.GetNameOfPlayer(1); break;
+            case "white_rook": this.GetComponent<SpriteRenderer>().sprite = white_rook; player = GameStatus.GetNameOfPlayer(1); break;
+            case "white_pawn": this.GetComponent<SpriteRenderer>().sprite = white_pawn; player = GameStatus.GetNameOfPlayer(1); break;
         }
     }
 

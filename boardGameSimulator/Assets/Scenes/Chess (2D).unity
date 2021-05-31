@@ -199,11 +199,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318783006}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &338088501
 GameObject:
@@ -449,7 +449,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &855616131
 GameObject:
@@ -595,6 +595,7 @@ GameObject:
   - component: {fileID: 1022370662}
   - component: {fileID: 1022370664}
   - component: {fileID: 1022370663}
+  - component: {fileID: 1022370665}
   m_Layer: 5
   m_Name: P1
   m_TagString: Untagged
@@ -654,7 +655,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Rockets
+  m_Text: 
 --- !u!222 &1022370664
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -663,6 +664,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022370661}
   m_CullTransparentMesh: 1
+--- !u!114 &1022370665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022370661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d42eaae86a27644a048dac2df2ca3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerName: {fileID: 1022370663}
+  playerIndex: 1
 --- !u!1 &1233379474
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,6 +916,7 @@ GameObject:
   - component: {fileID: 1605445789}
   - component: {fileID: 1605445791}
   - component: {fileID: 1605445790}
+  - component: {fileID: 1605445792}
   m_Layer: 5
   m_Name: P2
   m_TagString: Untagged
@@ -960,7 +976,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Orca
+  m_Text: 
 --- !u!222 &1605445791
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -969,6 +985,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605445788}
   m_CullTransparentMesh: 1
+--- !u!114 &1605445792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605445788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d42eaae86a27644a048dac2df2ca3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerName: {fileID: 1605445790}
+  playerIndex: 2
 --- !u!1 &1658583939
 GameObject:
   m_ObjectHideFlags: 0

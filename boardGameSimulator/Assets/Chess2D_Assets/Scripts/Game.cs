@@ -13,9 +13,11 @@ public class Game : MonoBehaviour
     private GameObject[] playerBlack = new GameObject[16];
     private GameObject[] playerWhite = new GameObject[16];
 
-    private string currentPlayer = "Rockets";
+    private string Player1 = GameStatus.GetNameOfPlayer(1);
+    private string Player2 = GameStatus.GetNameOfPlayer(2);
 
-    private string lastPlayer = "Orca";
+    private string currentPlayer;
+    private string lastPlayer;
 
     private bool gameOver = false;
 
@@ -24,6 +26,9 @@ public class Game : MonoBehaviour
     void Start()
     {
         //Instantiate the chesspiece when the game starts.
+
+        currentPlayer = Player1;
+        lastPlayer = Player2;
 
         playerWhite = new GameObject[]
         {
@@ -98,14 +103,14 @@ public class Game : MonoBehaviour
 
     public void NextTurn()
     {
-        if (currentPlayer == "Rockets")
+        if (currentPlayer == Player1)
         {
             lastPlayer = currentPlayer;
-            currentPlayer = "Orca";
+            currentPlayer = Player2;
         } else
         {
             lastPlayer = currentPlayer;
-            currentPlayer = "Rockets";
+            currentPlayer = Player1;
         }
     }
 
@@ -115,7 +120,7 @@ public class Game : MonoBehaviour
         {
             gameOver = false;
 
-            SceneManager.LoadScene("chess2d");//Reset the game for us.
+            SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
         }
     }
 
