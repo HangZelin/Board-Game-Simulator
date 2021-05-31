@@ -92,4 +92,11 @@ public class GameStatus : MonoBehaviour
             "\nNumber of players: " + numOfPlayers.ToString() +
             "\nPlayer names: " + names);
     } 
+
+    public static void ResetStatus()
+    {
+        nameOfGame = "Board Game";
+        numOfPlayers = 2;
+        nameOfPlayers = new List<string>();
+    }
 }
