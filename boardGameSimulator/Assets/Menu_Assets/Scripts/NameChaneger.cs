@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class NameChaneger : MonoBehaviour
 {
-    public void ChangeName()
+    public static void ChangeName()
     {
         int i = 1;
         while (i <= GameStatus.GetNumOfPlayers())
@@ -19,7 +19,7 @@ public class NameChaneger : MonoBehaviour
             i++;
         }
         GameStatus.PrintLog();
-        GameStatus.FillNameOfPlayer();
+        GameStatus.FillNameOfPlayer(); 
         GameStatus.PrintLog();
     }
 }
