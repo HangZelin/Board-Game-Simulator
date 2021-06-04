@@ -10,6 +10,7 @@ public class GameStatus : MonoBehaviour
 
     public static void SetNameOfGame(string name)
     {
+        ResetStatus();
         nameOfGame = name;
     }
 
@@ -29,7 +30,7 @@ public class GameStatus : MonoBehaviour
         {
             while (nameOfPlayers.Count < index - 1)
             {
-                nameOfPlayers.Add("Player" + (nameOfPlayers.Count + 1));
+                nameOfPlayers.Add("Player " + (nameOfPlayers.Count + 1));
             }
             nameOfPlayers.Add(name);
         }
@@ -45,13 +46,25 @@ public class GameStatus : MonoBehaviour
         {
             if (nameOfPlayers[i] == "")
             {
-                nameOfPlayers[i] = "Player" + (i + 1);
+                nameOfPlayers[i] = "Player " + (i + 1);
             }
         }
         while (nameOfPlayers.Count < numOfPlayers)
         {
-            nameOfPlayers.Add("Player" + (nameOfPlayers.Count + 1));
+            nameOfPlayers.Add("Player " + (nameOfPlayers.Count + 1));
         }
+    }
+
+    public static bool IsNameUnique()
+    {
+        List<string> list = new List<string>(nameOfPlayers);
+        list.Sort();
+        for(int i = 1; i < list.Count; i++)
+        {
+            if (list[i] == list[i - 1])
+                return false;
+        }
+        return true;
     }
 
     // Getters
