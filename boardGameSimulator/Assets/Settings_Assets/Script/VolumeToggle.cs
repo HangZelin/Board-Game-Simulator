@@ -25,11 +25,6 @@ public class VolumeToggle : MonoBehaviour
         });
     }
 
-    protected void OnDestroy()
-    {
-        manager.SaveSettings();
-    }
-
     protected void ToggleValueChanged()
     {
         manager.ToggleChanged(toggle.isOn, nameOfVolume);

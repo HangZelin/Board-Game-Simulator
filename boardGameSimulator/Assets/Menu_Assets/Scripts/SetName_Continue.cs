@@ -15,7 +15,7 @@ public class SetName_Continue : MonoBehaviour
         if (GameStatus.IsNameUnique())
         {
             // Load the game scene
-            SceneManager.LoadScene(GameStatus.GetNameOfGame());
+            SceneManager.LoadScene("HomeLoading");
             return;
         }
 

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager audioManager;
-    public static string nameOfLoadingScene = "Loading";
+    public static string nameOfLoadingScene = "HomeLoading";
     
     // 1 is true, 0 is false
     protected bool musicOn;
@@ -21,13 +21,6 @@ public class AudioManager : MonoBehaviour
     // Initialize Audio Manager at Home scene
     protected void Awake()
     {
-        // If a game starts, destory gameObject Audio
-        if (SceneManager.GetActiveScene().name == nameOfLoadingScene)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         // Singleton
         if (audioManager == null)
         {
@@ -86,10 +79,12 @@ public class AudioManager : MonoBehaviour
                     PlayMusic();
                 else if (!musicOn)
                     music.Stop();
+                PlayerPrefs.SetInt("musicOn", musicOn ? 1 : 0);
                 break;
 
             case ("sound"):
                 soundOn = isOn;
+                PlayerPrefs.SetInt("soundOn", soundOn ? 1 : 0);
                 break;
         }
     }
@@ -102,10 +97,12 @@ public class AudioManager : MonoBehaviour
             case ("music"):
                 musicVolume = (int) value;
                 music.volume = value / 100f;
+                PlayerPrefs.SetInt("musicVolume", musicVolume);
                 break;
 
             case ("sound"):
                 soundVolume = (int) value;
+                PlayerPrefs.SetInt("soundVolume", soundVolume);
                 break;
         }
     }
