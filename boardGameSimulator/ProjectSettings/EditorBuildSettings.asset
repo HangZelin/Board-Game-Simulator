@@ -12,11 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: 521ac94c446f4914e8c271888c0979b7
   - enabled: 1
+    path: Assets/Scenes/HomeSettings.unity
+    guid: 002d969888e0fec4890edf1e5a9206dd
+  - enabled: 1
+    path: Assets/Scenes/HomeVolume.unity
+    guid: 15ad6fcaa82334e409691841be825660
+  - enabled: 1
     path: Assets/Scenes/SetName.unity
     guid: 7f57ae03bc3337a4b99bde13b5370c02
   - enabled: 0
-    path: Assets/Scenes/chess2d.unity
-    guid: 9ff1ecd9a6094724981ae3f881ea5862
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/NewGame.unity
     guid: 7b09bf76d8ebab140a1de04581f9499c
