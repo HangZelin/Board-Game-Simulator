@@ -10,7 +10,7 @@ public class VolumeToggle : MonoBehaviour
     protected AudioManager manager;
     protected Slider slider;
 
-    public void Awake()
+    protected void Awake()
     {
         toggle = GetComponent<Toggle>();
         manager = GameObject.Find("HomeAudio")
@@ -23,6 +23,11 @@ public class VolumeToggle : MonoBehaviour
         {
             ToggleValueChanged();
         });
+    }
+
+    protected void OnDestroy()
+    {
+        manager.SaveSettings();
     }
 
     protected void ToggleValueChanged()

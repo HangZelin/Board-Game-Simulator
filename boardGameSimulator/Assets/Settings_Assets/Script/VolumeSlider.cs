@@ -7,11 +7,14 @@ public class VolumeSlider : MonoBehaviour
 {
     public string nameOfVolume;
     protected Slider slider;
+    protected Toggle toggle;
     protected AudioManager manager;
 
     protected void Awake()
     {
         slider = GetComponent<Slider>();
+        toggle = GameObject.Find("Canvas/" + nameOfVolume + "/Toggle")
+            .GetComponent<Toggle>();
         manager = GameObject.Find("HomeAudio")
             .GetComponent<AudioManager>();
 
@@ -21,6 +24,7 @@ public class VolumeSlider : MonoBehaviour
         });
 
         slider.value = PlayerPrefs.GetInt(nameOfVolume + "Volume", 70);
+        slider.interactable = toggle.isOn;
     }
 
     protected void SliderValueChanged()

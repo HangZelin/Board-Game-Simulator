@@ -66,10 +66,7 @@ public class AudioManager : MonoBehaviour
     // When destroy, store the settings to PlayerPrefs
     protected void OnDestroy()
     {
-        PlayerPrefs.SetInt("musicOn", musicOn ? 1 : 0);
-        PlayerPrefs.SetInt("musicVolume", musicVolume);
-        PlayerPrefs.SetInt("soundOn", soundOn ? 1 : 0);
-        PlayerPrefs.SetInt("soundVolume", soundVolume);
+        SaveSettings();
     }
 
 
@@ -122,5 +119,12 @@ public class AudioManager : MonoBehaviour
         music.volume = ((float)musicVolume) / 100f;
         music.Play();
     }
-   
+    
+    public void SaveSettings()
+    {
+        PlayerPrefs.SetInt("musicOn", musicOn ? 1 : 0);
+        PlayerPrefs.SetInt("musicVolume", musicVolume);
+        PlayerPrefs.SetInt("soundOn", soundOn ? 1 : 0);
+        PlayerPrefs.SetInt("soundVolume", soundVolume);
+    }
 }
