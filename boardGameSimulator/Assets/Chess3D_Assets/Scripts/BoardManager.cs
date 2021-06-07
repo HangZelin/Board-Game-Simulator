@@ -45,7 +45,6 @@ public class BoardManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Clicks!");
             if (selectionX >= 0 && selectionY >= 0)
             {
                 if (selectedChessman == null)
@@ -61,7 +60,8 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-
+        if (Input.GetKey("escape"))
+            Application.Quit();
     }
 
     private void SelectChessman(int x, int y)
