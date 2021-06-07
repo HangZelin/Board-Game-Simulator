@@ -8,9 +8,13 @@ public class GameStatus : MonoBehaviour
     protected static int numOfPlayers = 2;
     protected static List<string> nameOfPlayers = new List<string>();
 
+    // Setters
+ 
     public static void SetNameOfGame(string name)
     {
+        // Before set the name of game, Reset all info
         ResetStatus();
+
         nameOfGame = name;
     }
 
@@ -55,18 +59,6 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    public static bool IsNameUnique()
-    {
-        List<string> list = new List<string>(nameOfPlayers);
-        list.Sort();
-        for(int i = 1; i < list.Count; i++)
-        {
-            if (list[i] == list[i - 1])
-                return false;
-        }
-        return true;
-    }
-
     // Getters
 
     public static string GetNameOfGame()
@@ -92,6 +84,20 @@ public class GameStatus : MonoBehaviour
         }
         Debug.Log("Error: index out of Bound");
         return "";
+    }
+
+    // helper methods
+
+    public static bool IsNameUnique()
+    {
+        List<string> list = new List<string>(nameOfPlayers);
+        list.Sort();
+        for (int i = 1; i < list.Count; i++)
+        {
+            if (list[i] == list[i - 1])
+                return false;
+        }
+        return true;
     }
 
     public static void PrintLog()
