@@ -10,6 +10,7 @@ public abstract class Chessplayer : MonoBehaviour
 
     public bool isWhite;
 
+
     public void SetPosition(int x, int y)
     {
         CurrentX = x;

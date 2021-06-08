@@ -28,11 +28,18 @@ public class BoardManager : MonoBehaviour
     private Material previousMat;
     public Material selectedMat;
 
+    //Sounds
+    public AudioClip Sound_Move;
+    public AudioClip Sound_Eat;
+    public AudioClip Sound_Capture;
+    private AudioSource audio_source;
+
     public int[] EnPassantMove { set; get; }
 
     // Use this for initialization
     void Start()
     {
+        audio_source = GetComponent<AudioSource>();
         Instance = this;
         SpawnAllChessmans();
         EnPassantMove = new int[2] { -1, -1 };
@@ -73,6 +80,7 @@ public class BoardManager : MonoBehaviour
         bool hasAtLeastOneMove = false;
 
         allowedMoves = Chessmans[x, y].PossibleMoves();
+        audio_source.PlayOneShot(Sound_Capture, 0.7F);
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -99,6 +107,7 @@ public class BoardManager : MonoBehaviour
 
     private void MoveChessman(int x, int y)
     {
+        bool Eat = false;
         if (allowedMoves[x, y])
         {
             Chessplayer c = Chessmans[x, y];
@@ -113,7 +122,7 @@ public class BoardManager : MonoBehaviour
                     EndGame();
                     return;
                 }
-
+                Eat = true;
                 activeChessman.Remove(c.gameObject);
                 Destroy(c.gameObject);
             }
@@ -131,6 +140,7 @@ public class BoardManager : MonoBehaviour
             EnPassantMove[1] = -1;
             if (selectedChessman.GetType() == typeof(Pawn))
             {
+
                 if(y == 7) // White Promotion
                 {
                     activeChessman.Remove(selectedChessman.gameObject);
@@ -157,6 +167,14 @@ public class BoardManager : MonoBehaviour
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
             isWhiteTurn = !isWhiteTurn;
+            if (Eat)
+            {
+                audio_source.PlayOneShot(Sound_Eat, 0.7F);
+            } else
+            {
+                audio_source.PlayOneShot(Sound_Move, 0.7F);
+            }
+
         }
 
         selectedChessman.GetComponent<MeshRenderer>().material = previousMat;
@@ -168,10 +186,9 @@ public class BoardManager : MonoBehaviour
     private void UpdateSelection()
     {
         if (!Camera.main) return;
-
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50.0f, LayerMask.GetMask("ChessPlane")))
-        {
+        {;
             selectionX = (int)hit.point.x;
             selectionY = (int)hit.point.z;
         }
