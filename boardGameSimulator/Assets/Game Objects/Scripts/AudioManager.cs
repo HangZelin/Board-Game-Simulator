@@ -56,17 +56,10 @@ public class AudioManager : MonoBehaviour
             PlayMusic();
     }
 
-    // When destroy, store the settings to PlayerPrefs
-    protected void OnDestroy()
-    {
-        SaveSettings();
-    }
-
-
-
     // Toggle Handling
 
-    // Change info when toggle changed. See VolumeToggle.cs
+    // Change info when toggle changed, store the changed info in PlayerPrefs. 
+    // See VolumeToggle.cs
     public void ToggleChanged(bool isOn, string nameOfVolume)
     {
         switch (nameOfVolume)
@@ -89,7 +82,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Slider handling
+    // Slider handling. See SliderToggle.cs
     public void SliderChanged(float value, string nameOfVolume)
     {
         switch (nameOfVolume)
