@@ -60,29 +60,35 @@ public class BoardManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateSelection();
-
-        if (Input.GetMouseButtonDown(0))
+        if (gameOver && Input.GetMouseButtonDown(0))
         {
-            if (selectionX >= 0 && selectionY >= 0)
+            gameOver = false;
+            SceneManager.LoadScene("Chess (3D)");
+        }
+
+
+        if (!gameOver)
+        {
+            UpdateSelection();
+            if (Input.GetMouseButtonDown(0))
             {
-                if (selectedChessman == null)
+                if (selectionX >= 0 && selectionY >= 0)
                 {
-                    // Select the chessman
-                    SelectChessman(selectionX, selectionY);
-                }
-                else
-                {
-                    // Move the chessman
-                    MoveChessman(selectionX, selectionY);
+                    if (selectedChessman == null)
+                    {
+                        // Select the chessman
+                        SelectChessman(selectionX, selectionY);
+                    }
+                    else
+                    {
+                        // Move the chessman
+                        MoveChessman(selectionX, selectionY);
+                    }
                 }
             }
         }
 
-        if (gameOver)
-        {
-            EndGame();
-        }
+
 
 
     }
@@ -135,6 +141,7 @@ public class BoardManager : MonoBehaviour
                 if (c.GetType() == typeof(King))
                 {
                     // End the game
+                    gameOver = true;
                     EndGame();
                     return;
                 }
@@ -328,13 +335,6 @@ public class BoardManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = playerWinner + " is the winner";
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
-        gameOver = true;
-        if (Input.GetMouseButtonDown(0)) {
-            gameOver = false;
-            SceneManager.LoadScene("Chess (3D)");
-        }
-
-
 
     }
 
@@ -342,8 +342,8 @@ public class BoardManager : MonoBehaviour
     {
         gameOver = true;
 
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = lastPlayer + " is the winner";
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = lastPlayer + " is the winner";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
     }
