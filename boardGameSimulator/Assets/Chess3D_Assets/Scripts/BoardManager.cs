@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
@@ -34,11 +36,21 @@ public class BoardManager : MonoBehaviour
     public AudioClip Sound_Capture;
     private AudioSource audio_source;
 
+    private string Player1 = GameStatus.GetNameOfPlayer(1);
+    private string Player2 = GameStatus.GetNameOfPlayer(2);
+
+    private string currentPlayer;
+    private string lastPlayer;
+
+    bool gameOver = false;
+
     public int[] EnPassantMove { set; get; }
 
     // Use this for initialization
     void Start()
     {
+        currentPlayer = Player1;
+        lastPlayer = Player2;
         audio_source = GetComponent<AudioSource>();
         Instance = this;
         SpawnAllChessmans();
@@ -48,27 +60,37 @@ public class BoardManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateSelection();
-
-        if (Input.GetMouseButtonDown(0))
+        if (gameOver && Input.GetMouseButtonDown(0))
         {
-            if (selectionX >= 0 && selectionY >= 0)
+            gameOver = false;
+            SceneManager.LoadScene("Chess (3D)");
+        }
+
+
+        if (!gameOver)
+        {
+            UpdateSelection();
+            if (Input.GetMouseButtonDown(0))
             {
-                if (selectedChessman == null)
+                if (selectionX >= 0 && selectionY >= 0)
                 {
-                    // Select the chessman
-                    SelectChessman(selectionX, selectionY);
-                }
-                else
-                {
-                    // Move the chessman
-                    MoveChessman(selectionX, selectionY);
+                    if (selectedChessman == null)
+                    {
+                        // Select the chessman
+                        SelectChessman(selectionX, selectionY);
+                    }
+                    else
+                    {
+                        // Move the chessman
+                        MoveChessman(selectionX, selectionY);
+                    }
                 }
             }
         }
 
-        if (Input.GetKey("escape"))
-            Application.Quit();
+
+
+
     }
 
     private void SelectChessman(int x, int y)
@@ -119,6 +141,7 @@ public class BoardManager : MonoBehaviour
                 if (c.GetType() == typeof(King))
                 {
                     // End the game
+                    gameOver = true;
                     EndGame();
                     return;
                 }
@@ -167,6 +190,15 @@ public class BoardManager : MonoBehaviour
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
             isWhiteTurn = !isWhiteTurn;
+            if (isWhiteTurn)
+            {
+                lastPlayer = currentPlayer;
+                currentPlayer = Player2;
+            } else
+            {
+                lastPlayer = currentPlayer;
+                currentPlayer = Player1;
+            }
             if (Eat)
             {
                 audio_source.PlayOneShot(Sound_Eat, 0.7F);
@@ -289,19 +321,31 @@ public class BoardManager : MonoBehaviour
 
     private void EndGame()
     {
+        String playerWinner = Player1;
         if (isWhiteTurn)
-            Debug.Log("White wins");
-        else
-            Debug.Log("Black wins");
-
-        foreach (GameObject go in activeChessman)
         {
-            Destroy(go);
+            playerWinner = Player1;
+            Debug.Log("White wins");
         }
+        else {
+            playerWinner = Player2;
+            Debug.Log("Black wins");
+        }
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = playerWinner + " is the winner";
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
-        isWhiteTurn = true;
-        BoardHighlights.Instance.HideHighlights();
-        SpawnAllChessmans();
+
+    }
+
+    public void OnButtonClick()
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = lastPlayer + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
     }
 }
 
