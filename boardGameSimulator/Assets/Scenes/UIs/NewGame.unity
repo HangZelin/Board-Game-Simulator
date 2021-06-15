@@ -304,7 +304,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 777061723}
   m_CullTransparentMesh: 1
---- !u!1001 &871845011
+--- !u!1001 &893257920
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -324,7 +324,7 @@ PrefabInstance:
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
@@ -434,15 +434,15 @@ PrefabInstance:
     - target: {fileID: 1379154029345826527, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_Name
-      value: line2 (1)
+      value: line2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f23aa03e769a0e46b79c18a27abd1ed, type: 3}
---- !u!224 &871845012 stripped
+--- !u!224 &893257921 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
     type: 3}
-  m_PrefabInstance: {fileID: 871845011}
+  m_PrefabInstance: {fileID: 893257920}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &937151830
 PrefabInstance:
@@ -545,7 +545,7 @@ RectTransform:
   m_Children:
   - {fileID: 2000125360}
   - {fileID: 1667999287}
-  - {fileID: 871845012}
+  - {fileID: 893257921}
   m_Father: {fileID: 537494334}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -620,18 +620,6 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Chess (3D)
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1748007013}
-        m_TargetAssemblyTypeName: GameStatus, Assembly-CSharp
-        m_MethodName: SetTypeOfGame
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 3D
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1033495073
@@ -965,18 +953,6 @@ MonoBehaviour:
           m_StringArgument: Chess (2D)
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1748007013}
-        m_TargetAssemblyTypeName: GameStatus, Assembly-CSharp
-        m_MethodName: SetTypeOfGame
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 2D
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1001 &1457512344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -987,7 +963,7 @@ PrefabInstance:
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
@@ -997,27 +973,27 @@ PrefabInstance:
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
-        type: 3}
-      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
+        type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
@@ -1082,12 +1058,12 @@ PrefabInstance:
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -59.999992
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1379154029345826526, guid: 8f23aa03e769a0e46b79c18a27abd1ed,
         type: 3}
@@ -1471,11 +1447,11 @@ RectTransform:
   m_Father: {fileID: 1033495071}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32, y: -10}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 32, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2000125361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1546,11 +1522,11 @@ RectTransform:
   m_Father: {fileID: 1418154798}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32, y: -10}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 32, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2069248068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1572,7 +1548,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: d58e62f3243fb6e4f8a4ad29c22a88d8, type: 3}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
