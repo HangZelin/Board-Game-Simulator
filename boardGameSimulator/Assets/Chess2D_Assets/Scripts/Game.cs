@@ -27,6 +27,7 @@ public class Game : MonoBehaviour, ISaveable
         if (!GameStatus.isNewGame)
         {
             LoadFromSaveData(SaveLoadManager.tempSD);
+            GameStatus.isNewGame = true;
             return;
         }
 
