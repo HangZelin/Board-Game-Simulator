@@ -35,23 +35,22 @@ public class SaveLoadManager : MonoBehaviour
         gs.PopulateSaveData(sd);
 
         int i = LastNumOfSave() + 1;
-        if (FileManager.WriteToFile("SaveData" + i + ".dat", sd.ToJson()))
+        if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
         {
             AddNumOfSave();
-            PlayerPrefs.SetString("SaveData" + i, TwoDKey);
-            Debug.Log("Save successful in SaveData" + i + ".dat");
+            Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
         }
     }
 
-    public void LoadJsonData_2D(GameStatus gameStatus, int num)
+    public void LoadJsonData_2D(GameStatus gameStatus, string s)
     {
-        if (FileManager.LoadFromFile("SaveData" + num + ".dat", out var json))
+        if (FileManager.LoadFromFile(s, out var json))
         {
             SaveData_2D sd = new SaveData_2D();
             sd.LoadFromJson(json);
 
             gameStatus.LoadFromSaveData(sd);
-            Debug.Log("Load complete from SaveData" + num + ".dat");
+            Debug.Log("Load complete from " + s);
         }
     }
 
@@ -83,5 +82,10 @@ public class SaveLoadManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(lastSaveKey, i - 1);
         }
+    }
+
+    public static void ResetNumOfSave()
+    {
+        PlayerPrefs.SetInt(lastSaveKey, 0);
     }
 }

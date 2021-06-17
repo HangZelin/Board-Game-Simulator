@@ -1,62 +1,53 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LoadPageUI : MonoBehaviour
 {
     public GameObject saveBar;
-    private GameObject canvas;
+    GameObject canvas;
+    List<SaveBarUI> saveBars;
     public float height = 62f;
 
     void Awake()
     {
         canvas = GameObject.Find("Canvas");
-
-        int num = SaveLoadManager.LastNumOfSave();
-        SaveData sd;
+        saveBars = new List<SaveBarUI>();
         Vector2 v = new Vector2(0f, -83f);
 
-        for (int i = 0; i < num; i++)
+        string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
+        for (int i = 0; i < fileNames.Length; i++)
+            fileNames[i] = Path.GetFileName(fileNames[i]); 
+        foreach (string s in fileNames)
         {
             GameObject go = Instantiate(saveBar, Vector3.zero, Quaternion.identity, canvas.transform);
-            sd = GetSaveData(i + 1);
-            RectTransform rt = go.GetComponent<RectTransform>();
-
-            rt.anchoredPosition = v;
-            go.transform.Find("Text").gameObject
-                .GetComponent<Text>().text = "Save #" + (i + 1);
-            go.transform.Find("Info").gameObject
-                .GetComponent<Text>().text = sd.nameOfGame + " " + sd.dateTime;
-            go.transform.Find("Image").gameObject
-                .GetComponent<Image>().sprite = Resources.Load<Sprite>("Icons/" + sd.nameOfGame);
-
+            SaveBarUI saveBarUI = go.GetComponent<SaveBarUI>();
+            saveBars.Add(saveBarUI);
+            saveBarUI.Activate(s, v);
             v.y = v.y - height;
         }
+
+        if (fileNames.Length == 0) SaveLoadManager.ResetNumOfSave();
     }
 
-    private SaveData GetSaveData(int num)
+    public void ActivateDeleteToggle()
     {
-        SaveData sd = null;
+        foreach (SaveBarUI saveBarUI in saveBars)
+            saveBarUI.ActivateDeleteToggle();
+    }
 
-        try
+    public void DeactivateDeleteToggle(out List<string> deletedFiles)
+    {
+        deletedFiles = new List<string>();
+        foreach (SaveBarUI saveBarUI in saveBars)
         {
-            FileManager.LoadFromFile("SaveData" + num + ".dat", out var json);
-            switch (PlayerPrefs.GetString("SaveData" + num))
-            {
-                case SaveLoadManager.TwoDKey:
-                    sd = new SaveData_2D();
-                    break;
-            }
-            sd.LoadFromJson(json);
+            if (saveBarUI.toggleIsOn())
+                deletedFiles.Add(saveBarUI.fileName);
+            saveBarUI.DeactivateDeleteToggle();
         }
-        catch (Exception e)
-        {
-            Debug.LogError("LoadPageUI: Failed to load from file SaveData" + num + ".dat : " + e);
-        }
-
-        return sd;
     }
 }
 
