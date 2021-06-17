@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class SaveData : ISaveData
 {
     public string typeOfGame;
@@ -10,6 +10,11 @@ public class SaveData : ISaveData
     public int numOfPlayers;
     public List<string> nameOfPlayers;
     public string dateTime;
+
+    // 2D fields
+    public int playerInTurn;
+    public int numOfTurn;
+    public List<MarkerPosition> markerPositions;
 
     public string ToJson()
     {
@@ -23,8 +28,16 @@ public class SaveData : ISaveData
     }
 }
 
+[Serializable]
+public struct MarkerPosition 
+{
+    public int num;
+    public string marker;
+}
+
+
 // 2D Board Games Save Data
-[System.Serializable]
+[Serializable]
 public class SaveData_2D : SaveData
 {
 

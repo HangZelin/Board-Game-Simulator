@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Game : MonoBehaviour
+public class Game : MonoBehaviour, ISaveable
 {
     public GameObject chesspiece;
 
@@ -21,10 +21,15 @@ public class Game : MonoBehaviour
 
     private bool gameOver = false;
 
-
     // Start is called before the first frame update
     void Start()
     {
+        if (!GameStatus.isNewGame)
+        {
+            LoadFromSaveData(SaveLoadManager.tempSD);
+            return;
+        }
+
         //Instantiate the chesspiece when the game starts.
 
         currentPlayer = Player1;
@@ -119,6 +124,7 @@ public class Game : MonoBehaviour
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
             gameOver = false;
+            GameStatus.isNewGame = true;
 
             SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
         }
@@ -143,5 +149,37 @@ public class Game : MonoBehaviour
         GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = lastPlayer + " is the winner";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+    }
+
+    // Save and load
+
+    public void PopulateSaveData(SaveData sd)
+    {
+        List<MarkerPosition> markerPositions = new List<MarkerPosition>();
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
+            {
+                if (positions[i,j] != null)
+                {
+                    MarkerPosition mp = new MarkerPosition();
+                    mp.marker = positions[i, j].name;
+                    mp.num = i * 8 + j;
+                    markerPositions.Add(mp);
+                }
+            }
+
+        sd.playerInTurn = currentPlayer.Equals(Player1) ? 1 : 2;
+        sd.markerPositions = markerPositions;
+    } 
+
+    public void LoadFromSaveData(SaveData sd)
+    {
+        currentPlayer = GameStatus.GetNameOfPlayer(sd.playerInTurn);
+        lastPlayer = currentPlayer.Equals(Player1) ? Player2 : Player1;
+        foreach (MarkerPosition mp in sd.markerPositions)
+        {
+            GameObject go = Create(mp.marker, mp.num / 8, mp.num % 8);
+            SetPosition(go);
+        }
     }
 } 

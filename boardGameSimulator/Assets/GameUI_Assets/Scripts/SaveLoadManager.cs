@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SaveLoadManager : MonoBehaviour
 {
     // If change this part, change GameStatus.cs also.
     public const string TwoDKey = "2D";
-    public const string CardKey = "Card";
+    public const string CardKey = "Cd";
     public const string ThreeDKey = "3D";
 
     const string lastSaveKey = "LastSaveKey";
     private GameStatus gs;
+
+    public static SaveData tempSD;
 
     void Start()
     {
@@ -19,38 +22,31 @@ public class SaveLoadManager : MonoBehaviour
 
     public void Save()
     {
+        SaveData sd = new SaveData();
+        gs.PopulateSaveData(sd);
+        GameObject.Find("Controller").GetComponent<Game>().PopulateSaveData(sd);
+
+        int i = LastNumOfSave() + 1;
         switch (GameStatus.GetTypeOfGame())
         {
             case "2D":
-                SaveJsonData_2D();
+                if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
+                {
+                    AddNumOfSave();
+                    Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
+                }
                 break;
         }
     }
-
-    // 2D Save & Load.
-
-    public void SaveJsonData_2D()
-    {
-        SaveData_2D sd = new SaveData_2D();
-        gs.PopulateSaveData(sd);
-
-        int i = LastNumOfSave() + 1;
-        if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
-        {
-            AddNumOfSave();
-            Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
-        }
-    }
-
-    public void LoadJsonData_2D(GameStatus gameStatus, string s)
+    public void LoadJsonData(GameStatus gameStatus, string s)
     {
         if (FileManager.LoadFromFile(s, out var json))
         {
-            SaveData_2D sd = new SaveData_2D();
+            SaveData sd = new SaveData();
             sd.LoadFromJson(json);
 
             gameStatus.LoadFromSaveData(sd);
-            Debug.Log("Load complete from " + s);
+            tempSD = sd;
         }
     }
 

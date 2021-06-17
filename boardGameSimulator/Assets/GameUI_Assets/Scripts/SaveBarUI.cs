@@ -40,12 +40,7 @@ public class SaveBarUI : MonoBehaviour
         try
         {
             FileManager.LoadFromFile(s, out var json);
-            switch (s.Substring(0, 2))
-            {
-                case SaveLoadManager.TwoDKey:
-                    sd = new SaveData_2D();
-                    break;
-            }
+            sd = new SaveData();
             sd.LoadFromJson(json);
         }
         catch (Exception e)
@@ -57,8 +52,9 @@ public class SaveBarUI : MonoBehaviour
     // button listener
     void ButtonClicked()
     {
-        GameObject.Find("GameStatus").GetComponent<GameStatus>()
-            .LoadFromSaveData(sd);
+        GameObject go = GameObject.Find("GameStatus");
+        go.GetComponent<SaveLoadManager>().LoadJsonData(go.GetComponent<GameStatus>(), fileName);
+        GameStatus.isNewGame = false;
         SceneManager.LoadScene("HomeLoading");
     }
 
@@ -67,9 +63,11 @@ public class SaveBarUI : MonoBehaviour
     public void ActivateDeleteToggle()
     {
         deleteToggle.SetActive(true);
+        button.interactable = false;
     }
     public void DeactivateDeleteToggle()
     {
+        button.interactable = true;
         deleteToggle.SetActive(false);
         deleteToggle.GetComponent<Toggle>().isOn = false;
     }

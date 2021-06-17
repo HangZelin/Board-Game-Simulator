@@ -6,13 +6,15 @@ public class GameStatus : MonoBehaviour, ISaveable
 {
     // If change this part, change SaveLoadManager.cs also.
     public const string TwoDKey = "2D";
-    public const string CardKey = "Card";
+    public const string CardKey = "Cd";
     public const string ThreeDKey = "3D";
 
     protected static string typeOfGame = TwoDKey;
     protected static string nameOfGame = "Board Game";
     protected static int numOfPlayers = 2;
     protected static List<string> nameOfPlayers = new List<string>();
+
+    public static bool isNewGame;
 
     // Setters
  
@@ -35,6 +37,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         ResetStatus();
 
         nameOfGame = name;
+        isNewGame = true;
     }
 
     public static void SetNumOfPlayers(int num)

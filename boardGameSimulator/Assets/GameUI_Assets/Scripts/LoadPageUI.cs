@@ -1,16 +1,22 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LoadPageUI : MonoBehaviour
 {
+    // References of Game Objects
+
+    // SaveBar prefab
     public GameObject saveBar;
+    // Canvas
     public GameObject canvas;
+    // Text for "No saved profiles found".
     public GameObject text;
+
+    // A list of SaveBarUIs
     List<SaveBarUI> saveBars;
+
+    // The height of saveBar.
     public float height = 62f;
 
     void Awake()
@@ -37,12 +43,17 @@ public class LoadPageUI : MonoBehaviour
         }   
     }
 
+    // helpers
+
+    // For each SaveBar, set the delete toggle to active
     public void ActivateDeleteToggle()
     {
         foreach (SaveBarUI saveBarUI in saveBars)
             saveBarUI.ActivateDeleteToggle();
     }
 
+    // For each SaveBar, set the delete toggle to inactive,
+    // output the names of deleted files in a list.
     public void DeactivateDeleteToggle(out List<string> deletedFiles)
     {
         deletedFiles = new List<string>();
