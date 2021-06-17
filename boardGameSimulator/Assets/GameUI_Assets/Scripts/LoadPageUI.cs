@@ -8,19 +8,19 @@ using UnityEngine.UI;
 public class LoadPageUI : MonoBehaviour
 {
     public GameObject saveBar;
-    GameObject canvas;
+    public GameObject canvas;
+    public GameObject text;
     List<SaveBarUI> saveBars;
     public float height = 62f;
 
     void Awake()
     {
-        canvas = GameObject.Find("Canvas");
         saveBars = new List<SaveBarUI>();
         Vector2 v = new Vector2(0f, -83f);
 
         string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
         for (int i = 0; i < fileNames.Length; i++)
-            fileNames[i] = Path.GetFileName(fileNames[i]); 
+            fileNames[i] = Path.GetFileName(fileNames[i]);
         foreach (string s in fileNames)
         {
             GameObject go = Instantiate(saveBar, Vector3.zero, Quaternion.identity, canvas.transform);
@@ -30,7 +30,11 @@ public class LoadPageUI : MonoBehaviour
             v.y = v.y - height;
         }
 
-        if (fileNames.Length == 0) SaveLoadManager.ResetNumOfSave();
+        if (fileNames.Length == 0)
+        {
+            SaveLoadManager.ResetNumOfSave();
+            text.SetActive(true);
+        }   
     }
 
     public void ActivateDeleteToggle()

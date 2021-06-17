@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SaveBarUI : MonoBehaviour
 {
     public string fileName;
     SaveData sd;
     GameObject deleteToggle;
+    Button button;
 
     public void Activate(string s, Vector2 rect)
     {
@@ -25,6 +27,12 @@ public class SaveBarUI : MonoBehaviour
 
         deleteToggle = gameObject.transform.Find("DeleteToggle").gameObject;
         deleteToggle.GetComponent<Toggle>().isOn = false;
+
+        button = gameObject.GetComponent<Button>();
+        button.onClick.AddListener(delegate
+        {
+            ButtonClicked();
+        });
     }
 
     private void GetSaveData(string s)
@@ -44,6 +52,14 @@ public class SaveBarUI : MonoBehaviour
         {
             Debug.LogError("LoadPageUI: Failed to load from file s: " + e);
         }
+    }
+
+    // button listener
+    void ButtonClicked()
+    {
+        GameObject.Find("GameStatus").GetComponent<GameStatus>()
+            .LoadFromSaveData(sd);
+        SceneManager.LoadScene("HomeLoading");
     }
 
     //helpers
