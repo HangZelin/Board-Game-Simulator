@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LoadPageUI : MonoBehaviour
 {
     // References of Game Objects
 
+    // Back Button
+    public Button back;
     // SaveBar prefab
     public GameObject saveBar;
     // Canvas
@@ -21,6 +25,11 @@ public class LoadPageUI : MonoBehaviour
 
     void Awake()
     {
+        back.onClick.AddListener(delegate
+        {
+            BackOnClick();
+        });
+
         saveBars = new List<SaveBarUI>();
         Vector2 v = new Vector2(0f, -83f);
 
@@ -44,6 +53,15 @@ public class LoadPageUI : MonoBehaviour
     }
 
     // helpers
+    void BackOnClick()
+    {
+        if (SceneLoader.lastScene == "Home")
+        {
+            SceneLoader.LoadScene("Home");
+            return;
+        }
+        SceneManager.UnloadSceneAsync("Load");
+    }
 
     // For each SaveBar, set the delete toggle to active
     public void ActivateDeleteToggle()

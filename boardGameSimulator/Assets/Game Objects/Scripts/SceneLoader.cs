@@ -5,25 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    const string lastSceneKey = "LastScene";
+    public static string lastScene = "Home";
 
-    void OnDestroy()
+    public static void LoadScene(string sceneName)
     {
-        PlayerPrefs.SetInt(lastSceneKey, SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void LoadScene(string sceneName)
-    {
+        lastScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
     }
 
-    public void LoadGameScene()
+    public static void LoadGameScene()
     {
+        lastScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(GameStatus.GetNameOfGame());
     }
 
-    public void LoadLastScene()
+    public static void LoadSceneAdditive(string sceneName)
     {
-        SceneManager.LoadScene(PlayerPrefs.GetInt(lastSceneKey, 0));
+        lastScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
     }
 }

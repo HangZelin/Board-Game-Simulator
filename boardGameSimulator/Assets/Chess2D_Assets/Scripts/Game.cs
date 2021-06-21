@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Game : MonoBehaviour, ISaveable
 {
     public GameObject chesspiece;
+    public GameObject gameUI;
+    SettingsUI settings;
 
     //Positions and team for other chesspiece
     private GameObject[,] positions = new GameObject[8, 8];
@@ -24,10 +26,13 @@ public class Game : MonoBehaviour, ISaveable
     // Start is called before the first frame update
     void Start()
     {
+        settings = gameUI.GetComponent<SettingsUI>();
+
         if (!GameStatus.isNewGame)
         {
             LoadFromSaveData(SaveLoadManager.tempSD);
             GameStatus.isNewGame = true;
+            settings.AddLog(GameStatus.GetNameOfGame() + ": Load Complete.");
             return;
         }
 
@@ -58,6 +63,10 @@ public class Game : MonoBehaviour, ISaveable
             SetPosition(playerBlack[i]);
             SetPosition(playerWhite[i]);
         }
+
+        // Log
+
+        settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
     public GameObject Create(string name, int x, int y)
@@ -118,6 +127,10 @@ public class Game : MonoBehaviour, ISaveable
             lastPlayer = currentPlayer;
             currentPlayer = Player1;
         }
+
+        // Log 
+
+        settings.AddLog(currentPlayer + "'s turn!");
     }
 
     public void Update()
@@ -140,6 +153,9 @@ public class Game : MonoBehaviour, ISaveable
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
+        // Log
+
+        settings.AddLog("<b>" + playerWinner + "</b> is the winner! " + "Tap to restart.");
     }
 
     public void OnButtonClick()
@@ -150,6 +166,8 @@ public class Game : MonoBehaviour, ISaveable
         GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = lastPlayer + " is the winner";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+        settings.AddLog("<b>" + lastPlayer + "</b> is the winner! " + "Tap to restart.");
     }
 
     // Save and load

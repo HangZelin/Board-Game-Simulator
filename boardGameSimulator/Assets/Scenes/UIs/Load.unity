@@ -238,10 +238,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3333a36e8994804458b5f9058deefcd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  back: {fileID: 764251161}
   saveBar: {fileID: 5496510885356707011, guid: f7a14f45e94fbb249935787283dd1dd8, type: 3}
   canvas: {fileID: 537494330}
   text: {fileID: 1150784898}
   height: 62
+--- !u!114 &764251161 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1096810701445278361, guid: d46814a35cae9594ba0dd396eb61dfb0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1347237886}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &937151830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -665,7 +678,7 @@ PrefabInstance:
     - target: {fileID: 1096810701445278361, guid: d46814a35cae9594ba0dd396eb61dfb0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1096810701445278361, guid: d46814a35cae9594ba0dd396eb61dfb0,
         type: 3}
