@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/UIs/HomeLoading.unity
     guid: 9ceb3dfaee8dd6040a5253acb30bc1d6
   - enabled: 1
+    path: Assets/Scenes/UIs/IngameLoad.unity
+    guid: c5a3c8a0fe7ebe343b7e0c8a01cdab25
+  - enabled: 1
     path: Assets/Scenes/Games/Chess (2D).unity
     guid: d2178112f3e24a9468d07a5ae5580a9e
   - enabled: 1

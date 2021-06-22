@@ -130,7 +130,7 @@ public class Game : MonoBehaviour, ISaveable
 
         // Log 
 
-        settings.AddLog(currentPlayer + "'s turn!");
+        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
     }
 
     public void Update()
@@ -200,5 +200,40 @@ public class Game : MonoBehaviour, ISaveable
             GameObject go = Create(mp.marker, mp.num / 8, mp.num % 8);
             SetPosition(go);
         }
+    }
+
+    // 
+
+    void OnEnable()
+    { 
+        SceneLoader.backToGame += ActivateChessman;
+    }
+
+    void OnDisable()
+    {
+
+        SceneLoader.backToGame -= ActivateChessman;
+    }
+
+    // helper for IngameLoad
+
+    public void DeactivateChessman()
+    {
+        foreach (GameObject go in positions)
+            if (go != null) go.SetActive(false);
+
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        foreach (GameObject go in movePlates)
+            go.SetActive(false);
+    }
+
+    public void ActivateChessman()
+    {
+        foreach (GameObject go in positions)
+            if (go != null) go.SetActive(true);
+
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        foreach (GameObject go in movePlates)
+            go.SetActive(true);
     }
 } 

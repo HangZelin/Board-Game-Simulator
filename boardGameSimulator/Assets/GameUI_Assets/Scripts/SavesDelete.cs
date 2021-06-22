@@ -20,8 +20,6 @@ public class SavesDelete : MonoBehaviour
         {
             ToggleValueChanged();
         });
-        loadPageUI = GameObject.Find("Canvas").GetComponent<LoadPageUI>();
-        if (loadPageUI == null) Debug.Log("a");
     }
 
     void ToggleValueChanged()
@@ -48,8 +46,8 @@ public class SavesDelete : MonoBehaviour
                         Debug.LogError("Failed to delete file " + s + ": " + e);
                     }
                 }
-                Scene scene = SceneManager.GetActiveScene(); 
-                SceneManager.LoadScene(scene.name);
+                SceneManager.UnloadSceneAsync("IngameLoad");
+                SceneManager.LoadScene("IngameLoad", LoadSceneMode.Additive);
             }
         }
         else

@@ -8,11 +8,6 @@ public class SettingsUI : MonoBehaviour
 {
     public GameObject settingsTab;
 
-    public Button save;
-    public Button load;
-    public Button quit;
-    public Button back;
-
     public GameObject logBar;
     Text logBarText;
     Text tempText;
