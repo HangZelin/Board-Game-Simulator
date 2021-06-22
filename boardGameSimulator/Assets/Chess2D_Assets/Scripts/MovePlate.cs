@@ -38,7 +38,7 @@ public class MovePlate : MonoBehaviour
             if (cp.name == "black_king") controller.GetComponent<Game>().Winner(GameStatus.GetNameOfPlayer(1));
 
             Destroy(cp);
-        }
+        } 
 
         controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
             reference.GetComponent<Chessman>().GetYBoard());
@@ -49,7 +49,8 @@ public class MovePlate : MonoBehaviour
 
         controller.GetComponent<Game>().SetPosition(reference);
 
-        controller.GetComponent<Game>().NextTurn();
+        if (!controller.GetComponent<Game>().IsGameOver())
+            controller.GetComponent<Game>().NextTurn();
 
         reference.GetComponent<Chessman>().DestroyMovePlates();
     }
