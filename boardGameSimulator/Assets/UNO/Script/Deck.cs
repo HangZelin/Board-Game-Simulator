@@ -9,6 +9,8 @@ namespace UNO
     public class Deck : MonoBehaviour
     {
         [SerializeField] GameObject unused;
+        List<GameObject> cards;
+
         [SerializeField] GameObject numCard;
         [SerializeField] GameObject skipCard;
         [SerializeField] GameObject reverseCard;
@@ -16,12 +18,12 @@ namespace UNO
         [SerializeField] GameObject draw4Card;
         [SerializeField] GameObject wildCard;
 
-        List<GameObject> cards;
-
         public void Initialize()
         {
             cards = new List<GameObject>();
 
+            // Add cards to the deck
+            // 19 number cards in each color
             for (int i = 0; i <= 9; i++)
                 foreach (NumCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
                 {
@@ -36,6 +38,7 @@ namespace UNO
                     }
                 }
 
+            // 2 Skip cards in each color
             foreach (SkipCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
                 for (int i = 0; i < 2; i++)
                 {
@@ -44,6 +47,7 @@ namespace UNO
                     cards.Add(a_SkipCard);
                 }
 
+            // 2 Reverse cards in each color
             foreach (ReverseCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
                 for (int i = 0; i < 2; i++)
                 {
@@ -52,6 +56,7 @@ namespace UNO
                     cards.Add(a_SkipCard);
                 }
 
+            // 2 Draw 2 cards in each color
             foreach (Draw2Card.Color color in Enum.GetValues(typeof(NumCard.Color)))
                 for (int i = 0; i < 2; i++)
                 {
@@ -60,6 +65,7 @@ namespace UNO
                     cards.Add(a_Draw2Card);
                 }
 
+            // 4 Draw 4 cards, 4 wild cards
             for (int i = 0; i < 4; i++)
             {
                 cards.Add(Instantiate(draw4Card, unused.transform));
@@ -67,6 +73,7 @@ namespace UNO
             }
 
             Shuffle(cards);
+
             Debug.Log(cards.Count);
         }
 
@@ -79,9 +86,7 @@ namespace UNO
             }
             List<GameObject> drawCards = new List<GameObject>();
             for (int i = 0; i < num; i++)
-            {
                 drawCards.Add(cards[i]);
-            }
             cards.RemoveRange(0, num);
             return drawCards;
         }
