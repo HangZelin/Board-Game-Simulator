@@ -158,16 +158,28 @@ public class Game : MonoBehaviour, ISaveable
         settings.AddLog("<b>" + playerWinner + "</b> is the winner! " + "Tap to restart.");
     }
 
-    public void OnButtonClick()
+    public void Winner1()
     {
         gameOver = true;
 
         GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = lastPlayer + " is the winner";
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = Player1 + " is the winner";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
-        settings.AddLog("<b>" + lastPlayer + "</b> is the winner! " + "Tap to restart.");
+        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+    }
+
+    public void Winner2()
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = Player2 + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+        settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");
     }
 
     // Save and load
