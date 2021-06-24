@@ -48,3 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca6fb6b55de9cc4f808669a3e30219d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCurrentPlayer: 0
+  hand: {fileID: 7349295050839003814, guid: a2e626457588d8844837146057ac0828, type: 3}
+  currentHand: {fileID: 1027195749122143352, guid: 74b0f3a193ef300489fbc631df31c99f,
+    type: 3}

@@ -375,9 +375,9 @@ MonoBehaviour:
   yellowCard: {fileID: 21300000, guid: 9d1acf981b2a7d444af9d31e87cf2ab8, type: 3}
   greenCard: {fileID: 21300000, guid: 31e8eb76deecec7449a4588845da5903, type: 3}
   cardBack: {fileID: 21300000, guid: 99ab42bd2a1094342b81ec8b26880df9, type: 3}
-  topNum: {fileID: 7344225455476410199}
-  midNum: {fileID: 7344225455440566120}
-  btmNum: {fileID: 7344225454724385069}
+  topNum: {fileID: 7344225455476410193}
+  midNum: {fileID: 7344225455440566133}
+  btmNum: {fileID: 7344225454724385071}
   underline1: {fileID: 7344225453908010886}
   underline2: {fileID: 7344225455478021836}
   underline3: {fileID: 7344225454045562084}

@@ -3,7 +3,16 @@ guid: eb069f24f7cc0a44785e7079cc1d0ec5
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - prefab: {instanceID: 0}
+  - redCard: {fileID: 21300000, guid: 635e34a471862994fb61f8f11adaabe5, type: 3}
+  - blueCard: {fileID: 21300000, guid: d83ea00532809464f9d3c8e450055633, type: 3}
+  - yellowCard: {fileID: 21300000, guid: 9d1acf981b2a7d444af9d31e87cf2ab8, type: 3}
+  - greenCard: {fileID: 21300000, guid: 31e8eb76deecec7449a4588845da5903, type: 3}
+  - cardBack: {fileID: 21300000, guid: 99ab42bd2a1094342b81ec8b26880df9, type: 3}
+  - topIcon: {instanceID: 0}
+  - midIcon: {instanceID: 0}
+  - btmIcon: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

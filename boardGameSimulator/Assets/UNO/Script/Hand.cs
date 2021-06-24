@@ -7,11 +7,14 @@ namespace UNO
     public class Hand : MonoBehaviour
     {
         [SerializeField] int num; // Starts from 0
+        List<GameObject> cards;
 
         public void Initialize(int num)
         {
             this.num = num;
             gameObject.name = ToString();
+
+            cards = new List<GameObject>();
         }
 
         static Position position1 = new Position()
@@ -49,6 +52,8 @@ namespace UNO
             rotation = Quaternion.Euler(0f, 0f, -90f)
         };
 
+        // Set hand positions
+        
         public static void SetPositions(List<GameObject> hands)
         {
             switch (hands.Count)
@@ -78,6 +83,23 @@ namespace UNO
             rect.rotation = position.rotation;
             rect.anchoredPosition = position.anchoredPosition;
         }
+
+        // Set cards positions
+
+        public void PlaceCards(List<GameObject> cards)
+        {
+            float x = -((cards.Count-1) / 2f) * 20f;
+            float y = 10f;
+            foreach (GameObject card in cards)
+            {
+                GameObject a_Card = card.GetComponent<Card>().Copy(transform);
+                this.cards.Add(a_Card);
+                a_Card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+                x += 20f;
+            }
+        }
+
+        // public void 
 
         public override string ToString()
         {

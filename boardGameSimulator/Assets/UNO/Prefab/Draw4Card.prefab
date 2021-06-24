@@ -187,6 +187,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 4008887952978483278}
+  blackCard: {fileID: 21300000, guid: 8b629d4d531b7fd47a161fa32a43db2b, type: 3}
+  cardBack: {fileID: 21300000, guid: 99ab42bd2a1094342b81ec8b26880df9, type: 3}
+  topNum: {fileID: 4008887952355793030}
+  midIcon: {fileID: 7215022553951378581}
+  btmNum: {fileID: 7215022553608574759}
 --- !u!1 &7215022553394578427
 GameObject:
   m_ObjectHideFlags: 0

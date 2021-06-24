@@ -7,8 +7,6 @@ namespace UNO
 {
     public class NumCard : MonoBehaviour, Card
     {
-        public enum Color { Red, Blue, Yellow, Green };
-
         [SerializeField] GameObject prefab;
 
         [SerializeField] Sprite redCard;
@@ -16,10 +14,11 @@ namespace UNO
         [SerializeField] Sprite yellowCard;
         [SerializeField] Sprite greenCard;
         [SerializeField] Sprite cardBack;
+        Sprite cardFace;
 
-        [SerializeField] Text topNum;
-        [SerializeField] Text midNum;
-        [SerializeField] Text btmNum;
+        [SerializeField] GameObject topNum;
+        [SerializeField] GameObject midNum;
+        [SerializeField] GameObject btmNum;
 
         [SerializeField] GameObject underline1;
         [SerializeField] GameObject underline2;
@@ -35,63 +34,73 @@ namespace UNO
                 else num = 0;
             }
         }
-        public Color color;
 
-        public void Initialize(Color color, int num)
+        public CardColor color;
+
+        [SerializeField] bool isFace;
+        public bool IsFace
+        {
+            get { return isFace; }
+            set
+            {
+                isFace = value;
+                if (isFace)
+                    GetComponent<Image>().sprite = cardFace;
+                else
+                    GetComponent<Image>().sprite = cardBack;
+
+                topNum.SetActive(isFace);
+                midNum.SetActive(isFace);
+                btmNum.SetActive(isFace);
+
+                SetUnderline(isFace);
+            }
+        }
+
+        public void Initialize(CardColor color, int num, bool isFace)
         {
             this.color = color;
+            midNum.GetComponent<Text>().color = Colors.GetColor(color);
             switch (color)
             {
-                case Color.Red: 
-                    GetComponent<Image>().sprite = redCard;
-                    midNum.color = new UnityEngine.Color(1f, 0.3333333f, 0.3333333f);
-                    break;
-                case Color.Blue: 
-                    GetComponent<Image>().sprite = blueCard;
-                    midNum.color = new UnityEngine.Color(0.3372549f, 0.3372549f, 0.9803922f);
-                    break;
-                case Color.Yellow: 
-                    GetComponent<Image>().sprite = yellowCard;
-                    midNum.color = new UnityEngine.Color(1f, 0.6666667f, 0f);
-                    break;
-                case Color.Green: 
-                    GetComponent<Image>().sprite = greenCard;
-                    midNum.color = new UnityEngine.Color(0.3372549f, 0.6627451f, 0.3372549f);
-                    break;
+                case CardColor.red: cardFace = redCard; break;
+                case CardColor.blue: cardFace = blueCard; break;
+                case CardColor.yellow: cardFace = yellowCard; break;
+                case CardColor.green: cardFace = greenCard; break;
             }
+            GetComponent<Image>().sprite = cardFace;
 
             Num = num;
-            topNum.text = num.ToString();
-            midNum.text = num.ToString();
-            btmNum.text = num.ToString();
+            topNum.GetComponent<Text>().text = num.ToString();
+            midNum.GetComponent<Text>().text = num.ToString();
+            btmNum.GetComponent<Text>().text = num.ToString();
 
-            if (num == 6 || num == 9)
-            {
-                underline1.SetActive(true);
-                underline2.SetActive(true);
-                underline3.SetActive(true);
-            }
+            SetUnderline(true);
+
+            IsFace = isFace;
         }
 
         public GameObject Copy(Transform transform)
         {
             GameObject copy = Instantiate(prefab, transform);
-            copy.GetComponent<NumCard>().Initialize(color, num);
+            copy.GetComponent<NumCard>().Initialize(color, num, isFace);
             copy.name = ToString();
             return copy;
         }
 
+        public void SetUnderline(bool isActive)
+        {
+            if (num == 6 || num == 9)
+            {
+                underline1.SetActive(isActive);
+                underline2.SetActive(isActive);
+                underline3.SetActive(isActive);
+            }
+        }
+
         public override string ToString()
         {
-            switch (color)
-            {
-                case Color.Blue: return num + "blue";
-                case Color.Green: return num + "green";
-                case Color.Red: return num + "red";
-                case Color.Yellow: return num + "yellow";
-            }
-            Debug.Log("Failed Card ToString Method");
-            return "";
+            return num + "_" + color;
         }
     }
 }

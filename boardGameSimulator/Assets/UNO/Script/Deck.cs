@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace UNO 
@@ -23,53 +22,59 @@ namespace UNO
             cards = new List<GameObject>();
 
             // Add cards to the deck
-            // 19 number cards in each color
-            for (int i = 0; i <= 9; i++)
-                foreach (NumCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
+
+            // Color cards
+            foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
+            {
+                // 19 number cards in each color
+                for (int i = 0; i <= 9; i++)
                 {
                     GameObject card = Instantiate(numCard, unused.transform);
-                    card.GetComponent<NumCard>().Initialize(color, i);
+                    card.GetComponent<NumCard>().Initialize(color, i, true);
                     cards.Add(card);
                     if (i != 0)
                     {
                         card = Instantiate(numCard, unused.transform);
-                        card.GetComponent<NumCard>().Initialize(color, i);
+                        card.GetComponent<NumCard>().Initialize(color, i, true);
                         cards.Add(card);
                     }
                 }
 
-            // 2 Skip cards in each color
-            foreach (SkipCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
+                // 2 Skip cards in each color
                 for (int i = 0; i < 2; i++)
                 {
                     GameObject a_SkipCard = Instantiate(skipCard, unused.transform);
-                    a_SkipCard.GetComponent<SkipCard>().Initialize(color);
+                    a_SkipCard.GetComponent<SkipCard>().Initialize(color, true);
                     cards.Add(a_SkipCard);
                 }
 
-            // 2 Reverse cards in each color
-            foreach (ReverseCard.Color color in Enum.GetValues(typeof(NumCard.Color)))
+                // 2 Reverse cards in each color
                 for (int i = 0; i < 2; i++)
                 {
-                    GameObject a_SkipCard = Instantiate(reverseCard, unused.transform);
-                    a_SkipCard.GetComponent<ReverseCard>().Initialize(color);
-                    cards.Add(a_SkipCard);
+                    GameObject a_ReverseCard = Instantiate(reverseCard, unused.transform);
+                    a_ReverseCard.GetComponent<ReverseCard>().Initialize(color, true);
+                    cards.Add(a_ReverseCard);
                 }
 
-            // 2 Draw 2 cards in each color
-            foreach (Draw2Card.Color color in Enum.GetValues(typeof(NumCard.Color)))
+                // 2 Draw 2 cards in each color
                 for (int i = 0; i < 2; i++)
                 {
                     GameObject a_Draw2Card = Instantiate(draw2Card, unused.transform);
-                    a_Draw2Card.GetComponent<Draw2Card>().Initialize(color);
+                    a_Draw2Card.GetComponent<Draw2Card>().Initialize(color, true);
                     cards.Add(a_Draw2Card);
                 }
+            }
 
             // 4 Draw 4 cards, 4 wild cards
             for (int i = 0; i < 4; i++)
             {
-                cards.Add(Instantiate(draw4Card, unused.transform));
-                cards.Add(Instantiate(wildCard, unused.transform));
+                GameObject a_Draw4Card = Instantiate(draw4Card, unused.transform);
+                a_Draw4Card.GetComponent<Draw4Card>().Initialize(true);
+                cards.Add(a_Draw4Card);
+
+                GameObject a_WildCard = Instantiate(wildCard, unused.transform);
+                a_WildCard.GetComponent<WildCard>().Initialize(true);
+                cards.Add(a_WildCard);
             }
 
             Shuffle(cards);
@@ -106,5 +111,29 @@ namespace UNO
             }
         }
     }
+
+    public class Colors
+    {
+        [SerializeField] static Color red = new Color(1f, 0.3333333f, 0.3333333f);
+        [SerializeField] static Color blue = new Color(0.3372549f, 0.3372549f, 0.9803922f);
+        [SerializeField] static Color green = new Color(0.3372549f, 0.6627451f, 0.3372549f);
+        [SerializeField] static Color yellow = new Color(1f, 0.6666667f, 0f);
+
+        public static Color GetColor(CardColor cardColor)
+        {
+            switch (cardColor)
+            {
+                case CardColor.red: return red;
+                case CardColor.blue: return blue;
+                case CardColor.green: return green;
+                case CardColor.yellow: return yellow;
+                default:
+                    Debug.LogError("Failed to get color");
+                    return Color.white;
+            }
+        }
+    }
+
+    public enum CardColor { red, yellow, blue, green };
 }
 
