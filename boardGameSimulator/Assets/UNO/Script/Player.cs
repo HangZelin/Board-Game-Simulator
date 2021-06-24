@@ -25,6 +25,10 @@ namespace UNO
             cards = new List<GameObject>();
 
             currentHand = GameObject.Find("CurrentHand");
+
+            Game.TurnStartHandler += PlaceCards;
+
+            Game.TurnEndHandler += GetCardsFromHand;
         }
 
         public void TakeCards(List<GameObject> cards)
@@ -39,24 +43,35 @@ namespace UNO
                     card.GetComponent<Card>().IsFace = isCurrentPlayer;
 
             if (!isCurrentPlayer)
-                Hand.GetComponent<Hand>().PlaceCards(cards);
+            {
+                foreach (GameObject card in cards)
+                    card.transform.SetParent(hand.transform);
+                hand.GetComponent<Hand>().Cards = cards;
+            }
             else
             {
-                currentHand.GetComponent<CurrentHand>().PlaceCards(cards);
+                foreach (GameObject card in cards)
+                    card.transform.SetParent(currentHand.transform);
+                currentHand.GetComponent<CurrentHand>().Cards = cards;
             }
 
             cards = new List<GameObject>();
         }
 
-        void Start()
+        public void GetCardsFromHand()
         {
-
+            if (isCurrentPlayer)
+            {
+                currentHand.GetComponent<CurrentHand>().GiveCards(gameObject, out cards);
+                isCurrentPlayer = false;
+            }
+            else
+                hand.GetComponent<Hand>().GiveCards(gameObject, out cards);
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnDisable()
         {
-
+            Game.TurnStartHandler -= PlaceCards;
         }
     }
 }

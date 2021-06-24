@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 4008887952978483275}
   - component: {fileID: 4008887952978483272}
   - component: {fileID: 1600188229711569130}
+  - component: {fileID: 3252209101657738008}
   m_Layer: 5
   m_Name: Draw4Card
   m_TagString: Untagged
@@ -192,6 +193,24 @@ MonoBehaviour:
   topNum: {fileID: 4008887952355793030}
   midIcon: {fileID: 7215022553951378581}
   btmNum: {fileID: 7215022553608574759}
+  isFace: 0
+--- !u!114 &3252209101657738008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4008887952978483278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caa3af3224614914e86842a16ae1ca5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHand: {fileID: 1027195749122143352, guid: 74b0f3a193ef300489fbc631df31c99f,
+    type: 3}
+  y: 10
+  isHighlight: 0
+  siblingsIndex: 0
 --- !u!1 &7215022553394578427
 GameObject:
   m_ObjectHideFlags: 0

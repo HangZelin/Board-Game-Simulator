@@ -24,9 +24,20 @@ namespace UNO
         public bool antiClockWise = true;
         int currentPlayerIndex;
 
+        public delegate void TurnStart();
+        public static event TurnStart TurnStartHandler;
+
+        public delegate void TurnEnd();
+        public static event TurnEnd TurnEndHandler;
 
         private void Start()
         {
+            // Initialize Turn Start
+
+            TurnStartHandler += SetHand;
+
+            // Initialize deck
+
             deckScript = deck.GetComponent<Deck>();
             deckScript.Initialize();
 
@@ -61,14 +72,32 @@ namespace UNO
             foreach (GameObject player in players)
                 player.GetComponent<Player>().TakeCards(DealCards(7, player));
 
-            TurnStart();
+
+            OnTurnStart();
         }
 
-        private void TurnStart()
+        private void OnDisable()
         {
-            SetHand();
-            foreach (GameObject player in players)
-                player.GetComponent<Player>().PlaceCards();
+            TurnStartHandler -= SetHand;
+        }
+
+        private void OnTurnStart()
+        {
+            if (TurnStartHandler != null)
+                TurnStartHandler();
+        }
+
+        private void OnTurnEnd()
+        {
+            if (TurnEndHandler != null)
+                TurnEndHandler();
+            currentPlayerIndex = NextPlayer(currentPlayerIndex);
+        }
+
+        public void NextTurn()
+        {
+            OnTurnEnd();
+            OnTurnStart();
         }
 
         /**
@@ -81,10 +110,7 @@ namespace UNO
          */
         public List<GameObject> DealCards(int num, GameObject player)
         {
-            List<GameObject> cards = new List<GameObject>();
-            foreach (GameObject card in deckScript.DrawCards(num))
-                cards.Add(card.GetComponent<Card>().Copy(player.transform));
-            return cards;
+            return deckScript.DrawCards(num, player.transform);
         }
 
         // helpers
@@ -128,6 +154,13 @@ namespace UNO
         public GameObject Copy(Transform transform);
         public bool IsFace { get; set; }
     }
+
+    public interface IHand
+    {
+        public void GiveCards(GameObject player, out List<GameObject> cards);
+        public List<GameObject> Cards { get; set; }
+    } 
+
 }
 
 

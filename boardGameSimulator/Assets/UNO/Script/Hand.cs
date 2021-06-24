@@ -4,10 +4,20 @@ using UnityEngine;
 
 namespace UNO
 {
-    public class Hand : MonoBehaviour
+    public class Hand : MonoBehaviour, IHand
     {
         [SerializeField] int num; // Starts from 0
         List<GameObject> cards;
+        public List<GameObject> Cards 
+        {
+            get { return cards; }
+            set 
+            { 
+                if (value[0].GetComponent<Card>() != null)
+                    cards = value;
+                PlaceCards();
+            }
+        }
 
         public void Initialize(int num)
         {
@@ -86,20 +96,25 @@ namespace UNO
 
         // Set cards positions
 
-        public void PlaceCards(List<GameObject> cards)
+        void PlaceCards()
         {
             float x = -((cards.Count-1) / 2f) * 20f;
             float y = 10f;
             foreach (GameObject card in cards)
             {
-                GameObject a_Card = card.GetComponent<Card>().Copy(transform);
-                this.cards.Add(a_Card);
-                a_Card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+                card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+                card.GetComponent<RectTransform>().rotation = this.GetComponent<RectTransform>().rotation;
                 x += 20f;
             }
         }
 
-        // public void 
+        public void GiveCards(GameObject player, out List<GameObject> cards)
+        {
+            cards = new List<GameObject>(this.cards);
+            foreach (GameObject card in this.cards)
+                card.transform.SetParent(player.transform);
+            this.cards = new List<GameObject>();
+        }
 
         public override string ToString()
         {

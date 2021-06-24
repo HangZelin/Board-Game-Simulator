@@ -77,12 +77,15 @@ namespace UNO
                 cards.Add(a_WildCard);
             }
 
+            foreach (GameObject card in cards)
+                card.name = card.GetComponent<Card>().ToString();
+
             Shuffle(cards);
 
             Debug.Log(cards.Count);
         }
 
-        public List<GameObject> DrawCards(int num)
+        public List<GameObject> DrawCards(int num, Transform transform)
         {
             if (num > cards.Count)
             {
@@ -91,9 +94,12 @@ namespace UNO
             }
             List<GameObject> drawCards = new List<GameObject>();
             for (int i = 0; i < num; i++)
+            {
+                cards[i].transform.SetParent(transform);
                 drawCards.Add(cards[i]);
+            }
             cards.RemoveRange(0, num);
-            return drawCards;
+            return drawCards; 
         }
 
         public void Shuffle(List<GameObject> list)
