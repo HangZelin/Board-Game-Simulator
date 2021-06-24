@@ -9,6 +9,15 @@ namespace UNO
     {
         [SerializeField] GameObject unused;
         List<GameObject> cards;
+        public List<GameObject> Cards 
+        {
+            get { return cards; }
+            set
+            {
+                if (value != null && value[0].GetComponent<Card>() != null)
+                    cards = value;
+            }
+        }
 
         [SerializeField] GameObject numCard;
         [SerializeField] GameObject skipCard;

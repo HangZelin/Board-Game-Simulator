@@ -6,14 +6,15 @@ namespace UNO
 {
     public class CardReaction : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] GameObject currentHand;
+        GameObject currentHand;
 
         [SerializeField] float y = 10f;
         [SerializeField] bool isHighlight = false;
         [SerializeField] int siblingsIndex;
 
-        public void Initialize()
+        public void Initialize(GameObject currentHand)
         {
+            this.currentHand = currentHand;
             siblingsIndex = transform.GetSiblingIndex();
         }
 
@@ -21,6 +22,8 @@ namespace UNO
         {
             if (!isHighlight)
             {
+                Debug.Log(currentHand.GetComponent<CurrentHand>().Cards.Count);
+
                 currentHand.GetComponent<CurrentHand>().HighlightedCard = gameObject;
                 Vector2 v = GetComponent<RectTransform>().anchoredPosition;
                 v.y += this.y;

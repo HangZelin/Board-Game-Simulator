@@ -8,15 +8,22 @@ namespace UNO
     {
         List<GameObject> cards;
 
+        [SerializeField] bool hasHighLight;
+
         GameObject highlightedCard;
         public GameObject HighlightedCard
         {
             get { return highlightedCard; }
             set 
             {
-                if (value == null) highlightedCard = null;
-                else if (value.GetComponent<Card>() != null)
+                if (value == null)
                 {
+                    hasHighLight = false;
+                    highlightedCard = null;
+                }
+                else
+                {
+                    hasHighLight = true;
                     if (highlightedCard != null)
                         highlightedCard.GetComponent<CardReaction>().PutBack();
                     highlightedCard = value;
@@ -38,6 +45,7 @@ namespace UNO
         public void Initialize()
         {
             cards = new List<GameObject>();
+            name = "CurrentHand";
         }
 
         void PlaceCards()
@@ -51,7 +59,7 @@ namespace UNO
                 x += 20f;
 
                 // Initialize Card Reaction
-                card.GetComponent<CardReaction>().Initialize();
+                card.GetComponent<CardReaction>().Initialize(gameObject);
             }
         }
 
@@ -61,6 +69,14 @@ namespace UNO
             foreach (GameObject card in this.cards)
                 card.transform.SetParent(player.transform);
             this.cards = new List<GameObject>();
+        }
+
+        public void PlayCard()
+        {
+            Debug.Log(cards.Count);
+            cards.Remove(highlightedCard);
+            highlightedCard = null;
+            PlaceCards();
         }
     }
 }

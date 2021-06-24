@@ -16,15 +16,15 @@ namespace UNO
                 if (value.GetComponent<Hand>() != null) hand = value;
             } 
         }
-        [SerializeField] GameObject currentHand;
+        GameObject currentHand;
 
-        public void Initialize(string playerName)
+        public void Initialize(string playerName, GameObject currentHand)
         {
             this.playerName = playerName;
+            name = playerName;
+            this.currentHand = currentHand;
 
             cards = new List<GameObject>();
-
-            currentHand = GameObject.Find("CurrentHand");
 
             Game.TurnStartHandler += PlaceCards;
 
@@ -72,6 +72,11 @@ namespace UNO
         private void OnDisable()
         {
             Game.TurnStartHandler -= PlaceCards;
+        }
+
+        public override string ToString()
+        {
+            return playerName;
         }
     }
 }

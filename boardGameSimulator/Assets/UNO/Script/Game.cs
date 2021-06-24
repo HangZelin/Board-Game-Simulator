@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UNO
 {
@@ -12,13 +13,17 @@ namespace UNO
         [SerializeField] GameObject deck;
         Deck deckScript;
 
-        [SerializeField] GameObject currentHand;
+        [SerializeField] GameObject currentHandPrefab;
+        GameObject currentHand;
         [SerializeField] GameObject hand;
         List<GameObject> hands;
 
         [SerializeField] GameObject playersObj;
         [SerializeField] GameObject player;
         List<GameObject> players;
+
+        [SerializeField] GameObject discardPrefab;
+        GameObject discard;
 
         public int numOfPlayer = 2;
         public bool antiClockWise = true;
@@ -42,7 +47,12 @@ namespace UNO
             deckScript.Initialize();
 
             // Initialize current hand
+            currentHand = Instantiate(currentHandPrefab, Canvas.transform);
             currentHand.GetComponent<CurrentHand>().Initialize();
+
+            // Initialize Discard
+            discard = Instantiate(discardPrefab, Canvas.transform);
+            discard.GetComponent<Discard>().Initialize(currentHand);
 
             // Initialize hands
 
@@ -61,7 +71,7 @@ namespace UNO
             for(int i = 0; i < numOfPlayer; i++)
             {
                 GameObject a_Player = Instantiate(player, playersObj.transform);
-                a_Player.GetComponent<Player>().Initialize("Player" + (i + 1));
+                a_Player.GetComponent<Player>().Initialize("Player" + (i + 1), currentHand);
                 players.Add(a_Player);
             }
 
@@ -137,6 +147,11 @@ namespace UNO
                 index = NextPlayer(index);
                 players[index].GetComponent<Player>().Hand = hands[i];
             }
+
+            // For testing. Set current hand player name
+
+            currentHand.transform.Find("PlayerName").gameObject
+                .GetComponent<Text>().text = players[currentPlayerIndex].GetComponent<Player>().ToString();
         }
 
         // For testing
