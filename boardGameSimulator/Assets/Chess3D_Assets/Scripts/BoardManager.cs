@@ -40,17 +40,15 @@ public class BoardManager : MonoBehaviour
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     private string currentPlayer;
-    private string lastPlayer;
 
     bool gameOver = false;
 
     public int[] EnPassantMove { set; get; }
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         currentPlayer = Player1;
-        lastPlayer = Player2;
         audio_source = GetComponent<AudioSource>();
         Instance = this;
         SpawnAllChessmans();
@@ -192,11 +190,9 @@ public class BoardManager : MonoBehaviour
             isWhiteTurn = !isWhiteTurn;
             if (isWhiteTurn)
             {
-                lastPlayer = currentPlayer;
                 currentPlayer = Player2;
             } else
             {
-                lastPlayer = currentPlayer;
                 currentPlayer = Player1;
             }
             if (Eat)
@@ -338,14 +334,26 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    public void OnButtonClick()
+    public void Winner1()
     {
         gameOver = true;
 
         GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = lastPlayer + " is the winner";
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = Player1 + " is the winner";
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+    }
+
+    public void Winner2()
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = Player2 + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
     }
 }
 
