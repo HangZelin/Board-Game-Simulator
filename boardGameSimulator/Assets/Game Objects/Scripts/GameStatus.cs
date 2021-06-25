@@ -1,35 +1,48 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStatus : MonoBehaviour, ISaveable
 {
-    // If change this part, change SaveLoadManager.cs also.
-    public const string TwoDKey = "2D";
-    public const string CardKey = "Cd";
-    public const string ThreeDKey = "3D";
 
-    protected static string typeOfGame = TwoDKey;
-    protected static string nameOfGame = "Board Game";
-    protected static int numOfPlayers = 2;
-    protected static List<string> nameOfPlayers = new List<string>();
+    [SerializeField] static GameType typeOfGame = GameType.TwoD;
+    public static GameType TypeOfGame 
+    {
+        get { return typeOfGame; }
+        set
+        {
+            switch (value)
+            {
+                case GameType.TwoD: typeOfGame = GameType.TwoD; break;
+                case GameType.Card: typeOfGame = GameType.Card; break;
+                case GameType.ThreeD: typeOfGame = GameType.ThreeD; break;
+                default: Debug.LogError("Invalid Type of Game!"); break;
+            }
+        }
+    }
+
+    [SerializeField] static string nameOfGame = "Board Game";
+
+    [SerializeField] static int numOfPlayers = 2;
+    public static int NumOfPlayers
+    {
+        get { return numOfPlayers; }
+        set
+        {
+            if (value < 1)
+            {
+                Debug.Log("Invalid Input!");
+                return;
+            }
+            numOfPlayers = value;
+        }
+    }
+
+    [SerializeField] static List<string> nameOfPlayers = new List<string>();
 
     public static bool isNewGame;
 
     // Setters
- 
-    public static void SetTypeOfGame(string s)
-    {
-        switch (s)
-        {
-            case TwoDKey: typeOfGame = TwoDKey; break;
-            case ThreeDKey: typeOfGame = ThreeDKey; break;
-            case CardKey: typeOfGame = CardKey; break;
-            default:
-                Debug.LogError("Invalid Type of Game!");
-                break;
-        }
-    }
 
     public static void SetNameOfGame(string name)
     {
@@ -38,16 +51,6 @@ public class GameStatus : MonoBehaviour, ISaveable
 
         nameOfGame = name;
         isNewGame = true;
-    }
-
-    public static void SetNumOfPlayers(int num)
-    {
-        if (num < 1)
-        {
-            Debug.Log("Invalid Input!");
-            return;
-        }
-        numOfPlayers = num;
     }
 
     public static void SetNameOfPlayer(int index, string name)
@@ -83,19 +86,9 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     // Getters
 
-    public static string GetTypeOfGame()
-    {
-        return typeOfGame;
-    }
-
     public static string GetNameOfGame()
     {
         return nameOfGame;
-    }
-
-    public static int GetNumOfPlayers()
-    {
-        return numOfPlayers;
     }
 
     public static List<string> GetNameOfPlayers()
@@ -142,7 +135,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static void ResetStatus()
     {
-        typeOfGame = TwoDKey;
+        typeOfGame = GameType.TwoD;
         nameOfGame = "Board Game";
         numOfPlayers = 2;
         nameOfPlayers = new List<string>();
@@ -152,7 +145,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public void PopulateSaveData(SaveData sd)
     {
-        sd.typeOfGame = GameStatus.typeOfGame;
+        sd.typeOfGame = GameStatus.typeOfGame.ToString();
         sd.nameOfGame = GameStatus.nameOfGame;
         sd.numOfPlayers = GameStatus.numOfPlayers;
         sd.nameOfPlayers = new List<string>(GameStatus.nameOfPlayers);
@@ -160,9 +153,11 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public void LoadFromSaveData(SaveData sd)
     {
-        GameStatus.typeOfGame = sd.typeOfGame;
+        Enum.TryParse<GameType>(sd.typeOfGame, out GameStatus.typeOfGame);
         GameStatus.nameOfGame = sd.nameOfGame;
         GameStatus.numOfPlayers = sd.numOfPlayers;
         GameStatus.nameOfPlayers = new List<string>(sd.nameOfPlayers);
     }
 }
+
+public enum GameType { TwoD, Card, ThreeD};

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +9,8 @@ namespace UNO
     {
         [SerializeField] GameObject Canvas;
 
-        [SerializeField] GameObject deck;
+        [SerializeField] GameObject deckPrefab;
+        GameObject deck;
         Deck deckScript;
 
         [SerializeField] GameObject currentHandPrefab;
@@ -41,18 +41,17 @@ namespace UNO
 
             TurnStartHandler += SetHand;
 
-            // Initialize deck
+            // Initialize deck, discard, currenthand;
+            deck = Instantiate(deckPrefab, Canvas.transform);
+            discard = Instantiate(discardPrefab, Canvas.transform);
+            currentHand = Instantiate(currentHandPrefab, Canvas.transform);
 
             deckScript = deck.GetComponent<Deck>();
-            deckScript.Initialize();
+            deckScript.Initialize(discard);
 
-            // Initialize current hand
-            currentHand = Instantiate(currentHandPrefab, Canvas.transform);
+            discard.GetComponent<Discard>().Initialize(currentHand, deck);
+
             currentHand.GetComponent<CurrentHand>().Initialize();
-
-            // Initialize Discard
-            discard = Instantiate(discardPrefab, Canvas.transform);
-            discard.GetComponent<Discard>().Initialize(currentHand);
 
             // Initialize hands
 
@@ -157,10 +156,14 @@ namespace UNO
         // For testing
         public void DealCard()
         {
-            List<GameObject> list = DealCards(1, currentHand);
-            foreach (GameObject go in list)
-                if (go.GetComponent<Card>() != null)
-                    go.GetComponent<Card>().IsFace = false;
+            List<GameObject> list = currentHand.GetComponent<CurrentHand>().Cards;
+            list.AddRange(DealCards(1, currentHand));
+            currentHand.GetComponent<CurrentHand>().Cards = list;
+        }
+
+        public void ToggleDirection()
+        {
+            antiClockWise = !antiClockWise;
         }
     }
 

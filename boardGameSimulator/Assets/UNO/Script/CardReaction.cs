@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace UNO
 {
@@ -14,6 +13,7 @@ namespace UNO
 
         public void Initialize(GameObject currentHand)
         {
+            isHighlight = false;
             this.currentHand = currentHand;
             siblingsIndex = transform.GetSiblingIndex();
         }
@@ -22,8 +22,6 @@ namespace UNO
         {
             if (!isHighlight)
             {
-                Debug.Log(currentHand.GetComponent<CurrentHand>().Cards.Count);
-
                 currentHand.GetComponent<CurrentHand>().HighlightedCard = gameObject;
                 Vector2 v = GetComponent<RectTransform>().anchoredPosition;
                 v.y += this.y;

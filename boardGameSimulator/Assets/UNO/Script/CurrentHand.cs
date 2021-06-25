@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,16 +49,23 @@ namespace UNO
 
         void PlaceCards()
         {
-            float x = -((cards.Count - 1) / 2f) * 20f;
+            float width = GetComponent<RectTransform>().rect.width;
+            float cardWidth = cards[0].GetComponent<RectTransform>().rect.width;
+
+            float d = cards.Count <= 1 ? 0f : (width - cardWidth) / cards.Count - 1;
+            d = d > cardWidth + 10f ? cardWidth + 10f : d;
+
+            float x = -(cardWidth + ((cards.Count - 1) * d)) / 2f + 0.5f * cardWidth;
             float y = 10f;
             foreach (GameObject card in cards)
             {
+                // Initialize Card Reaction
+                card.GetComponent<CardReaction>().enabled = true;
+                card.GetComponent<CardReaction>().Initialize(gameObject);
+
                 card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
                 card.GetComponent<RectTransform>().rotation = Quaternion.identity;
-                x += 20f;
-
-                // Initialize Card Reaction
-                card.GetComponent<CardReaction>().Initialize(gameObject);
+                x += d;
             }
         }
 
@@ -73,7 +79,6 @@ namespace UNO
 
         public void PlayCard()
         {
-            Debug.Log(cards.Count);
             cards.Remove(highlightedCard);
             highlightedCard = null;
             PlaceCards();

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +7,8 @@ namespace UNO
     public class Deck : MonoBehaviour
     {
         [SerializeField] GameObject unused;
+        [SerializeField] GameObject discard;
+
         List<GameObject> cards;
         public List<GameObject> Cards 
         {
@@ -15,7 +16,11 @@ namespace UNO
             set
             {
                 if (value != null && value[0].GetComponent<Card>() != null)
+                {
                     cards = value;
+                    foreach (GameObject card in value)
+                        card.transform.SetParent(unused.transform);
+                }
             }
         }
 
@@ -26,8 +31,11 @@ namespace UNO
         [SerializeField] GameObject draw4Card;
         [SerializeField] GameObject wildCard;
 
-        public void Initialize()
+        public void Initialize(GameObject discard)
         {
+            unused = GameObject.Find("Canvas/Unused");
+            this.discard = discard;
+
             cards = new List<GameObject>();
 
             // Add cards to the deck
@@ -98,8 +106,12 @@ namespace UNO
         {
             if (num > cards.Count)
             {
-                Debug.Log("Draw cards from an empty deck.");
-                return new List<GameObject>();
+                discard.GetComponent<Discard>().PileToDeck();
+                if (num > cards.Count)
+                {
+                    Debug.LogError("No more cards to draw.");
+                    return null;
+                }
             }
             List<GameObject> drawCards = new List<GameObject>();
             for (int i = 0; i < num; i++)

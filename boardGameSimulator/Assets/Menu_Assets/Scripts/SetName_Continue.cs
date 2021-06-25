@@ -31,7 +31,7 @@ public class SetName_Continue : MonoBehaviour
     public static void ChangeName()
     {
         int i = 1;
-        while (i <= GameStatus.GetNumOfPlayers())
+        while (i <= GameStatus.NumOfPlayers)
         {
             // The path of an input
             string s = "Canvas/Player" + i + "_Name/InputField/Placeholder/Text";

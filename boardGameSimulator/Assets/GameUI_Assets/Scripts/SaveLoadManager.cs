@@ -27,9 +27,9 @@ public class SaveLoadManager : MonoBehaviour
         GameObject.Find("Controller").GetComponent<Game>().PopulateSaveData(sd);
 
         int i = LastNumOfSave() + 1;
-        switch (GameStatus.GetTypeOfGame())
+        switch (GameStatus.TypeOfGame)
         {
-            case "2D":
+            case GameType.TwoD:
                 if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
                 {
                     AddNumOfSave();
