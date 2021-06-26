@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MovePlate : MonoBehaviour
 {
-    public GameObject controller;
+    public GameObject controller, stepDialog;
 
     GameObject reference = null;
 
@@ -26,6 +27,11 @@ public class MovePlate : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+   
+    }
+
     public void OnMouseUp()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
@@ -33,10 +39,18 @@ public class MovePlate : MonoBehaviour
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(BoardX, BoardY);
-
-            if (cp.name == "white_king") controller.GetComponent<Game>().Winner(GameStatus.GetNameOfPlayer(2));
-            if (cp.name == "black_king") controller.GetComponent<Game>().Winner(GameStatus.GetNameOfPlayer(1));
-
+                /*if (!stepDialog.activeInHierarchy)
+                {
+                    Debug.Log("Toggled!");
+                    stepDialog.SetActive(true);
+                    Time.timeScale = 0f;
+                }
+                else
+                {
+                Debug.Log("Toggledoff!");
+                    stepDialog.SetActive(false);
+                    Time.timeScale = 1f;
+                }*/
             Destroy(cp);
         } 
 

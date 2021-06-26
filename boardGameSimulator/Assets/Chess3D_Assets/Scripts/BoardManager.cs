@@ -39,8 +39,6 @@ public class BoardManager : MonoBehaviour
     private string Player1 = GameStatus.GetNameOfPlayer(1);
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
-    private string currentPlayer;
-
     bool gameOver = false;
 
     public int[] EnPassantMove { set; get; }
@@ -48,7 +46,6 @@ public class BoardManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        currentPlayer = Player1;
         audio_source = GetComponent<AudioSource>();
         Instance = this;
         SpawnAllChessmans();
@@ -135,14 +132,6 @@ public class BoardManager : MonoBehaviour
             if (c != null && c.isWhite != isWhiteTurn)
             {
                 // Capture a piece
-
-                if (c.GetType() == typeof(King))
-                {
-                    // End the game
-                    gameOver = true;
-                    EndGame();
-                    return;
-                }
                 Eat = true;
                 activeChessman.Remove(c.gameObject);
                 Destroy(c.gameObject);
@@ -188,13 +177,6 @@ public class BoardManager : MonoBehaviour
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
             isWhiteTurn = !isWhiteTurn;
-            if (isWhiteTurn)
-            {
-                currentPlayer = Player2;
-            } else
-            {
-                currentPlayer = Player1;
-            }
             if (Eat)
             {
                 audio_source.PlayOneShot(Sound_Eat, 0.7F);
@@ -315,24 +297,6 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void EndGame()
-    {
-        String playerWinner = Player1;
-        if (isWhiteTurn)
-        {
-            playerWinner = Player1;
-            Debug.Log("White wins");
-        }
-        else {
-            playerWinner = Player2;
-            Debug.Log("Black wins");
-        }
-        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = playerWinner + " is the winner";
-        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
-
-
-    }
 
     public void Winner1()
     {

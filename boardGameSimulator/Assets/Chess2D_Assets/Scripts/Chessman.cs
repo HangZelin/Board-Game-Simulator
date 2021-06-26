@@ -7,6 +7,8 @@ public class Chessman : MonoBehaviour
     public GameObject controller;
     public GameObject movePlate; //The new Location.
 
+    public float aspectRatio = Screen.width *1.0f/ Screen.height;
+
     //Positions
     private int xBoard = -1;
     private int yBoard = -1;
@@ -58,18 +60,23 @@ public class Chessman : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+
+    }
+
     public void SetCoords() 
     {
         float x = xBoard;
         float y = yBoard;
 
-        x *= 0.66f;
-        y *= 0.66f;
+        x = x * 0.66f;
+        y = y * 0.66f;
 
         x -= 2.3f;
         y -= 2.3f;
 
-        this.transform.position = new Vector3(x, y, -1.0f);//In front of the board. 
+        this.transform.position = new Vector3( x, y, -1.0f);//In front of the board. 
     }
 
     public int GetXBoard() {
@@ -262,7 +269,7 @@ public class Chessman : MonoBehaviour
         x -= 2.3f;
         y -= 2.3f;
 
-        GameObject mp = Instantiate(movePlate, new Vector3(x, y, -3.0f), Quaternion.identity);
+        GameObject mp = Instantiate(movePlate, new Vector3( x,  y, -3.0f), Quaternion.identity);
 
         //Keep Track of everything in the script.
         MovePlate mpScript = mp.GetComponent<MovePlate>();

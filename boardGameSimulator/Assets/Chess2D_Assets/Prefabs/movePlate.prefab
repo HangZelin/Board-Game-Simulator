@@ -124,6 +124,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
+  stepDialog: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
+    type: 3}
   attack: 0
 --- !u!82 &7112988206061486304
 AudioSource:
