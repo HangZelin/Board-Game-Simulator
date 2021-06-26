@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Games/Chess (3D).unity
     guid: 890249be201c6bc4ebe76ddbaedc24a7
+  - enabled: 1
+    path: Assets/Scenes/Games/UNO.unity
+    guid: 8a37197973c379d43b7d8efd51b1192d
   m_configObjects: {}

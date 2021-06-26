@@ -1,10 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UNO
 {
     public class Hand : MonoBehaviour, IHand
     {
+        [SerializeField] GameObject playerText;
+        [SerializeField] GameObject playerTextLeft;
+        [SerializeField] GameObject playerTextRight;
+
+        Text playerName;
+        public string PlayerName
+        {
+            get { return playerName.text; }
+            set { playerName.text = value; }
+        }
+
         [SerializeField] int num; // Starts from 0
         List<GameObject> cards;
         public List<GameObject> Cards 
@@ -84,13 +96,28 @@ namespace UNO
             }
         }
 
-        static void SetPosition(GameObject Hand, Position position) 
+        static void SetPosition(GameObject hand, Position position) 
         {
-            RectTransform rect = Hand.GetComponent<RectTransform>();
+            RectTransform rect = hand.GetComponent<RectTransform>();
             rect.anchorMin = position.anchor;
             rect.anchorMax = position.anchor;
             rect.rotation = position.rotation;
             rect.anchoredPosition = position.anchoredPosition;
+
+            hand.GetComponent<Hand>().SetTextPosition(rect.rotation.eulerAngles.z);
+        }
+
+        // Set text position
+
+        void SetTextPosition(float zRotation)
+        {
+            switch (zRotation)
+            {
+                case 90f: playerTextRight.SetActive(true); playerName = playerTextRight.GetComponent<Text>(); break;
+                case 180f: playerText.SetActive(true); playerName = playerText.GetComponent<Text>(); break;
+                case 270f: playerTextLeft.SetActive(true); playerName = playerTextLeft.GetComponent<Text>(); break;
+                default: playerText.SetActive(true); playerName = playerText.GetComponent<Text>();break;
+            }
         }
 
         // Set cards positions

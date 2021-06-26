@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UNO
 {
@@ -10,6 +11,8 @@ namespace UNO
         GameObject currentHand;
 
         List<GameObject> cards;
+
+        [SerializeField] AudioSource playCard;
 
         public void Initialize(GameObject currentHand, GameObject deck)
         {
@@ -40,12 +43,15 @@ namespace UNO
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            playCard.Play();   
             GameObject card = currentHand.GetComponent<CurrentHand>().HighlightedCard;
             if (card != null)
             {
                 CardToPile(card);
                 currentHand.GetComponent<CurrentHand>().PlayCard();
             }
+
+            GetComponent<Outline>().enabled = false;
         }
 
         public override string ToString()

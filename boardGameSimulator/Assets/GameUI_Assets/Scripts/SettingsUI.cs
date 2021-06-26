@@ -1,29 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class SettingsUI : MonoBehaviour
 {
-    public GameObject settingsTab;
+    [SerializeField] GameObject settingsTab;
 
-    public GameObject logBar;
-    Text logBarText;
-    Text tempText;
+    [SerializeField] GameObject logBar;
+    [SerializeField] TMP_Text logText;
+    [SerializeField] TMP_Text tempText;
     public List<string> logList;
     string lastLogLine = "";
-
-    private void Start()
-    {
-        logBarText = logBar.GetComponent<Text>();
-        tempText = logBar.transform.Find("Temp").gameObject.GetComponent<Text>();
-    }
 
     // SettingsBar Methods
 
     public void ActivateUI()
     {
+        settingsTab.transform.SetAsLastSibling();
         settingsTab.SetActive(true);
     }
 
@@ -51,22 +46,19 @@ public class SettingsUI : MonoBehaviour
                 break;
             case 1:
                 if (lastLogLine == "")
-                    logBarText.text = log;
+                    logText.text = log;
                 else
-                    logBarText.text = "<color=#c0c0c0ff>" + lastLogLine + "</color>\n" + log;
+                    logText.text = "<color=#c0c0c0ff>" + lastLogLine + "</color>\n" + log;
 
                 lastLogLine = log;
                 break;
             case 2:
                 if (!isExceeded)
-                    logBarText.text = log;
+                    logText.text = log;
                 else
-                    logBarText.text = twoLineLog.Substring(0, twoLineLog.Length - 2) + "...";
+                    logText.text = twoLineLog.Substring(0, twoLineLog.Length - 2) + "...";
 
-                Canvas.ForceUpdateCanvases();
-                int startIndex = logBarText.cachedTextGenerator.lines[1].startCharIdx;
-                int endIndex = logBarText.text.Length;
-                lastLogLine = logBarText.text.Substring(startIndex, endIndex - startIndex);
+                lastLogLine = logText.textInfo.lineInfo[1].ToString();
                 break;
         }
     }
@@ -78,13 +70,13 @@ public class SettingsUI : MonoBehaviour
         if (log == "") return 0;
 
         tempText.text = log;
-        Canvas.ForceUpdateCanvases();
-        if (tempText.cachedTextGenerator.lineCount == 1)
-            return 1;
 
-        int numOfChar = tempText.cachedTextGenerator.characterCountVisible;
-        isExceeded = numOfChar != log.ToCharArray().Length;
-        if (isExceeded) twoLineLog = log.Substring(0, numOfChar);
+        Canvas.ForceUpdateCanvases(); 
+        if (tempText.textInfo.lineCount == 1)
+            return 1;
+        Debug.Log(tempText.textInfo.lineCount);
+        isExceeded = tempText.maxVisibleCharacters != log.ToCharArray().Length;
+        if (isExceeded) twoLineLog = log.Substring(0, tempText.maxVisibleCharacters);
         return 2;
     }
 }

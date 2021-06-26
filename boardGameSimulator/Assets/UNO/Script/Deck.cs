@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UNO 
 {
@@ -31,13 +32,18 @@ namespace UNO
         [SerializeField] GameObject draw4Card;
         [SerializeField] GameObject wildCard;
 
-        public void Initialize(GameObject discard)
+        [SerializeField] Button drawACardButton;
+        [SerializeField] GameObject Note;
+
+        [SerializeField] AudioSource drawCardAudio;
+
+        public void Initialize(GameObject discard, Action onclick)
         {
             unused = GameObject.Find("Canvas/Unused");
             this.discard = discard;
 
             cards = new List<GameObject>();
-
+            
             // Add cards to the deck
 
             // Color cards
@@ -99,7 +105,7 @@ namespace UNO
 
             Shuffle(cards);
 
-            Debug.Log(cards.Count);
+            drawACardButton.onClick.AddListener( delegate { onclick(); } );
         }
 
         public List<GameObject> DrawCards(int num, Transform transform)
@@ -107,6 +113,8 @@ namespace UNO
             if (num > cards.Count)
             {
                 discard.GetComponent<Discard>().PileToDeck();
+                Shuffle(Cards);
+
                 if (num > cards.Count)
                 {
                     Debug.LogError("No more cards to draw.");
@@ -120,6 +128,9 @@ namespace UNO
                 drawCards.Add(cards[i]);
             }
             cards.RemoveRange(0, num);
+
+            drawCardAudio.Play();
+
             return drawCards; 
         }
 
@@ -136,6 +147,11 @@ namespace UNO
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+
+        public void DeactiveNote()
+        {
+            Note.SetActive(false);
         }
     }
 

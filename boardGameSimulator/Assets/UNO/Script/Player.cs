@@ -13,6 +13,7 @@ namespace UNO
         public GameObject Hand { get { return hand; }
             set {
                 if (value.GetComponent<Hand>() != null) hand = value;
+                hand.GetComponent<Hand>().PlayerName = name;
             } 
         }
         GameObject currentHand;
@@ -37,6 +38,9 @@ namespace UNO
 
         public void PlaceCards()
         {
+            if (isCurrentPlayer) currentHand.GetComponent<CurrentHand>().PlayerName = name;
+            if (cards.Count == 0) return;
+
             if (cards[0].GetComponent<Card>().IsFace != isCurrentPlayer)
                 foreach (GameObject card in cards)
                     card.GetComponent<Card>().IsFace = isCurrentPlayer;
@@ -71,6 +75,7 @@ namespace UNO
         private void OnDisable()
         {
             Game.TurnStartHandler -= PlaceCards;
+            Game.TurnEndHandler -= GetCardsFromHand;
         }
 
         public override string ToString()

@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 namespace UNO
 {
-
     public class Game : MonoBehaviour
     {
         [SerializeField] GameObject Canvas;
+        [SerializeField] GameObject gameUI;
+        SettingsUI uiScript;
 
         [SerializeField] GameObject deckPrefab;
         GameObject deck;
@@ -25,9 +26,20 @@ namespace UNO
         [SerializeField] GameObject discardPrefab;
         GameObject discard;
 
-        public int numOfPlayer = 2;
-        public bool antiClockWise = true;
+        int numOfPlayer;
         int currentPlayerIndex;
+
+        [SerializeField] GameObject directionIcons;
+        bool antiClockWise;
+        public bool AntiClockWise
+        {
+            get { return antiClockWise; }
+            set 
+            { 
+                directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(!antiClockWise);
+                antiClockWise = value;
+            }
+        }
 
         public delegate void TurnStart();
         public static event TurnStart TurnStartHandler;
@@ -37,6 +49,10 @@ namespace UNO
 
         private void Start()
         {
+            Screen.orientation = ScreenOrientation.Landscape;
+            numOfPlayer = GameStatus.NumOfPlayers;
+            uiScript = gameUI.GetComponent<SettingsUI>();
+
             // Initialize Turn Start
 
             TurnStartHandler += SetHand;
@@ -47,11 +63,11 @@ namespace UNO
             currentHand = Instantiate(currentHandPrefab, Canvas.transform);
 
             deckScript = deck.GetComponent<Deck>();
-            deckScript.Initialize(discard);
+            deckScript.Initialize(discard, DealCard);
 
             discard.GetComponent<Discard>().Initialize(currentHand, deck);
 
-            currentHand.GetComponent<CurrentHand>().Initialize();
+            currentHand.GetComponent<CurrentHand>().Initialize(discard);
 
             // Initialize hands
 
@@ -70,11 +86,12 @@ namespace UNO
             for(int i = 0; i < numOfPlayer; i++)
             {
                 GameObject a_Player = Instantiate(player, playersObj.transform);
-                a_Player.GetComponent<Player>().Initialize("Player" + (i + 1), currentHand);
+                a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand);
                 players.Add(a_Player);
             }
 
             currentPlayerIndex = 0;
+            AntiClockWise = true;
 
             // Deal 7 cards to each player
 
@@ -88,6 +105,7 @@ namespace UNO
         private void OnDisable()
         {
             TurnStartHandler -= SetHand;
+            Screen.orientation = ScreenOrientation.Portrait;
         }
 
         private void OnTurnStart()
@@ -149,8 +167,8 @@ namespace UNO
 
             // For testing. Set current hand player name
 
-            currentHand.transform.Find("PlayerName").gameObject
-                .GetComponent<Text>().text = players[currentPlayerIndex].GetComponent<Player>().ToString();
+/*            currentHand.transform.Find("PlayerName").gameObject
+                .GetComponent<Text>().text = players[currentPlayerIndex].GetComponent<Player>().ToString();*/
         }
 
         // For testing
@@ -163,7 +181,8 @@ namespace UNO
 
         public void ToggleDirection()
         {
-            antiClockWise = !antiClockWise;
+            AntiClockWise = !AntiClockWise;
+            uiScript.AddLog("Direction: " + (antiClockWise ? "anticlockwise" : "clockwise"));
         }
     }
 
@@ -178,7 +197,6 @@ namespace UNO
         public void GiveCards(GameObject player, out List<GameObject> cards);
         public List<GameObject> Cards { get; set; }
     } 
-
 }
 
 

@@ -1,13 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UNO
 {
    public class CurrentHand : MonoBehaviour, IHand
     {
-        List<GameObject> cards;
+        GameObject discard;
 
-        [SerializeField] bool hasHighLight;
+        [SerializeField] Text playerName;
+        public string PlayerName
+        {
+            get { return playerName.text; }
+            set { playerName.text = value; }
+        }
+
+        List<GameObject> cards;
 
         GameObject highlightedCard;
         public GameObject HighlightedCard
@@ -17,15 +25,15 @@ namespace UNO
             {
                 if (value == null)
                 {
-                    hasHighLight = false;
                     highlightedCard = null;
+                    discard.GetComponent<Outline>().enabled = false;
                 }
                 else
                 {
-                    hasHighLight = true;
                     if (highlightedCard != null)
                         highlightedCard.GetComponent<CardReaction>().PutBack();
                     highlightedCard = value;
+                    discard.GetComponent<Outline>().enabled = true;
                 }  
             }
         }
@@ -41,14 +49,18 @@ namespace UNO
             }
         }
 
-        public void Initialize()
+        public void Initialize(GameObject discard)
         {
+            this.discard = discard;
+
             cards = new List<GameObject>();
             name = "CurrentHand";
         }
 
         void PlaceCards()
         {
+            if (cards.Count == 0) return;
+
             float width = GetComponent<RectTransform>().rect.width;
             float cardWidth = cards[0].GetComponent<RectTransform>().rect.width;
 

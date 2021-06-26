@@ -39,4 +39,12 @@ public class SceneLoader : MonoBehaviour
         if (backToGame != null)
             backToGame();
     }
+
+    public static void SetScreenOrientation(bool isPortrait)
+    {
+        if (isPortrait)
+            Screen.orientation = ScreenOrientation.Portrait;
+        else
+            Screen.orientation = ScreenOrientation.Landscape;
+    }
 }
