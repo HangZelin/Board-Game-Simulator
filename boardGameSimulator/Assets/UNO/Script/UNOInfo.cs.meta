@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 29ac951aec6b3bb43ad71dfa313e9306
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - numCard: {fileID: 7344225455025620889, guid: bc38ade927d55974bbbc2cf48d43bb94,
+      type: 3}
+  - skipCard: {fileID: 309158461368991593, guid: c1caad2c4c4a7c74ea3f087b98bb68b1,
+      type: 3}
+  - reverseCard: {fileID: 4605752352739897643, guid: b92f04895d052a347a16c9baa990dbff,
+      type: 3}
+  - draw2Card: {fileID: 6494467746075832440, guid: 3019ca48b6e09a344b7854a4cd9c3750,
+      type: 3}
+  - draw4Card: {fileID: 4008887952978483278, guid: 0af85d54f160fa04f8fa04c11c206be1,
+      type: 3}
+  - wildCard: {fileID: 7887134693909958646, guid: 3fc3beb033048184b9fea171baa16439,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

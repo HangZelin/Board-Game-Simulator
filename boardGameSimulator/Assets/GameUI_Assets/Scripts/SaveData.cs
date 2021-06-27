@@ -10,11 +10,16 @@ public class SaveData : ISaveData
     public int numOfPlayers;
     public List<string> nameOfPlayers;
     public string dateTime;
-
-    // 2D fields
     public int playerInTurn;
     public int numOfTurn;
+    public bool antiClockwise;
+    public bool useRules;
+
+    // 2D fields
     public List<MarkerPosition> markerPositions;
+
+    // Card fields
+    public List<PlayerCards> playerCards;
 
     public string ToJson()
     {
@@ -35,6 +40,13 @@ public struct MarkerPosition
     public string marker;
 }
 
+[Serializable]
+public struct PlayerCards
+{
+    [SerializeField] public string playerName;
+    [SerializeField] public List<int> listCounts;
+    [SerializeField] public List<string> cards;
+}
 
 // 2D Board Games Save Data
 [Serializable]

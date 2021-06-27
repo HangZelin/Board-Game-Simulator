@@ -7,6 +7,7 @@ namespace UNO
    public class CurrentHand : MonoBehaviour, IHand
     {
         GameObject discard;
+        GameObject deck;
 
         [SerializeField] Text playerName;
         public string PlayerName
@@ -49,9 +50,10 @@ namespace UNO
             }
         }
 
-        public void Initialize(GameObject discard)
+        public void Initialize(GameObject discard, GameObject deck)
         {
             this.discard = discard;
+            this.deck = deck;
 
             cards = new List<GameObject>();
             name = "CurrentHand";
@@ -94,6 +96,15 @@ namespace UNO
             cards.Remove(highlightedCard);
             highlightedCard = null;
             PlaceCards();
+        }
+
+        public void SkipTurn()
+        {
+            if (highlightedCard != null) 
+                highlightedCard.GetComponent<CardReaction>().PutBack();
+            foreach (GameObject card in cards)
+                card.GetComponent<CardReaction>().enabled = false;
+            deck.GetComponent<Deck>().Interactable = false;
         }
     }
 }

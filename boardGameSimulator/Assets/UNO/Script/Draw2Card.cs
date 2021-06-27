@@ -38,6 +38,9 @@ namespace UNO
             }
         }
 
+        CardInfo a_CardInfo;
+        public CardInfo cardInfo { get { return a_CardInfo; } }
+
         public void Initialize(CardColor color, bool isFace)
         {
             this.color = color;
@@ -52,6 +55,10 @@ namespace UNO
             GetComponent<Image>().sprite = cardFace;
 
             IsFace = isFace;
+
+            a_CardInfo.cardType = CardType.draw2;
+            a_CardInfo.cardColor = color;
+            a_CardInfo.num = -1;
         }
 
         public GameObject Copy(Transform transform)

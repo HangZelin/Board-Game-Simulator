@@ -46,8 +46,13 @@ public class SavesDelete : MonoBehaviour
                         Debug.LogError("Failed to delete file " + s + ": " + e);
                     }
                 }
-                SceneManager.UnloadSceneAsync("IngameLoad");
-                SceneManager.LoadScene("IngameLoad", LoadSceneMode.Additive);
+                if (SceneManager.GetActiveScene().name == "Load")
+                    SceneManager.LoadScene("Load");
+                else
+                {
+                    SceneManager.UnloadSceneAsync("IngameLoad");
+                    SceneManager.LoadScene("IngameLoad", LoadSceneMode.Additive);
+                }
             }
         }
         else

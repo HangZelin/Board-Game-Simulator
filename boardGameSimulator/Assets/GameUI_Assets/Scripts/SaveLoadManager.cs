@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,35 +6,50 @@ using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour
 {
-    // If change this part, change GameStatus.cs also.
-    public const string TwoDKey = "2D";
-    public const string CardKey = "Cd";
-    public const string ThreeDKey = "3D";
-
-    const string lastSaveKey = "LastSaveKey";
+    const string lastSaveKey = "_LastSaveKey";
     private GameStatus gs;
 
     public static SaveData tempSD;
 
-    void Start()
+    public delegate void OnSave(SaveData sd);
+    public static OnSave OnSaveHandler;
+
+    public delegate void OnLoad(SaveData sd);
+    public static OnLoad OnLoadHandler;
+
+    void OnEnable()
     {
         gs = gameObject.GetComponent<GameStatus>();
+        OnSaveHandler += gs.PopulateSaveData;
+    }
+
+    private void OnDisable()
+    {
+        OnSaveHandler -= gs.PopulateSaveData;
     }
 
     public void Save()
     {
         SaveData sd = new SaveData();
-        gs.PopulateSaveData(sd);
-        GameObject.Find("Controller").GetComponent<Game>().PopulateSaveData(sd);
+        if (OnSaveHandler != null) OnSaveHandler(sd);
+        if (GameStatus.GetNameOfGame() == "Chess (2D)")
+            GameObject.Find("Controller").GetComponent<Game>().PopulateSaveData(sd);
 
-        int i = LastNumOfSave() + 1;
+        int i = LastNumOfSave(GameStatus.TypeOfGame) + 1;
         switch (GameStatus.TypeOfGame)
         {
             case GameType.TwoD:
                 if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
                 {
-                    AddNumOfSave();
+                    AddNumOfSave(GameType.TwoD);
                     Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
+                }
+                break;
+            case GameType.Card:
+                if (FileManager.WriteToFile("Card_SaveData" + i + ".dat", sd.ToJson()))
+                {
+                    AddNumOfSave(GameType.Card);
+                    Debug.Log("Save successful in Card_SaveData" + i + ".dat");
                 }
                 break;
         }
@@ -44,7 +60,6 @@ public class SaveLoadManager : MonoBehaviour
         {
             SaveData sd = new SaveData();
             sd.LoadFromJson(json);
-
             gameStatus.LoadFromSaveData(sd);
             tempSD = sd;
         }
@@ -52,36 +67,31 @@ public class SaveLoadManager : MonoBehaviour
 
     // Get Number of save
 
-    public static int LastNumOfSave()
+    public static int LastNumOfSave(GameType type)
     {
-        int i = PlayerPrefs.GetInt(lastSaveKey, -1);
+        int i = PlayerPrefs.GetInt(type + lastSaveKey, -1);
         if (i == -1)
         {
             i = 0;
-            PlayerPrefs.SetInt(lastSaveKey, 0);
+            PlayerPrefs.SetInt(type + lastSaveKey, 0);
         }
         return i;
     }
     
     // Add 1
-    public static void AddNumOfSave()
+    public static void AddNumOfSave(GameType type)
     {
-        int i = PlayerPrefs.GetInt(lastSaveKey, 0);
-        PlayerPrefs.SetInt(lastSaveKey, i + 1);
-    }
-
-    // Sub 1
-    public static void SubNumOfSave()
-    {
-        int i = PlayerPrefs.GetInt(lastSaveKey, 0);
-        if (i > 0)
-        {
-            PlayerPrefs.SetInt(lastSaveKey, i - 1);
-        }
+        int i = PlayerPrefs.GetInt(type + lastSaveKey, 0);
+        PlayerPrefs.SetInt(type + lastSaveKey, i + 1);
     }
 
     public static void ResetNumOfSave()
     {
-        PlayerPrefs.SetInt(lastSaveKey, 0);
+        foreach (GameType type in Enum.GetValues(typeof(GameType)))
+            PlayerPrefs.SetInt(type + lastSaveKey, 0);
     }
 }
+
+
+
+

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -14,11 +13,15 @@ public class SettingsUI : MonoBehaviour
     public List<string> logList;
     string lastLogLine = "";
 
+    public void Initialize()
+    {
+        settingsTab.transform.SetAsLastSibling();
+    }
+
     // SettingsBar Methods
 
     public void ActivateUI()
     {
-        settingsTab.transform.SetAsLastSibling();
         settingsTab.SetActive(true);
     }
 
@@ -78,6 +81,12 @@ public class SettingsUI : MonoBehaviour
         isExceeded = tempText.maxVisibleCharacters != log.ToCharArray().Length;
         if (isExceeded) twoLineLog = log.Substring(0, tempText.maxVisibleCharacters);
         return 2;
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name == "UNO" && Application.platform == RuntimePlatform.Android && (Input.GetKeyDown(KeyCode.Escape)))
+            settingsTab.SetActive(true);
     }
 }
 
