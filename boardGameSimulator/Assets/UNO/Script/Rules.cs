@@ -33,9 +33,15 @@ namespace UNO
             this.gameScript = gameScript;
             directionIcons.GetComponent<DirectionIcons>().Interactable = false;
 
-            List<GameObject> firstCard = deck.GetComponent<Deck>().DrawCards(1, gameObject.transform);
-            discard.GetComponent<Discard>().CardToPile(firstCard[0]);
-            lastCardInfo = firstCard[0].GetComponent<Card>().cardInfo;
+            List<GameObject> discardCards = discard.GetComponent<Discard>().Cards;
+            if (GameStatus.isNewGame || discardCards.Count == 0)
+            {
+                List<GameObject> firstCard = deck.GetComponent<Deck>().DrawCards(1, gameObject.transform);
+                discard.GetComponent<Discard>().CardToPile(firstCard[0]);
+                lastCardInfo = firstCard[0].GetComponent<Card>().cardInfo;
+            }
+            else
+                lastCardInfo = discardCards[discardCards.Count - 1].GetComponent<Card>().cardInfo;
 
             unoButton.transform.SetAsLastSibling();
             unoButtonClicked = false;

@@ -17,6 +17,9 @@ namespace NamePage
         [SerializeField] GameObject continueButtonPrefab;
         GameObject continueButton;
 
+        [SerializeField] GameObject ruleToggleBar;
+        [SerializeField] Toggle ruleToggle;
+
         [SerializeField] Vector2 initialPosition;
         [SerializeField] float nameBarHeight;
 
@@ -41,6 +44,16 @@ namespace NamePage
                 pos.y -= nameBarHeight;
             }
 
+            // Initialize rule toggle
+            if (GameStatus.hasRules)
+            {
+                ruleToggleBar.SetActive(true);
+                ruleToggleBar.GetComponent<RectTransform>().anchoredPosition = pos;
+                pos.y -= 62f;
+
+                ruleToggle.isOn = PlayerPrefs.GetInt(GameStatus.GetNameOfGame() + "_useRule", 0) == 1;
+            }
+
             // Initialize continue button
 
             continueButton = Instantiate(continueButtonPrefab, gameObject.transform);
@@ -53,6 +66,11 @@ namespace NamePage
         {
             // Change the names from inputs to GameStatus
             ChangeName();
+
+            // Memorize user preference on rules, Change userules
+            if (GameStatus.hasRules)
+                PlayerPrefs.SetInt(GameStatus.GetNameOfGame() + "_useRule", ruleToggle.isOn ? 1 : 0);
+            GameStatus.useRules = ruleToggle.isOn;
 
             // Check if all names are unique
             if (GameStatus.IsNameUnique())

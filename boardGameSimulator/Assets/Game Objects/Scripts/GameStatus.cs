@@ -42,7 +42,8 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static bool isNewGame;
 
-    public static bool hasRules = true;
+    public static bool hasRules = false;
+    public static bool useRules = false;
 
     // Setters
 
@@ -53,6 +54,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
         nameOfGame = name;
         isNewGame = true;
+        hasRules = PlayerPrefs.GetInt(nameOfGame + "_hasRule", 0) == 1;
     }
 
     public static void SetNameOfPlayer(int index, string name)
@@ -141,6 +143,8 @@ public class GameStatus : MonoBehaviour, ISaveable
         nameOfGame = "Board Game";
         numOfPlayers = 2;
         nameOfPlayers = new List<string>();
+        hasRules = false;
+        useRules = false;
     }
 
     // ISaveable Methods
@@ -151,6 +155,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         sd.nameOfGame = GameStatus.nameOfGame;
         sd.numOfPlayers = GameStatus.numOfPlayers;
         sd.nameOfPlayers = new List<string>(GameStatus.nameOfPlayers);
+        sd.useRules = useRules;
     }
 
     public void LoadFromSaveData(SaveData sd)
@@ -159,6 +164,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         GameStatus.nameOfGame = sd.nameOfGame;
         GameStatus.numOfPlayers = sd.numOfPlayers;
         GameStatus.nameOfPlayers = new List<string>(sd.nameOfPlayers);
+        useRules = sd.useRules;
     }
 }
 

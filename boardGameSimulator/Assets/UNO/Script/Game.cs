@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UNO
 {
-    public class Game : MonoBehaviour
+    public class Game : MonoBehaviour, ISaveable
     {
         [SerializeField] GameObject Canvas;
         [SerializeField] GameObject gameUI;
@@ -55,9 +55,9 @@ namespace UNO
             currentHand = Instantiate(currentHandPrefab, Canvas.transform);
 
             deckScript = deck.GetComponent<Deck>();
-            deckScript.Initialize(discard, DealCard);
+            deckScript.Initialize(discard, DealCard, GetComponent<UNOInfo>());
 
-            discard.GetComponent<Discard>().Initialize(currentHand, deck);
+            discard.GetComponent<Discard>().Initialize(currentHand, deck, GetComponent<UNOInfo>());
 
             currentHand.GetComponent<CurrentHand>().Initialize(discard, deck);
 
@@ -78,20 +78,37 @@ namespace UNO
             for (int i = 0; i < numOfPlayer; i++)
             {
                 GameObject a_Player = Instantiate(player, playersObj.transform);
-                a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand);
+                a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand, GetComponent<UNOInfo>());
                 players.Add(a_Player);
             }
 
-            currentPlayerIndex = 0;
-            antiClockWise = true;
+            // Initialize direaction Icons
+
             directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
+            directionIcons.GetComponent<DirectionIcons>().Interactable = true;
 
-            // Deal 7 cards to each player
+            if (GameStatus.isNewGame)
+            {
+                currentPlayerIndex = 0;
+                antiClockWise = true;
 
-            foreach (GameObject player in players)
-                player.GetComponent<Player>().TakeCards(DealCards(7, player));
+                // Deal 7 cards to each player
 
-            if (GameStatus.hasRules)
+                foreach (GameObject player in players)
+                    player.GetComponent<Player>().TakeCards(DealCards(7, player));
+
+                gameUI.GetComponent<SettingsUI>().AddLog("UNO: New game.");
+            }
+            else
+            {
+                if (SaveLoadManager.OnLoadHandler != null)
+                {
+                    SaveLoadManager.OnLoadHandler(SaveLoadManager.tempSD);
+                }
+                gameUI.GetComponent<SettingsUI>().AddLog("UNO: Load complete.");
+            }
+
+            if (GameStatus.useRules)
             {
                 GetComponent<Rules>().Initialize(currentHand, discard, deck, this);
                 GetComponent<Rules>().enabled = true;
@@ -102,8 +119,16 @@ namespace UNO
             OnTurnStart();
         }
 
+        void OnEnable()
+        {
+            SaveLoadManager.OnSaveHandler += PopulateSaveData;
+            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
+        }
+
         private void OnDisable()
         {
+            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
+            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
             TurnStartHandler -= SetHand;
             Screen.orientation = ScreenOrientation.Portrait;
         }
@@ -186,6 +211,21 @@ namespace UNO
             antiClockWise = !antiClockWise;
             directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
             uiScript.AddLog("Direction reversed.");
+        }
+
+        // Save load methods
+
+        public void PopulateSaveData(SaveData sd)
+        {
+            sd.playerInTurn = currentPlayerIndex;
+            sd.antiClockwise = this.antiClockWise;
+            gameUI.GetComponent<SettingsUI>().AddLog("Save complete.");
+        }
+
+        public void LoadFromSaveData(SaveData sd)
+        {
+            currentPlayerIndex = sd.playerInTurn;
+            this.antiClockWise = sd.antiClockwise;
         }
     }
 

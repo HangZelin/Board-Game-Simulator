@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UNO 
 {
-    public class Deck : MonoBehaviour
+    public class Deck : MonoBehaviour, ISaveable
     {
         [SerializeField] GameObject unused;
         [SerializeField] GameObject discard;
@@ -36,15 +36,37 @@ namespace UNO
         [SerializeField] GameObject Note;
         [SerializeField] Outline buttonOutline;
 
+        [SerializeField] UNOInfo unoInfo;
+
         [SerializeField] AudioSource drawCardAudio;
 
-        public void Initialize(GameObject discard, Action onclick)
+        void OnEnable()
         {
+            SaveLoadManager.OnSaveHandler += PopulateSaveData;
+            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
+        }
+
+        void OnDisable()
+        {
+            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
+            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
+        }
+
+        public void Initialize(GameObject discard, Action onclick, UNOInfo unoInfo)
+        {
+            name = ToString();
+            this.unoInfo = unoInfo;
+
             unused = GameObject.Find("Canvas/Unused");
             this.discard = discard;
 
             cards = new List<GameObject>();
-            
+
+            drawACardButton.onClick.AddListener(delegate { onclick(); });
+            Interactable = true;
+
+            if (!GameStatus.isNewGame) return;
+
             // Add cards to the deck
 
             // Color cards
@@ -109,9 +131,6 @@ namespace UNO
             Shuffle(cards);
             while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 && cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
-
-            drawACardButton.onClick.AddListener( delegate { onclick(); } );
-            Interactable = true;
         }
 
         public List<GameObject> DrawCards(int num, Transform transform)
@@ -172,27 +191,44 @@ namespace UNO
                 drawACardButton.interactable = value;
             }
         }
-    }
 
-    public class Colors
-    {
-        [SerializeField] static Color red = new Color(1f, 0.3333333f, 0.3333333f);
-        [SerializeField] static Color blue = new Color(0.3372549f, 0.3372549f, 0.9803922f);
-        [SerializeField] static Color green = new Color(0.3372549f, 0.6627451f, 0.3372549f);
-        [SerializeField] static Color yellow = new Color(1f, 0.6666667f, 0f);
+        // Save load methods
 
-        public static Color GetColor(CardColor cardColor)
+        public void PopulateSaveData(SaveData sd)
         {
-            switch (cardColor)
+            if (sd.playerCards == null) sd.playerCards = new List<PlayerCards>();
+            sd.playerCards.Add(UNOInfo.CardsToSaveStruct(name, cards));
+        }
+
+        public void LoadFromSaveData(SaveData sd)
+        {
+            List<int> listCounts = new List<int>();
+            List<string> cardsString = new List<string>();
+
+            foreach (PlayerCards playerCards in sd.playerCards)
             {
-                case CardColor.red: return red;
-                case CardColor.blue: return blue;
-                case CardColor.green: return green;
-                case CardColor.yellow: return yellow;
-                default:
-                    Debug.LogError("Failed to get color");
-                    return Color.white;
+                if (playerCards.playerName.Equals(name))
+                {
+                    listCounts = playerCards.listCounts;
+                    cardsString = playerCards.cards;
+                    break;
+                }
             }
+
+            int i = 0;
+            foreach (int listCount in listCounts)
+            {
+                List<string> list = cardsString.GetRange(i, listCount);
+                GameObject card = unoInfo.ListToCard(list);
+                card.transform.SetParent(unused.transform);
+                this.cards.Add(card);
+                i += listCount;
+            }
+        }
+
+        public override string ToString()
+        {
+            return "Deck";
         }
     }
 }

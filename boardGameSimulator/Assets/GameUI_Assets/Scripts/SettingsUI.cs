@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -76,6 +77,12 @@ public class SettingsUI : MonoBehaviour
         isExceeded = tempText.maxVisibleCharacters != log.ToCharArray().Length;
         if (isExceeded) twoLineLog = log.Substring(0, tempText.maxVisibleCharacters);
         return 2;
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name == "UNO" && Application.platform == RuntimePlatform.Android && (Input.GetKeyDown(KeyCode.Escape)))
+            settingsTab.SetActive(true);
     }
 }
 
