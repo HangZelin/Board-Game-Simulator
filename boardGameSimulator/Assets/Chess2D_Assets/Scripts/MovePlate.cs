@@ -47,7 +47,6 @@ public class MovePlate : MonoBehaviour
                 }
                 else
                 {
-                Debug.Log("Toggledoff!");
                     stepDialog.SetActive(false);
                     Time.timeScale = 1f;
                 }*/

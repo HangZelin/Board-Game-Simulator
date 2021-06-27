@@ -5,7 +5,10 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - controller: {instanceID: 0}
-  - movePlate: {instanceID: 0}
+  - movePlate: {fileID: 6730530993434636186, guid: 65a9746f3febf694baffd86fe945067d,
+      type: 3}
+  - stepDialog: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
+      type: 3}
   - black_queen: {instanceID: 0}
   - black_knight: {instanceID: 0}
   - black_bishop: {instanceID: 0}

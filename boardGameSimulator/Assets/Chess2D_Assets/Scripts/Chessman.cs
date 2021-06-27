@@ -6,6 +6,7 @@ public class Chessman : MonoBehaviour
 {
     public GameObject controller;
     public GameObject movePlate; //The new Location.
+    public GameObject stepDialog;//stepWindow UI
 
     public float aspectRatio = Screen.width *1.0f/ Screen.height;
 
@@ -112,16 +113,18 @@ public class Chessman : MonoBehaviour
 
     public void OnMouseUp()
     {
-        if (!controller.GetComponent<Game>().IsGameOver() && controller.GetComponent<Game>().GetCurrentPlayer() == player && !is_captured)
-        {
-            is_captured = true;
+        if (!controller.GetComponent<Game>().IsGameOver()) {
+            if (controller.GetComponent<Game>().GetCurrentPlayer() == player && !is_captured)
+            {
+                is_captured = true;
 
-            DestroyMovePlate();
+                DestroyMovePlate();
 
 
-            audio_source.PlayOneShot(Sound_Capture, 0.7F);
+                audio_source.PlayOneShot(Sound_Capture, 0.7F);
 
-            InitiateMovePlate();
+                InitiateMovePlate();
+            }
         }
 
     }
@@ -207,5 +210,18 @@ public class Chessman : MonoBehaviour
         is_attack = 1;
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
+
+        //toggle the window to ask user what to do
+        if (!stepDialog.activeInHierarchy)
+        {
+           Debug.Log("Toggled!");
+           stepDialog.SetActive(true);
+           Time.timeScale = 0f;
+        }
+        else
+        {
+        stepDialog.SetActive(false);
+        Time.timeScale = 1f;
+        }
     }
 }
