@@ -31,9 +31,16 @@ namespace UNO
             }
         }
 
+        CardInfo a_CardInfo;
+        public CardInfo cardInfo { get { return a_CardInfo; } }
+
         public void Initialize(bool isFace)
         {
             IsFace = isFace;
+            
+            a_CardInfo.cardType = CardType.wild;
+            a_CardInfo.cardColor = CardColor.black;
+            a_CardInfo.num = -1;
         }
 
         public GameObject Copy(Transform transform)

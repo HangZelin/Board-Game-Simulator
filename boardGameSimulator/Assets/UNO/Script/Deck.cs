@@ -34,6 +34,7 @@ namespace UNO
 
         [SerializeField] Button drawACardButton;
         [SerializeField] GameObject Note;
+        [SerializeField] Outline buttonOutline;
 
         [SerializeField] AudioSource drawCardAudio;
 
@@ -49,6 +50,8 @@ namespace UNO
             // Color cards
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
             {
+                if (color == CardColor.black) continue;
+
                 // 19 number cards in each color
                 for (int i = 0; i <= 9; i++)
                 {
@@ -104,8 +107,11 @@ namespace UNO
                 card.name = card.GetComponent<Card>().ToString();
 
             Shuffle(cards);
+            while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 && cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
+                Shuffle(cards);
 
             drawACardButton.onClick.AddListener( delegate { onclick(); } );
+            Interactable = true;
         }
 
         public List<GameObject> DrawCards(int num, Transform transform)
@@ -153,6 +159,19 @@ namespace UNO
         {
             Note.SetActive(false);
         }
+
+        public bool Interactable 
+        {
+            get { return drawACardButton.interactable; }
+            set
+            {
+                if (value)
+                    buttonOutline.effectColor = Color.blue;
+                else
+                    buttonOutline.effectColor = Color.black;
+                drawACardButton.interactable = value;
+            }
+        }
     }
 
     public class Colors
@@ -176,7 +195,5 @@ namespace UNO
             }
         }
     }
-
-    public enum CardColor { red, yellow, blue, green };
 }
 

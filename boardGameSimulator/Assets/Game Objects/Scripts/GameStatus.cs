@@ -42,6 +42,8 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static bool isNewGame;
 
+    public static bool hasRules = true;
+
     // Setters
 
     public static void SetNameOfGame(string name)

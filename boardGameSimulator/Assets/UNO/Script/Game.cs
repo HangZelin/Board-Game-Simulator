@@ -22,6 +22,7 @@ namespace UNO
         [SerializeField] GameObject playersObj;
         [SerializeField] GameObject player;
         List<GameObject> players;
+        public GameObject CurrentPlayer { get { return players[currentPlayerIndex]; } }
 
         [SerializeField] GameObject discardPrefab;
         GameObject discard;
@@ -31,15 +32,6 @@ namespace UNO
 
         [SerializeField] GameObject directionIcons;
         bool antiClockWise;
-        public bool AntiClockWise
-        {
-            get { return antiClockWise; }
-            set 
-            { 
-                directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(!antiClockWise);
-                antiClockWise = value;
-            }
-        }
 
         public delegate void TurnStart();
         public static event TurnStart TurnStartHandler;
@@ -67,7 +59,7 @@ namespace UNO
 
             discard.GetComponent<Discard>().Initialize(currentHand, deck);
 
-            currentHand.GetComponent<CurrentHand>().Initialize(discard);
+            currentHand.GetComponent<CurrentHand>().Initialize(discard, deck);
 
             // Initialize hands
 
@@ -83,7 +75,7 @@ namespace UNO
             // Initialize players
 
             players = new List<GameObject>();
-            for(int i = 0; i < numOfPlayer; i++)
+            for (int i = 0; i < numOfPlayer; i++)
             {
                 GameObject a_Player = Instantiate(player, playersObj.transform);
                 a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand);
@@ -91,13 +83,21 @@ namespace UNO
             }
 
             currentPlayerIndex = 0;
-            AntiClockWise = true;
+            antiClockWise = true;
+            directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
 
             // Deal 7 cards to each player
 
             foreach (GameObject player in players)
                 player.GetComponent<Player>().TakeCards(DealCards(7, player));
 
+            if (GameStatus.hasRules)
+            {
+                GetComponent<Rules>().Initialize(currentHand, discard, deck, this);
+                GetComponent<Rules>().enabled = true;
+            }
+            else
+                GetComponent<Rules>().enabled = false;
 
             OnTurnStart();
         }
@@ -145,30 +145,32 @@ namespace UNO
         int NextPlayer(int index)
         {
             if (antiClockWise)
-                return index == (numOfPlayer - 1) 
-                    ? 0 
+                return index == (numOfPlayer - 1)
+                    ? 0
                     : index + 1;
             else
-                return index == 0 
-                    ? numOfPlayer - 1 
+                return index == 0
+                    ? numOfPlayer - 1
                     : index - 1;
         }
-        
+
         void SetHand()
         {
             players[currentPlayerIndex].GetComponent<Player>().isCurrentPlayer = true;
             int index = currentPlayerIndex;
 
-            for (int i = 0; i < numOfPlayer - 1; i++)
-            {
-                index = NextPlayer(index);
-                players[index].GetComponent<Player>().Hand = hands[i];
-            }
-
-            // For testing. Set current hand player name
-
-/*            currentHand.transform.Find("PlayerName").gameObject
-                .GetComponent<Text>().text = players[currentPlayerIndex].GetComponent<Player>().ToString();*/
+            if (antiClockWise)
+                for (int i = 0; i < numOfPlayer - 1; i++)
+                {
+                    index = NextPlayer(index);
+                    players[index].GetComponent<Player>().Hand = hands[i];
+                }
+            else
+                for (int i = numOfPlayer - 2; i >= 0; i--)
+                {
+                    index = NextPlayer(index);
+                    players[index].GetComponent<Player>().Hand = hands[i];
+                }
         }
 
         // For testing
@@ -181,8 +183,9 @@ namespace UNO
 
         public void ToggleDirection()
         {
-            AntiClockWise = !AntiClockWise;
-            uiScript.AddLog("Direction: " + (antiClockWise ? "anticlockwise" : "clockwise"));
+            antiClockWise = !antiClockWise;
+            directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
+            uiScript.AddLog("Direction reversed.");
         }
     }
 
@@ -190,13 +193,15 @@ namespace UNO
     {
         public GameObject Copy(Transform transform);
         public bool IsFace { get; set; }
+        public CardInfo cardInfo { get; }
     }
 
     public interface IHand
     {
         public void GiveCards(GameObject player, out List<GameObject> cards);
         public List<GameObject> Cards { get; set; }
-    } 
+    }
 }
+
 
 

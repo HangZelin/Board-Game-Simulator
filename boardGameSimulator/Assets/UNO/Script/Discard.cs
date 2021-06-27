@@ -14,6 +14,9 @@ namespace UNO
 
         [SerializeField] AudioSource playCard;
 
+        public delegate void DiscardOnClick();
+        public event DiscardOnClick DiscardOnClickHandler;
+
         public void Initialize(GameObject currentHand, GameObject deck)
         {
             this.currentHand = currentHand;
@@ -43,8 +46,20 @@ namespace UNO
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            playCard.Play();   
+            if (DiscardOnClickHandler != null)
+            {
+                DiscardOnClickHandler();
+                return;
+            }
+
+            // For default hotseat mode without rules
+            playCard.Play();
             GameObject card = currentHand.GetComponent<CurrentHand>().HighlightedCard;
+            PlayCard(card);
+        }
+
+        public void PlayCard(GameObject card)
+        {
             if (card != null)
             {
                 CardToPile(card);

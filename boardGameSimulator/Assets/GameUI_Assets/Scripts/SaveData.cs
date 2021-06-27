@@ -10,10 +10,10 @@ public class SaveData : ISaveData
     public int numOfPlayers;
     public List<string> nameOfPlayers;
     public string dateTime;
-
-    // 2D fields
     public int playerInTurn;
     public int numOfTurn;
+
+    // 2D fields
     public List<MarkerPosition> markerPositions;
 
     public string ToJson()

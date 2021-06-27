@@ -57,6 +57,9 @@ namespace UNO
             }
         }
 
+        CardInfo a_CardInfo;
+        public CardInfo cardInfo { get { return a_CardInfo; } }
+
         public void Initialize(CardColor color, int num, bool isFace)
         {
             this.color = color;
@@ -78,6 +81,10 @@ namespace UNO
             SetUnderline(true);
 
             IsFace = isFace;
+
+            a_CardInfo.cardType = CardType.num;
+            a_CardInfo.cardColor = color;
+            a_CardInfo.num = num;
         }
 
         public GameObject Copy(Transform transform)

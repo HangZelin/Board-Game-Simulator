@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectColor: {r: 0, g: 0, b: 1, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
 --- !u!1 &2969169546866529910
@@ -692,6 +692,7 @@ MonoBehaviour:
     type: 3}
   drawACardButton: {fileID: 9201655154957945524}
   Note: {fileID: 2326083645248487983}
+  buttonOutline: {fileID: 2969169546476475541}
   drawCardAudio: {fileID: 1389925690898454342}
 --- !u!82 &1389925690898454342
 AudioSource:

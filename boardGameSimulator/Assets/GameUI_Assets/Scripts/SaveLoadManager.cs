@@ -5,11 +5,6 @@ using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour
 {
-    // If change this part, change GameStatus.cs also.
-    public const string TwoDKey = "2D";
-    public const string CardKey = "Cd";
-    public const string ThreeDKey = "3D";
-
     const string lastSaveKey = "LastSaveKey";
     private GameStatus gs;
 
