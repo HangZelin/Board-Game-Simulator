@@ -82,7 +82,7 @@ namespace UNO
 
                 if (currentHand.GetComponent<CurrentHand>().Cards.Count == 0)
                 {
-                    gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + "wins!");
+                    gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + " wins!");
                     return;
                 }
                 else if (currentHand.GetComponent<CurrentHand>().Cards.Count == 1)

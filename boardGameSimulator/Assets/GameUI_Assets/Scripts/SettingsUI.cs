@@ -13,11 +13,15 @@ public class SettingsUI : MonoBehaviour
     public List<string> logList;
     string lastLogLine = "";
 
+    public void Initialize()
+    {
+        settingsTab.transform.SetAsLastSibling();
+    }
+
     // SettingsBar Methods
 
     public void ActivateUI()
     {
-        settingsTab.transform.SetAsLastSibling();
         settingsTab.SetActive(true);
     }
 

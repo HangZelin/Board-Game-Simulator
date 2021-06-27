@@ -87,6 +87,8 @@ namespace UNO
             directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
             directionIcons.GetComponent<DirectionIcons>().Interactable = true;
 
+            gameUI.GetComponent<SettingsUI>().Initialize();
+
             if (GameStatus.isNewGame)
             {
                 currentPlayerIndex = 0;

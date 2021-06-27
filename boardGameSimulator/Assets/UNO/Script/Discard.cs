@@ -39,6 +39,7 @@ namespace UNO
             card.GetComponent<CardReaction>().enabled = false;
 
             this.cards.Add(card);
+            playCard.Play();
         }
 
         public void PileToDeck()
@@ -56,7 +57,6 @@ namespace UNO
             }
 
             // For default hotseat mode without rules
-            playCard.Play();
             GameObject card = currentHand.GetComponent<CurrentHand>().HighlightedCard;
             PlayCard(card);
         }
