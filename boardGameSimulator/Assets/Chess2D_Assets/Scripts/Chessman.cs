@@ -125,92 +125,13 @@ public class Chessman : MonoBehaviour
     public void InitiateMovePlates()
     {
         audio_source.PlayOneShot(Sound_Capture, 0.7F);
-        switch (this.name)
+        for (int x = 0; x < 8; x++)
         {
-            case "black_queen":
-            case "white_queen":
-                LineMovePlate(1, 0);
-                LineMovePlate(0, 1);
-                LineMovePlate(1, 1);
-                LineMovePlate(-1, 0);
-                LineMovePlate(0, -1);
-                LineMovePlate(-1, -1);
-                LineMovePlate(-1, 1);
-                LineMovePlate(1, -1);
-                break;
-            case "black_knight":
-            case "white_knight":
-                LMovePlate();
-                break;
-            case "black_bishop":
-            case "white_bishop":
-                LineMovePlate(1, 1);
-                LineMovePlate(1, -1);
-                LineMovePlate(-1, 1);
-                LineMovePlate(-1, -1);
-                break;
-            case "black_king":
-            case "white_king":
-                SurroundMovePlate();
-                break;
-            case "black_rook":
-            case "white_rook":
-                LineMovePlate(1, 0);
-                LineMovePlate(0, 1);
-                LineMovePlate(-1, 0);
-                LineMovePlate(0, -1);
-                break;
-            case "black_pawn":
-                PawnMovePlate(xBoard, yBoard - 1);
-                break;
-            case "white_pawn":
-                PawnMovePlate(xBoard, yBoard + 1);
-                break;
+            for (int y = 0; y < 8; y++)
+            {
+                PointMovePlate(x, y);
+            }
         }
-    }
-
-    public void LineMovePlate(int xIncr, int yIncr)
-    {
-        Game sc = controller.GetComponent<Game>();
-
-        int x = xBoard + xIncr;
-        int y = yBoard + yIncr;
-
-        while (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
-        {
-            MovePlateSpawn(x, y);
-            x += xIncr;
-            y += yIncr;
-        }
-
-        if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y).GetComponent<Chessman>().player != player)
-        {
-            MovePlateAttackSpawn(x, y);
-        }
-    }
-
-    public void LMovePlate()
-    {
-        PointMovePlate(xBoard + 1, yBoard + 2);
-        PointMovePlate(xBoard - 1, yBoard + 2);
-        PointMovePlate(xBoard + 2, yBoard + 1);
-        PointMovePlate(xBoard + 2, yBoard - 1);
-        PointMovePlate(xBoard + 1, yBoard - 2);
-        PointMovePlate(xBoard - 1, yBoard - 2);
-        PointMovePlate(xBoard - 2, yBoard + 1);
-        PointMovePlate(xBoard - 2, yBoard - 1);
-    }
-
-    public void SurroundMovePlate()
-    {
-        PointMovePlate(xBoard, yBoard + 1);
-        PointMovePlate(xBoard, yBoard - 1);
-        PointMovePlate(xBoard - 1, yBoard - 1);
-        PointMovePlate(xBoard - 1, yBoard);
-        PointMovePlate(xBoard - 1, yBoard + 1);
-        PointMovePlate(xBoard + 1, yBoard - 1);
-        PointMovePlate(xBoard + 1, yBoard);
-        PointMovePlate(xBoard + 1, yBoard + 1);
     }
 
     public void PointMovePlate(int x, int y)
@@ -229,28 +150,6 @@ public class Chessman : MonoBehaviour
             {
                 MovePlateAttackSpawn(x, y);
             }
-        }
-    }
-
-    public void PawnMovePlate(int x, int y)
-    {
-        Game sc = controller.GetComponent<Game>();
-        if (sc.PositionOnBoard(x, y))
-        {
-            if (sc.GetPosition(x, y) == null)
-            {
-                MovePlateSpawn(x, y);
-            }
-        }
-
-        if (sc.PositionOnBoard(x + 1, y) && sc.GetPosition(x + 1, y) != null && sc.GetPosition(x + 1, y).GetComponent<Chessman>().player != player)
-        {
-            MovePlateAttackSpawn(x + 1, y);
-        }
-
-        if (sc.PositionOnBoard(x - 1, y) && sc.GetPosition(x - 1, y) != null && sc.GetPosition(x - 1, y).GetComponent<Chessman>().player != player)
-        {
-            MovePlateAttackSpawn(x - 1, y);
         }
     }
 

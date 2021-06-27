@@ -114,8 +114,17 @@ public class BoardManager : MonoBehaviour
         if (Chessmans[x, y].isWhite != isWhiteTurn) return;
 
         bool hasAtLeastOneMove = false;
+        bool[,] all_possible = new bool[8, 8];
 
-        allowedMoves = Chessmans[x, y].PossibleMoves();
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                all_possible[i, j] = true;
+            } 
+        }
+
+        allowedMoves = all_possible;
         audio_source.PlayOneShot(Sound_Capture, 0.7F);
         for (int i = 0; i < 8; i++)
         {
