@@ -232,7 +232,6 @@ GameObject:
   m_Component:
   - component: {fileID: 338088504}
   - component: {fileID: 338088503}
-  - component: {fileID: 338088506}
   - component: {fileID: 338088502}
   - component: {fileID: 338088505}
   m_Layer: 0
@@ -403,25 +402,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &338088506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338088501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4db8d75a5a7535a4a836d780ee40ec43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PhoneWidth: 0
-  PhoneHeight: 888
-  RateOfPhone: 0
-  MyWidth: 393
-  MyHeight: 851
-  RateOfDesine: 0
-  TSize: 5
 --- !u!1 &357249557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,7 +1410,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -1452,8 +1432,8 @@ RectTransform:
   - {fileID: 1605445789}
   - {fileID: 1497137293}
   - {fileID: 1658583940}
-  - {fileID: 855616132}
   - {fileID: 1941990287}
+  - {fileID: 855616132}
   - {fileID: 1261829503}
   - {fileID: 2026355717}
   - {fileID: 875331917}
@@ -2531,7 +2511,7 @@ RectTransform:
   m_Children:
   - {fileID: 1165244222}
   m_Father: {fileID: 1233379478}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -2904,6 +2884,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1233379478}
     m_Modifications:
+    - target: {fileID: 2847133030942867220, guid: 2f573e21b4f085742975172159328612,
+        type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4478807692282244465, guid: 2f573e21b4f085742975172159328612,
+        type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4478807692282244465, guid: 2f573e21b4f085742975172159328612,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 16777215
+      objectReference: {fileID: 0}
     - target: {fileID: 5240901793368839840, guid: 2f573e21b4f085742975172159328612,
         type: 3}
       propertyPath: m_Name
@@ -2922,7 +2917,7 @@ PrefabInstance:
     - target: {fileID: 5240901793368839841, guid: 2f573e21b4f085742975172159328612,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5240901793368839841, guid: 2f573e21b4f085742975172159328612,
         type: 3}
@@ -3169,7 +3164,7 @@ PrefabInstance:
     - target: {fileID: 7522869769751446368, guid: 185d4abcba5bd554db2b2b5d7bd52299,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7522869769751446368, guid: 185d4abcba5bd554db2b2b5d7bd52299,
         type: 3}
@@ -3472,7 +3467,7 @@ PrefabInstance:
     - target: {fileID: 8734426569582722330, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8734426569582722330, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
         type: 3}

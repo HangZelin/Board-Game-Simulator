@@ -45,6 +45,13 @@ public class SaveLoadManager : MonoBehaviour
                     Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
                 }
                 break;
+            case GameType.ThreeD:
+                if (FileManager.WriteToFile("3D_SaveData" + i + ".dat", sd.ToJson()))
+                {
+                    AddNumOfSave(GameType.ThreeD);
+                    Debug.Log("Save successful in 3D_SaveData" + i + ".dat");
+                }
+                break;
             case GameType.Card:
                 if (FileManager.WriteToFile("Card_SaveData" + i + ".dat", sd.ToJson()))
                 {

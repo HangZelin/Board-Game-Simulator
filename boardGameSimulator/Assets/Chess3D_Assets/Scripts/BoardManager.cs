@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance { get; set; }
+    public GameObject gameUI;
+    SettingsUI settings;
     private bool[,] allowedMoves { get; set; }
 
     private const float TILE_SIZE = 1.0f;
@@ -35,6 +37,7 @@ public class BoardManager : MonoBehaviour
     public AudioClip Sound_Eat;
     public AudioClip Sound_Capture;
     private AudioSource audio_source;
+    private String currentPlayer;
 
     private string Player1 = GameStatus.GetNameOfPlayer(1);
     private string Player2 = GameStatus.GetNameOfPlayer(2);
@@ -46,10 +49,26 @@ public class BoardManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+
+        settings = gameUI.GetComponent<SettingsUI>();
+
+        if (!GameStatus.isNewGame)
+        {
+            LoadFromSaveData(SaveLoadManager.tempSD);
+            GameStatus.isNewGame = true;
+            settings.AddLog(GameStatus.GetNameOfGame() + ": Load Complete.");
+            return;
+        }
+
         audio_source = GetComponent<AudioSource>();
         Instance = this;
         SpawnAllChessmans();
         EnPassantMove = new int[2] { -1, -1 };
+        currentPlayer = Player1;
+
+        //log
+
+        settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
     // Update is called once per frame
@@ -135,6 +154,7 @@ public class BoardManager : MonoBehaviour
                 Eat = true;
                 activeChessman.Remove(c.gameObject);
                 Destroy(c.gameObject);
+
             }
             if (x == EnPassantMove[0] && y == EnPassantMove[1])
             {
@@ -176,6 +196,14 @@ public class BoardManager : MonoBehaviour
             selectedChessman.transform.position = GetTileCenter(x, y);
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
+            if (isWhiteTurn)
+            {
+                currentPlayer = Player2;
+            }
+            else
+            {
+                currentPlayer = Player1;
+            }
             isWhiteTurn = !isWhiteTurn;
             if (Eat)
             {
@@ -184,6 +212,11 @@ public class BoardManager : MonoBehaviour
             {
                 audio_source.PlayOneShot(Sound_Move, 0.7F);
             }
+
+
+            //Log
+
+            settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
 
         }
 
@@ -198,7 +231,7 @@ public class BoardManager : MonoBehaviour
         if (!Camera.main) return;
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50.0f, LayerMask.GetMask("ChessPlane")))
-        {;
+        {
             selectionX = (int)hit.point.x;
             selectionY = (int)hit.point.z;
         }
@@ -307,6 +340,8 @@ public class BoardManager : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
+        //log
+        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
 
     public void Winner2()
@@ -318,7 +353,88 @@ public class BoardManager : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
+        //log
+
+        settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");
+
     }
+
+    public void PopulateSaveData(SaveData sd)
+    {
+        List<MarkerPosition_3D> markerPositions_3D = new List<MarkerPosition_3D>();
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
+            {
+                if (Chessmans[i, j] != null)
+                {
+                    MarkerPosition_3D mp = new MarkerPosition_3D();
+                    mp.is_white = Chessmans[i, j].isWhite;
+                    mp.marker = Chessmans[i, j].name;
+                    mp.num = i * 8 + j;
+                    markerPositions_3D.Add(mp);
+                }
+            }
+
+        sd.playerInTurn = currentPlayer.Equals(Player1) ? 1 : 2;
+        sd.markerPositions_3D = markerPositions_3D;
+    }
+
+    public void LoadFromSaveData(SaveData sd)
+    {
+        currentPlayer = GameStatus.GetNameOfPlayer(sd.playerInTurn);
+        foreach (MarkerPosition_3D mp in sd.markerPositions_3D)
+        {
+            switch (mp.marker)
+            {
+                //White chess
+                case "White_King(Clone)": SpawnChessman(0, mp.num / 8, mp.num % 8, true); break;
+                case "White_Queen(Clone)": SpawnChessman(1, mp.num / 8, mp.num % 8, true); break;
+                case "White_Rook(Clone)": SpawnChessman(2, mp.num / 8, mp.num % 8, true); break;
+                case "White_Bishop(Clone)": SpawnChessman(3, mp.num / 8, mp.num % 8, true); break;
+                case "White_Kight(Clone)": SpawnChessman(4, mp.num / 8, mp.num % 8, true); break;
+                case "White_Pawn(Clone)": SpawnChessman(5, mp.num / 8, mp.num % 8, true); break;
+
+                //Black chess
+                case "Black_King(Clone)": SpawnChessman(6, mp.num / 8, mp.num % 8, false); break;
+                case "Black_Queen(Clone)": SpawnChessman(7, mp.num / 8, mp.num % 8, false); break;
+                case "Black_Rook(Clone)": SpawnChessman(8, mp.num / 8, mp.num % 8, false); break;
+                case "Black_Bishop(Clone)": SpawnChessman(9, mp.num / 8, mp.num % 8, false); break;
+                case "Black_Kight(Clone)": SpawnChessman(10, mp.num / 8, mp.num % 8, false); break;
+                case "Black_Pawn(Clone)": SpawnChessman(11, mp.num / 8, mp.num % 8, false); break;
+            }
+        }
+
+    }
+
+    void OnEnable()
+    {
+        SceneLoader.backToGame += ActivateChessman;
+    }
+
+    void OnDisable()
+    {
+
+        SceneLoader.backToGame -= ActivateChessman;
+    }
+
+    // helper for IngameLoad
+
+    public void DeactivateChessman()
+    {
+
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        foreach (GameObject go in movePlates)
+            go.SetActive(false);
+    }
+
+    public void ActivateChessman()
+    {
+
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        foreach (GameObject go in movePlates)
+            go.SetActive(true);
+    }
+
 }
 
 

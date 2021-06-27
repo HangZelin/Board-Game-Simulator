@@ -19,7 +19,6 @@ public class Game : MonoBehaviour, ISaveable
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     private string currentPlayer;
-    private string lastPlayer;
 
     private bool gameOver = false;
 
@@ -39,7 +38,6 @@ public class Game : MonoBehaviour, ISaveable
         //Instantiate the chesspiece when the game starts.
 
         currentPlayer = Player1;
-        lastPlayer = Player2;
 
         playerWhite = new GameObject[]
         {
@@ -120,11 +118,9 @@ public class Game : MonoBehaviour, ISaveable
     {
         if (currentPlayer == Player1)
         {
-            lastPlayer = currentPlayer;
             currentPlayer = Player2;
         } else
         {
-            lastPlayer = currentPlayer;
             currentPlayer = Player1;
         }
 
@@ -143,21 +139,6 @@ public class Game : MonoBehaviour, ISaveable
             SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
         }
     }
-
-    public void Winner(string playerWinner)
-    {
-        gameOver = true;
-
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = playerWinner + " is the winner";
-
-        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
-
-        // Log
-
-        settings.AddLog("<b>" + playerWinner + "</b> is the winner! " + "Tap to restart.");
-    }
-
     public void Winner1()
     {
         gameOver = true;
@@ -206,7 +187,6 @@ public class Game : MonoBehaviour, ISaveable
     public void LoadFromSaveData(SaveData sd)
     {
         currentPlayer = GameStatus.GetNameOfPlayer(sd.playerInTurn);
-        lastPlayer = currentPlayer.Equals(Player1) ? Player2 : Player1;
         foreach (MarkerPosition mp in sd.markerPositions)
         {
             GameObject go = Create(mp.marker, mp.num / 8, mp.num % 8);

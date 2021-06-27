@@ -18,6 +18,9 @@ public class SaveData : ISaveData
     // 2D fields
     public List<MarkerPosition> markerPositions;
 
+    //3D fields
+    public List<MarkerPosition_3D> markerPositions_3D;
+
     // Card fields
     public List<PlayerCards> playerCards;
 
@@ -36,6 +39,14 @@ public class SaveData : ISaveData
 [Serializable]
 public struct MarkerPosition 
 {
+    public int num;
+    public string marker;
+}
+
+[Serializable]
+public struct MarkerPosition_3D
+{
+    public bool is_white;
     public int num;
     public string marker;
 }
