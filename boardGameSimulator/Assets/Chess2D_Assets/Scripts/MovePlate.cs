@@ -66,7 +66,7 @@ public class MovePlate : MonoBehaviour
         if (!controller.GetComponent<Game>().IsGameOver())
             controller.GetComponent<Game>().NextTurn();
 
-        reference.GetComponent<Chessman>().DestroyMovePlates();
+        reference.GetComponent<Chessman>().DestroyMovePlate();
     }
 
     
