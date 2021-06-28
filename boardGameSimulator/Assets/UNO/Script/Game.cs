@@ -81,12 +81,7 @@ namespace UNO
                 a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand, GetComponent<UNOInfo>());
                 players.Add(a_Player);
             }
-
-            // Initialize direaction Icons
-
-            directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
-            directionIcons.GetComponent<DirectionIcons>().Interactable = true;
-
+            
             gameUI.GetComponent<SettingsUI>().Initialize();
 
             if (GameStatus.isNewGame)
@@ -104,9 +99,8 @@ namespace UNO
             else
             {
                 if (SaveLoadManager.OnLoadHandler != null)
-                {
                     SaveLoadManager.OnLoadHandler(SaveLoadManager.tempSD);
-                }
+
                 gameUI.GetComponent<SettingsUI>().AddLog("UNO: Load complete.");
             }
 
@@ -116,7 +110,14 @@ namespace UNO
                 GetComponent<Rules>().enabled = true;
             }
             else
+            {
                 GetComponent<Rules>().enabled = false;
+                directionIcons.GetComponent<DirectionIcons>().Interactable = true;
+            }
+
+            // Initialize direaction Icons
+
+            directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
 
             OnTurnStart();
         }
