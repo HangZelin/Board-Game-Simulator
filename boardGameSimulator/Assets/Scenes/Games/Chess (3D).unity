@@ -2352,7 +2352,7 @@ PrefabInstance:
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: ActivateChessman
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
@@ -2367,7 +2367,7 @@ PrefabInstance:
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: Game, Assembly-CSharp
+      value: SettingsUI, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
@@ -2377,7 +2377,7 @@ PrefabInstance:
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2992891426545880843, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}

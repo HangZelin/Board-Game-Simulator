@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class BoardManager : MonoBehaviour
+public class BoardManager : MonoBehaviour, ISaveable
 {
     public static BoardManager Instance { get; set; }
     public GameObject gameUI;
@@ -52,15 +52,8 @@ public class BoardManager : MonoBehaviour
 
         settings = gameUI.GetComponent<SettingsUI>();
 
-        if (!GameStatus.isNewGame)
-        {
-            LoadFromSaveData(SaveLoadManager.tempSD);
-            GameStatus.isNewGame = true;
-            settings.AddLog(GameStatus.GetNameOfGame() + ": Load Complete.");
-            return;
-        }
-
         audio_source = GetComponent<AudioSource>();
+        gameOver = false;
         Instance = this;
         SpawnAllChessmans();
         EnPassantMove = new int[2] { -1, -1 };
@@ -69,6 +62,16 @@ public class BoardManager : MonoBehaviour
         //log
 
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
+
+        if (!GameStatus.isNewGame)
+        {
+            LoadFromSaveData(SaveLoadManager.tempSD);
+            GameStatus.isNewGame = true;
+            settings.AddLog(GameStatus.GetNameOfGame() + ": Load Complete.");
+            return;
+        }
+
+
     }
 
     // Update is called once per frame
@@ -413,6 +416,17 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+    }
+
+    void OnEnable()
+    {
+        SaveLoadManager.OnSaveHandler += PopulateSaveData;
+    }
+
+    void OnDisable()
+    {
+
+        SaveLoadManager.OnSaveHandler -= PopulateSaveData;
     }
 
 }
