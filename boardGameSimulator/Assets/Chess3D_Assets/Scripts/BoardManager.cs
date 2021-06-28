@@ -415,35 +415,6 @@ public class BoardManager : MonoBehaviour
 
     }
 
-    void OnEnable()
-    {
-        SceneLoader.backToGame += ActivateChessman;
-    }
-
-    void OnDisable()
-    {
-
-        SceneLoader.backToGame -= ActivateChessman;
-    }
-
-    // helper for IngameLoad
-
-    public void DeactivateChessman()
-    {
-
-        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
-        foreach (GameObject go in movePlates)
-            go.SetActive(false);
-    }
-
-    public void ActivateChessman()
-    {
-
-        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
-        foreach (GameObject go in movePlates)
-            go.SetActive(true);
-    }
-
 }
 
 

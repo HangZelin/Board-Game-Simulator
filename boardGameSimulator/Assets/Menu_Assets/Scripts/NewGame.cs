@@ -13,10 +13,24 @@ public class NewGame : MonoBehaviour
         PlayerPrefs.SetInt("UNO_hasRule", 1);
     }
 
+    public void Chess2DButtonOnClick()
+    {
+        GameStatus.SetNameOfGame("Chess (2D)");
+        GameStatus.NumOfPlayers = 2;
+        GameStatus.TypeOfGame = GameType.TwoD;
+    }
+
     public void UNOButtonOnClick()
     {
         GameStatus.SetNameOfGame("UNO");
         GameStatus.NumOfPlayers = 4;
         GameStatus.TypeOfGame = GameType.Card;
+    }
+
+    public void Chess3DButtonOnClick()
+    {
+        GameStatus.SetNameOfGame("Chess (3D)");
+        GameStatus.NumOfPlayers = 2;
+        GameStatus.TypeOfGame = GameType.ThreeD;
     }
 }
