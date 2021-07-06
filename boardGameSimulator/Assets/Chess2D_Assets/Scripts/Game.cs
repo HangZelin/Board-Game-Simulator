@@ -35,6 +35,8 @@ public class Game : MonoBehaviour, ISaveable
             return;
         }
 
+        gameUI.GetComponent<SettingsUI>().Initialize();
+
         //Instantiate the chesspiece when the game starts.
 
         currentPlayer = Player1;

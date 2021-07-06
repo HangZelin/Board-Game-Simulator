@@ -1,24 +1,88 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SettingsUI : MonoBehaviour
 {
+    [Header ("Settings Tab")]
     [SerializeField] GameObject settingsTab;
 
+    [Header("Logging Tab")]
     [SerializeField] GameObject logBar;
     [SerializeField] TMP_Text logText;
     [SerializeField] TMP_Text tempText;
+
+    [Header ("Scene Dependencies")]
+    [SerializeField] private NetworkManager networkManager;
+
+    [Header ("Texts")]
+    [SerializeField] private Text connectionStatusText;
+
+    [Header("Buttons")]
+    [SerializeField] private Button Team1Button;
+    [SerializeField] private Button Team2Button;
+
+    [Header("Screens")]
+    [SerializeField] private GameObject connectScreen;
+    [SerializeField] private GameObject teamSelectionScreen;
+    [SerializeField] private GameObject gameModeSelectionScreen;
+
     public List<string> logList;
     string lastLogLine = "";
 
     public void Initialize()
     {
         settingsTab.transform.SetAsLastSibling();
+        DisableAllScreens();
+        gameModeSelectionScreen.SetActive(true);
     }
 
+
+    public void OnSingleplayerModeSelected()
+    {
+        DisableAllScreens();
+    }
+
+    public void OnMultiplayerModeSelected()
+    {
+        DisableAllScreens();
+        connectScreen.SetActive(true);
+    }
+
+    public void ShowTeamSelectionScreen()
+    {
+        DisableAllScreens();
+        teamSelectionScreen.SetActive(true);
+    }
+
+    public void SelectTeam(int team)
+    {
+        networkManager.SelectTeam(team);
+
+    }
+
+    internal void RestrictTeamChoice(string occupiedTeam)
+    {
+        Button buttontoDeactivate = occupiedTeam == GameStatus.GetNameOfPlayer(1) ? Team1Button : Team2Button;
+        buttontoDeactivate.interactable = false;
+    }
+
+    public void Onconnect()
+    {
+        networkManager.Connect();
+    }
     // SettingsBar Methods
+
+    public void DisableAllScreens()
+    {
+        settingsTab.SetActive(false);
+        connectScreen.SetActive(false);
+        teamSelectionScreen.SetActive(false);
+        gameModeSelectionScreen.SetActive(false);
+    }
 
     public void ActivateUI()
     {
@@ -87,6 +151,11 @@ public class SettingsUI : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "UNO" && Application.platform == RuntimePlatform.Android && (Input.GetKeyDown(KeyCode.Escape)))
             settingsTab.SetActive(true);
+    }
+
+    public void SetConnectionStatus(string status)
+    {
+        connectionStatusText.text = status;
     }
 }
 
