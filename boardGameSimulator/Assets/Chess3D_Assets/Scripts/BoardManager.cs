@@ -60,8 +60,8 @@ public class BoardManager : MonoBehaviour, ISaveable
         currentPlayer = Player1;
 
         //log
-
-        settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
+        
+            settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
 
         if (!GameStatus.isNewGame)
         {
@@ -126,8 +126,13 @@ public class BoardManager : MonoBehaviour, ISaveable
                 all_possible[i, j] = true;
             } 
         }
-
-        allowedMoves = all_possible;
+        if (!GameStatus.useRules)
+        {
+            allowedMoves = all_possible;
+        } else
+        {
+            allowedMoves = Chessmans[x, y].PossibleMoves();
+        }
         audio_source.PlayOneShot(Sound_Capture, 0.7F);
         for (int i = 0; i < 8; i++)
         {
@@ -340,6 +345,19 @@ public class BoardManager : MonoBehaviour, ISaveable
         {
             SpawnChessman(11, i, 6, false);
         }
+    }
+
+    public void Winner(string winner)
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinningText").GetComponent<Text>().text = winner + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+        //log
+        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
 
 

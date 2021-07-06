@@ -63,11 +63,10 @@ public class Game : MonoBehaviour, ISaveable
         }
 
         // Log
-
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
-    public GameObject Create(string name, int x, int y)
+        public GameObject Create(string name, int x, int y)
     {
         GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
