@@ -21,6 +21,10 @@ public class Game : MonoBehaviour, ISaveable
     private string currentPlayer;
 
     private bool gameOver = false;
+    public enum Team
+    {
+        P1 = 0, P2 = 1
+    }
 
     // Start is called before the first frame update
     void Start()

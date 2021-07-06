@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Game;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -64,9 +65,9 @@ public class SettingsUI : MonoBehaviour
 
     }
 
-    internal void RestrictTeamChoice(string occupiedTeam)
+    internal void RestrictTeamChoice(Team occupiedTeam)
     {
-        Button buttontoDeactivate = occupiedTeam == GameStatus.GetNameOfPlayer(1) ? Team1Button : Team2Button;
+        Button buttontoDeactivate = occupiedTeam == Team.P1 ? Team1Button : Team2Button;
         buttontoDeactivate.interactable = false;
     }
 

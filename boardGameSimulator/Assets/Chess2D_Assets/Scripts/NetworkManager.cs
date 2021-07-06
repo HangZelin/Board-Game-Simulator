@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using static Game;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -53,7 +54,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (firstPlayer.CustomProperties.ContainsKey(TEAM))
             {
                 var occupiedTeam = firstPlayer.CustomProperties[TEAM];
-                uiManager.RestrictTeamChoice((string)occupiedTeam);
+                uiManager.RestrictTeamChoice((Team)occupiedTeam);
             }
         }
         
