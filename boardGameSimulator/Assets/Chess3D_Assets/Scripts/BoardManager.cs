@@ -169,6 +169,18 @@ public class BoardManager : MonoBehaviour, ISaveable
             {
                 // Capture a piece
                 Eat = true;
+                if (GameStatus.useRules && c.GetType() == typeof(King))
+                {
+                    // End the game
+                    if (isWhiteTurn)
+                    {
+                        Winner(Player1);
+                    } else
+                    {
+                        Winner(Player2);
+                    }
+                    return;
+                }
                 activeChessman.Remove(c.gameObject);
                 Destroy(c.gameObject);
 
