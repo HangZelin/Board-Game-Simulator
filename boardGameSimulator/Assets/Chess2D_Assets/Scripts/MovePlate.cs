@@ -39,33 +39,39 @@ public class MovePlate : MonoBehaviour
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(BoardX, BoardY);
-                /*if (!stepDialog.activeInHierarchy)
-                {
-                    Debug.Log("Toggled!");
-                    stepDialog.SetActive(true);
-                    Time.timeScale = 0f;
-                }
-                else
-                {
-                    stepDialog.SetActive(false);
-                    Time.timeScale = 1f;
-                }*/
+            /*if (!stepDialog.activeInHierarchy)
+            {
+                Debug.Log("Toggled!");
+                stepDialog.SetActive(true);
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                stepDialog.SetActive(false);
+                Time.timeScale = 1f;
+            }*/
+            if (GameStatus.useRules)
+            {
+                if (cp.name == "white_king") controller.GetComponent<Game>().GameWinner(GameStatus.GetNameOfPlayer(1));
+                if (cp.name == "black_king") controller.GetComponent<Game>().GameWinner(GameStatus.GetNameOfPlayer(2));
+            }
             Destroy(cp);
-        } 
+        }
 
-        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
-            reference.GetComponent<Chessman>().GetYBoard());
+            controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
+                reference.GetComponent<Chessman>().GetYBoard());
 
-        reference.GetComponent<Chessman>().SetXBoard(BoardX);
-        reference.GetComponent<Chessman>().SetYBoard(BoardY);
-        reference.GetComponent<Chessman>().SetCoords();
+            reference.GetComponent<Chessman>().SetXBoard(BoardX);
+            reference.GetComponent<Chessman>().SetYBoard(BoardY);
+            reference.GetComponent<Chessman>().SetCoords();
 
-        controller.GetComponent<Game>().SetPosition(reference);
+            controller.GetComponent<Game>().SetPosition(reference);
 
-        if (!controller.GetComponent<Game>().IsGameOver())
-            controller.GetComponent<Game>().NextTurn();
+            if (!controller.GetComponent<Game>().IsGameOver())
+                controller.GetComponent<Game>().NextTurn();
 
-        reference.GetComponent<Chessman>().DestroyMovePlate();
+            reference.GetComponent<Chessman>().DestroyMovePlates();
+       
     }
 
     

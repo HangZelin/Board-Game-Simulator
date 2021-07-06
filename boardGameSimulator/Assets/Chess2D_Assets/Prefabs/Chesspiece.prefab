@@ -100,8 +100,6 @@ MonoBehaviour:
   controller: {fileID: 0}
   movePlate: {fileID: 6730530993434636186, guid: 65a9746f3febf694baffd86fe945067d,
     type: 3}
-  stepDialog: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
-    type: 3}
   black_queen: {fileID: 21300000, guid: a9cd4e723a70f5b4e89dbdbd817df2e9, type: 3}
   black_knight: {fileID: 21300000, guid: c80296232d28ec44ebf8a00f81d7590a, type: 3}
   black_bishop: {fileID: 21300000, guid: 42dfc75207c37384589c734e540a3889, type: 3}

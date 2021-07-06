@@ -143,7 +143,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         nameOfGame = "Board Game";
         numOfPlayers = 2;
         nameOfPlayers = new List<string>();
-        hasRules = false;
+        hasRules = true;
         useRules = false;
     }
 

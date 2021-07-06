@@ -8,8 +8,8 @@ public class NewGame : MonoBehaviour
     {
         // Set game info
 
-        PlayerPrefs.SetInt("Chess (2D)_hasRule", 0);
-        PlayerPrefs.SetInt("Chess (3D)_hasRule", 0);
+        PlayerPrefs.SetInt("Chess (2D)_hasRule", 1);
+        PlayerPrefs.SetInt("Chess (3D)_hasRule", 1);
         PlayerPrefs.SetInt("UNO_hasRule", 1);
     }
 

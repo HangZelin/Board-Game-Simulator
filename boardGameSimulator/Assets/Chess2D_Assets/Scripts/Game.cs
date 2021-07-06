@@ -70,19 +70,23 @@ public class Game : MonoBehaviour, ISaveable
     public GameObject Create(string name, int x, int y)
     {
         GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
-        Chessman cm = obj.GetComponent<Chessman>();
-        cm.name = name;
-        cm.SetXBoard(x);
-        cm.SetYBoard(y);
-        cm.Activate();
+
+            Chessman cm = obj.GetComponent<Chessman>();
+            cm.name = name;
+            cm.SetXBoard(x);
+            cm.SetYBoard(y);
+            cm.Activate();
+
         return obj;
     }
 
     public void SetPosition(GameObject obj)
     {
-        Chessman cm = obj.GetComponent<Chessman>();
+            Chessman cm = obj.GetComponent<Chessman>();
 
-        positions[cm.GetXBoard(), cm.GetYBoard()] = obj;
+            positions[cm.GetXBoard(), cm.GetYBoard()] = obj;
+
+        
     }
 
     public void SetPositionEmpty(int x, int y)
@@ -138,6 +142,18 @@ public class Game : MonoBehaviour, ISaveable
 
             SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
         }
+    }
+
+    public void GameWinner(string winner)
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = winner + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
     public void Winner1()
     {
