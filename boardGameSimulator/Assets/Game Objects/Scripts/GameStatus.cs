@@ -45,6 +45,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static bool hasRules = false;
     public static bool useRules = false;
+    public static bool is_Multiplayer = false;
 
     // Setters
 
@@ -55,6 +56,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
         nameOfGame = name;
         isNewGame = true;
+        is_Multiplayer = false;
         hasRules = PlayerPrefs.GetInt(nameOfGame + "_hasRule", 0) == 1;
     }
 

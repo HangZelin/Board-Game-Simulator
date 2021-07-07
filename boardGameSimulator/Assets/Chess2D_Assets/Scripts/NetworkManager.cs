@@ -9,6 +9,7 @@ using static Game;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private SettingsUI uiManager;
+    [SerializeField] private GameObject controller;
     private const int MAX_PLAYERS = 2;
     private const string TEAM = "team";
 
@@ -65,6 +66,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.LogError($"Player {PhotonNetwork.LocalPlayer.ActorNumber} joined the room.");
         PrepareTeamSelectionoptions();
         uiManager.ShowTeamSelectionScreen();
+        if (controller == null) return;
+        PhotonNetwork.Instantiate(controller.name, Vector3.zero, controller.transform.rotation);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

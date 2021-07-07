@@ -45,11 +45,13 @@ public class SettingsUI : MonoBehaviour
     public void OnSingleplayerModeSelected()
     {
         DisableAllScreens();
+        GameStatus.is_Multiplayer = false;
     }
 
     public void OnMultiplayerModeSelected()
     {
         DisableAllScreens();
+        GameStatus.is_Multiplayer = true;
         connectScreen.SetActive(true);
     }
 
