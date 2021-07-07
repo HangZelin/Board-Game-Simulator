@@ -8,6 +8,7 @@ public class Game : MonoBehaviour, ISaveable
 {
     public GameObject chesspiece;
     public GameObject gameUI;
+    public GameObject Board;
     SettingsUI settings;
 
     //Positions and team for other chesspiece
@@ -41,6 +42,16 @@ public class Game : MonoBehaviour, ISaveable
 
         gameUI.GetComponent<SettingsUI>().Initialize();
 
+        //Initialized();
+
+
+    }
+
+    public void Initialized()
+    {
+        
+        Board.SetActive(true);
+
         //Instantiate the chesspiece when the game starts.
 
         currentPlayer = Player1;
@@ -72,7 +83,7 @@ public class Game : MonoBehaviour, ISaveable
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
-        public GameObject Create(string name, int x, int y)
+    public GameObject Create(string name, int x, int y)
     {
         GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 

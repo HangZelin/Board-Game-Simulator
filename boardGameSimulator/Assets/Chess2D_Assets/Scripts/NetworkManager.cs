@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.JoinRandomRoom(null, MAX_PLAYERS);
         }
         else
         {
@@ -37,13 +37,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.LogError($"Connected to server. Looking for random room.");
-        PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinRandomRoom(null, MAX_PLAYERS);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.LogError($"Joining random room failed because of {message}. Creating a new one.");
-        PhotonNetwork.CreateRoom(null);
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MAX_PLAYERS});
     }
 
     private void PrepareTeamSelectionoptions()
@@ -80,5 +80,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     internal bool IsRoomFull()
     {
         return PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+
     }
 }

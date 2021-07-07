@@ -6,6 +6,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 {
 
     [SerializeField] static GameType typeOfGame = GameType.TwoD;
+
     public static GameType TypeOfGame 
     {
         get { return typeOfGame; }
