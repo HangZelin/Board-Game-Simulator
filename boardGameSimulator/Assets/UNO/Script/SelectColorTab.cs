@@ -66,7 +66,7 @@ namespace UNO
             color = CardColor.red;
         }
 
-        // helpers
+        // helper
 
         void DisableOutlines()
         {

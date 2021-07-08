@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,9 +58,15 @@ namespace UNO
             discard.GetComponent<Discard>().DiscardOnClickHandler -= CheckValid;
         }
 
+        void OnTurnStart()
+        {
+            deck.GetComponent<Deck>().Interactable = true;
+        }
+
         public void CheckValid()
         {
-            GameObject currCard = currentHand.GetComponent<CurrentHand>().HighlightedCard;
+            CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
+            GameObject currCard = cHScript.HighlightedCard;
             if (currCard == null) return;
 
             Card cardScript = currCard.GetComponent<Card>();
@@ -78,14 +83,14 @@ namespace UNO
                     case CardType.draw4: selectColorTab.SetActive(true); Game.TurnStartHandler += OnDraw2Draw4Played; break;
                 }
 
-                currentHand.GetComponent<CurrentHand>().SkipTurn();
+                cHScript.SkipTurn();
 
-                if (currentHand.GetComponent<CurrentHand>().Cards.Count == 0)
+                if (cHScript.Cards.Count == 0)
                 {
-                    gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + " wins!");
+                    gameUI.AddLog(cHScript.PlayerName + " wins!");
                     return;
                 }
-                else if (currentHand.GetComponent<CurrentHand>().Cards.Count == 1)
+                else if (cHScript.Cards.Count == 1)
                     StartCoroutine(CheckUno());
                 
                 if (lastCardInfo.cardType != CardType.wild && lastCardInfo.cardType != CardType.draw4)
@@ -145,16 +150,10 @@ namespace UNO
             nextTurnButton.GetComponent<Button>().interactable = true;
         }
 
-        void OnTurnStart()
-        {
-            nextTurnButton.GetComponent<Button>().interactable = false;
-            deck.GetComponent<Deck>().Interactable = true;
-        }
-
         IEnumerator CheckUno()
         {
             CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
-            string player = currentHand.GetComponent<CurrentHand>().PlayerName;
+            string player = cHScript.PlayerName;
             isNextTurn = false;
             unoButtonClicked = false;
 
@@ -179,13 +178,11 @@ namespace UNO
                     for (int j = 0; j < 2; j++) gameScript.DealCard();
                     cHScript.SkipTurn();
                 }
-                Game.TurnEndHandler -= IsNextTurn;
             }
             else
-            {
                 gameUI.AddLog(player + ": UNO!");
-                Game.TurnEndHandler -= IsNextTurn;
-            }
+
+            Game.TurnEndHandler -= IsNextTurn;
         }
 
         public void UNOButtonOnClick()

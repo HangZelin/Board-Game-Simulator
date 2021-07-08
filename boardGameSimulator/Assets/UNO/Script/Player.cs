@@ -3,33 +3,47 @@ using UnityEngine;
 
 namespace UNO
 {
-    public class Player : MonoBehaviour, ISaveable
+    public class Player : MonoBehaviour, ISaveable, IContainer
     {
         string playerName;
-        List<GameObject> cards;
-        public bool isCurrentPlayer;
-
-        [SerializeField] GameObject hand;
-        public GameObject Hand { get { return hand; }
-            set {
-                if (value.GetComponent<Hand>() != null) hand = value;
-                hand.GetComponent<Hand>().PlayerName = name;
-            } 
-        }
         GameObject currentHand;
         UNOInfo unoInfo;
 
+        GameObject hand;
+        public GameObject Hand
+        {
+            get { return hand; }
+            set
+            {
+                if (value.GetComponent<Hand>() != null)
+                {
+                    hand = value;
+                    hand.GetComponent<Hand>().PlayerName = name;
+                }
+            }
+        }
+
+        List<GameObject> cards;
+        public List<GameObject> Cards { get { return cards; } }
+
+        public bool isCurrentPlayer;
+
+        /// <summary>
+        /// Initialize Player. Add PlaceCards to TurnStartHandler. Add GetCardsFromHand to TurnEndHandler.
+        /// </summary>
+        /// <param name="playerName">Name of this player.</param>
+        /// <param name="currentHand">Reference of current hand.</param>
+        /// <param name="unoInfo">Reference of uno info script.</param>
         public void Initialize(string playerName, GameObject currentHand, UNOInfo unoInfo)
         {
-            this.unoInfo = unoInfo;
             this.playerName = playerName;
-            name = playerName;
             this.currentHand = currentHand;
-
+            this.unoInfo = unoInfo;
+            
             cards = new List<GameObject>();
+            name = playerName;
 
             Game.TurnStartHandler += PlaceCards;
-
             Game.TurnEndHandler += GetCardsFromHand;
         }
 
@@ -40,26 +54,27 @@ namespace UNO
 
         public void PlaceCards()
         {
-            if (isCurrentPlayer) currentHand.GetComponent<CurrentHand>().PlayerName = name;
             if (cards.Count == 0) return;
 
+            // If is current player, toggle card to face. Otherwise toggle card to back.
             if (cards[0].GetComponent<Card>().IsFace != isCurrentPlayer)
                 foreach (GameObject card in cards)
                     card.GetComponent<Card>().IsFace = isCurrentPlayer;
 
-            if (!isCurrentPlayer)
+            // Transfer all cards to hand/currenthand. 
+            List<GameObject> transferedCards;
+            if (isCurrentPlayer)
             {
-                foreach (GameObject card in cards)
-                    card.transform.SetParent(hand.transform);
-                hand.GetComponent<Hand>().Cards = cards;
+                TransferAllCards(currentHand.transform, out transferedCards);
+                currentHand.GetComponent<CurrentHand>().Cards = transferedCards;
             }
             else
             {
-                foreach (GameObject card in cards)
-                    card.transform.SetParent(currentHand.transform);
-                currentHand.GetComponent<CurrentHand>().Cards = cards;
+                TransferAllCards(hand.transform, out transferedCards);
+                hand.GetComponent<Hand>().Cards = transferedCards;
             }
 
+            // Remove the cards list.
             cards = new List<GameObject>();
         }
 
@@ -67,11 +82,17 @@ namespace UNO
         {
             if (isCurrentPlayer)
             {
-                currentHand.GetComponent<CurrentHand>().GiveCards(gameObject, out cards);
+                currentHand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
                 isCurrentPlayer = false;
             }
             else
-                hand.GetComponent<Hand>().GiveCards(gameObject, out cards);
+                hand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
+        }
+
+        public void SetCurrentHandName()
+        {
+            // Set the name of current hand.
+            if (isCurrentPlayer) currentHand.GetComponent<CurrentHand>().PlayerName = name;
         }
 
         void OnEnable()
@@ -88,9 +109,16 @@ namespace UNO
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
 
-        public override string ToString()
+        // IContainer Method
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
-            return playerName;
+            foreach (GameObject card in cards)
+                card.transform.SetParent(parent);
+
+            transferedCards = new List<GameObject>();
+            transferedCards.AddRange(cards);
+
+            cards = new List<GameObject>();
         }
 
         // Save load methods
@@ -128,6 +156,11 @@ namespace UNO
                 this.cards.Add(card);
                 i += listCount;
             }
+        }
+
+        public override string ToString()
+        {
+            return playerName;
         }
     }
 }

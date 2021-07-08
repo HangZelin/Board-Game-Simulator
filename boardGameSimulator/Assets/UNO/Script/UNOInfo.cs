@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace UNO
 {
-
     public enum CardType { num, draw2, draw4, reverse, skip, wild }
     public enum CardColor { red, yellow, blue, green, black };
 
@@ -64,6 +63,7 @@ namespace UNO
             return playerCards;
         }
 
+        // helper
         public static List<string> CardToList(GameObject card)
         {
             if (card.GetComponent<Card>() == null)

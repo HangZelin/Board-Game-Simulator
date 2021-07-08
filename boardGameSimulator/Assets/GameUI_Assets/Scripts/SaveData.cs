@@ -48,13 +48,6 @@ public struct PlayerCards
     [SerializeField] public List<string> cards;
 }
 
-// 2D Board Games Save Data
-[Serializable]
-public class SaveData_2D : SaveData
-{
-
-}
-
 public interface ISaveData
 {
     string ToJson();

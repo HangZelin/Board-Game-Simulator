@@ -5,13 +5,44 @@ using UnityEngine.UI;
 
 namespace UNO 
 {
-    public class Deck : MonoBehaviour, ISaveable
+    public class Deck : MonoBehaviour, ISaveable, IContainer
     {
         [SerializeField] GameObject unused;
         [SerializeField] GameObject discard;
 
+        [SerializeField] GameObject numCard;
+        [SerializeField] GameObject skipCard;
+        [SerializeField] GameObject reverseCard;
+        [SerializeField] GameObject draw2Card;
+        [SerializeField] GameObject draw4Card;
+        [SerializeField] GameObject wildCard;
+
+        [SerializeField] Button drawACardButton;
+        [SerializeField] Outline buttonOutline;
+        public bool Interactable
+        {
+            get { return drawACardButton.interactable; }
+            set
+            {
+                if (value)
+                    buttonOutline.effectColor = Color.blue;
+                else
+                    buttonOutline.effectColor = Color.black;
+                drawACardButton.interactable = value;
+            }
+        }
+
+        [SerializeField] GameObject Note;
+
+        [SerializeField] UNOInfo unoInfo;
+
+        [SerializeField] AudioSource drawCardAudio;
+
+        [SerializeField] bool enableCardsCount;
+        [SerializeField] GameObject cardsCount;
+
         List<GameObject> cards;
-        public List<GameObject> Cards 
+        public List<GameObject> Cards
         {
             get { return cards; }
             set
@@ -23,33 +54,6 @@ namespace UNO
                         card.transform.SetParent(unused.transform);
                 }
             }
-        }
-
-        [SerializeField] GameObject numCard;
-        [SerializeField] GameObject skipCard;
-        [SerializeField] GameObject reverseCard;
-        [SerializeField] GameObject draw2Card;
-        [SerializeField] GameObject draw4Card;
-        [SerializeField] GameObject wildCard;
-
-        [SerializeField] Button drawACardButton;
-        [SerializeField] GameObject Note;
-        [SerializeField] Outline buttonOutline;
-
-        [SerializeField] UNOInfo unoInfo;
-
-        [SerializeField] AudioSource drawCardAudio;
-
-        void OnEnable()
-        {
-            SaveLoadManager.OnSaveHandler += PopulateSaveData;
-            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
-        }
-
-        void OnDisable()
-        {
-            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
-            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
 
         public void Initialize(GameObject discard, Action onclick, UNOInfo unoInfo)
@@ -67,7 +71,7 @@ namespace UNO
 
             if (!GameStatus.isNewGame) return;
 
-            // Add cards to the deck
+            // Initialize cards in the deck
 
             // Color cards
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -125,19 +129,33 @@ namespace UNO
                 cards.Add(a_WildCard);
             }
 
+            // Rename the cards
             foreach (GameObject card in cards)
                 card.name = card.GetComponent<Card>().ToString();
 
             Shuffle(cards);
             while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 && cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
+
+            cardsCount.SetActive(enableCardsCount);
         }
 
+        /** <summary>
+         * Draw a number of cards from head of the list.
+         * </summary> 
+         * <returns>List of cards drawed.</returns>
+         * <param name="num">Number of cards to draw</param>
+         * <param name="transform">Target transform.</param>
+         */
         public List<GameObject> DrawCards(int num, Transform transform)
         {
             if (num > cards.Count)
             {
-                discard.GetComponent<Discard>().PileToDeck();
+                // Transfer all cards from discard
+                List<GameObject> transferedCards;
+                discard.GetComponent<IContainer>().TransferAllCards(unused.transform, out transferedCards);
+                cards.AddRange(transferedCards);
+
                 Shuffle(Cards);
 
                 if (num > cards.Count)
@@ -146,6 +164,7 @@ namespace UNO
                     return null;
                 }
             }
+
             List<GameObject> drawCards = new List<GameObject>();
             for (int i = 0; i < num; i++)
             {
@@ -179,17 +198,29 @@ namespace UNO
             Note.SetActive(false);
         }
 
-        public bool Interactable 
+        // IContainer method
+
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
-            get { return drawACardButton.interactable; }
-            set
-            {
-                if (value)
-                    buttonOutline.effectColor = Color.blue;
-                else
-                    buttonOutline.effectColor = Color.black;
-                drawACardButton.interactable = value;
-            }
+            foreach (GameObject card in cards)
+                card.transform.SetParent(parent);
+
+            transferedCards = new List<GameObject>();
+            transferedCards.AddRange(cards);
+
+            cards = new List<GameObject>();
+        }
+
+        void OnEnable()
+        {
+            SaveLoadManager.OnSaveHandler += PopulateSaveData;
+            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
+        }
+
+        void OnDisable()
+        {
+            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
+            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
 
         // Save load methods

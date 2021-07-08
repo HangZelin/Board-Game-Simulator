@@ -5,30 +5,32 @@ using UnityEngine.UI;
 
 namespace UNO
 {
-    public class Discard : MonoBehaviour, IPointerClickHandler, ISaveable
+    public class Discard : MonoBehaviour, IPointerClickHandler, ISaveable, IContainer
     {
-        [SerializeField] GameObject deck;
+        // References
         GameObject currentHand;
-
-        List<GameObject> cards;
-        public List<GameObject> Cards { get { return cards; } }
-
         [SerializeField] UNOInfo unoInfo;
         [SerializeField] AudioSource playCard;
 
+        // Cards
+        List<GameObject> cards;
+        public List<GameObject> Cards { get { return cards; } }
+
+        // On click event
         public delegate void DiscardOnClick();
         public event DiscardOnClick DiscardOnClickHandler;
 
-        public void Initialize(GameObject currentHand, GameObject deck, UNOInfo unoInfo)
+        public void Initialize(GameObject currentHand, UNOInfo unoInfo)
         {
             this.unoInfo = unoInfo;
             this.currentHand = currentHand;
-            this.deck = deck;
 
             cards = new List<GameObject>();
+
             name = ToString();
         }
 
+        // Put a card into the discard, place it in the end of the list
         public void CardToPile(GameObject card)
         {
             card.transform.SetParent(gameObject.transform);
@@ -38,18 +40,13 @@ namespace UNO
             card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             card.GetComponent<CardReaction>().enabled = false;
 
-            this.cards.Add(card);
+            cards.Add(card);
             playCard.Play();
-        }
-
-        public void PileToDeck()
-        {
-            deck.GetComponent<Deck>().Cards = cards;
-            this.cards = new List<GameObject>();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            // For Enforce Rules
             if (DiscardOnClickHandler != null)
             {
                 DiscardOnClickHandler();
@@ -72,12 +69,18 @@ namespace UNO
             GetComponent<Outline>().enabled = false;
         }
 
-        public override string ToString()
-        {
-            return "Discard";
-        }
+        // IContainer Methods
 
-        // Save load methods
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
+        {
+            foreach (GameObject card in cards)
+                card.transform.SetParent(parent);
+
+            transferedCards = new List<GameObject>();
+            transferedCards.AddRange(cards);
+
+            cards = new List<GameObject>();
+        }
 
         void OnEnable()
         {
@@ -90,6 +93,8 @@ namespace UNO
             SaveLoadManager.OnSaveHandler -= PopulateSaveData;
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
+
+        // Save load methods
 
         public void PopulateSaveData(SaveData sd)
         {
@@ -123,6 +128,11 @@ namespace UNO
 
             if (cards.Count != 0)
                 cards[cards.Count - 1].transform.SetAsLastSibling();
+        }
+
+        public override string ToString()
+        {
+            return "Discard";
         }
     }
 }
