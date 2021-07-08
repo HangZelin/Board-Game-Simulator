@@ -119,8 +119,11 @@ namespace UNO
 
             directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
 
+            // Initilialize Game end handler
+            TurnEndHandler += currentHand.GetComponent<CurrentHand>().EnableCover;
+
             SetHand();
-            OnTurnStart();
+            currentHand.GetComponent<CurrentHand>().EnableCover();
         }
 
         void OnEnable()
@@ -142,7 +145,6 @@ namespace UNO
                 TurnStartHandler();
             if (!GameStatus.useRules)
             {
-                deck.GetComponent<Deck>().Interactable = true;
                 nextTurnButton.interactable = true;
             }
         }
@@ -150,7 +152,6 @@ namespace UNO
         public void OnTurnEnd()
         {
             nextTurnButton.interactable = false;
-            deck.GetComponent<Deck>().Interactable = false;
 
             if (TurnEndHandler != null)
                 TurnEndHandler();
