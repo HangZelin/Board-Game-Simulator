@@ -44,6 +44,9 @@ namespace NamePage
                 pos.y -= nameBarHeight;
             }
 
+            //Initialize Game Mode
+            GameStatus.is_Multiplayer = PlayerPrefs.GetInt(GameStatus.GetNameOfGame() + "_isMultiplayer") == 1;
+
             // Initialize rule toggle
             if (GameStatus.hasRules)
             {
@@ -71,6 +74,7 @@ namespace NamePage
             if (GameStatus.hasRules)
                 PlayerPrefs.SetInt(GameStatus.GetNameOfGame() + "_useRule", ruleToggle.isOn ? 1 : 0);
             GameStatus.useRules = ruleToggle.isOn;
+
 
             // Check if all names are unique
             if (GameStatus.IsNameUnique())

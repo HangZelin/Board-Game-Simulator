@@ -19,17 +19,12 @@ public class SettingsUI : MonoBehaviour
     [Header ("Scene Dependencies")]
     [SerializeField] private NetworkManager networkManager;
 
-    [Header ("Texts")]
-    [SerializeField] private Text connectionStatusText;
-
     [Header("Buttons")]
     [SerializeField] private Button Team1Button;
     [SerializeField] private Button Team2Button;
 
     [Header("Screens")]
-    [SerializeField] private GameObject connectScreen;
     [SerializeField] private GameObject teamSelectionScreen;
-    [SerializeField] private GameObject gameModeSelectionScreen;
 
     public List<string> logList;
     string lastLogLine = "";
@@ -38,21 +33,6 @@ public class SettingsUI : MonoBehaviour
     {
         settingsTab.transform.SetAsLastSibling();
         DisableAllScreens();
-        gameModeSelectionScreen.SetActive(true);
-    }
-
-
-    public void OnSingleplayerModeSelected()
-    {
-        DisableAllScreens();
-        GameStatus.is_Multiplayer = false;
-    }
-
-    public void OnMultiplayerModeSelected()
-    {
-        DisableAllScreens();
-        GameStatus.is_Multiplayer = true;
-        connectScreen.SetActive(true);
     }
 
     public void ShowTeamSelectionScreen()
@@ -82,9 +62,7 @@ public class SettingsUI : MonoBehaviour
     public void DisableAllScreens()
     {
         settingsTab.SetActive(false);
-        connectScreen.SetActive(false);
         teamSelectionScreen.SetActive(false);
-        gameModeSelectionScreen.SetActive(false);
     }
 
     public void ActivateUI()
@@ -156,9 +134,5 @@ public class SettingsUI : MonoBehaviour
             settingsTab.SetActive(true);
     }
 
-    public void SetConnectionStatus(string status)
-    {
-        connectionStatusText.text = status;
-    }
 }
 

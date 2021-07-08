@@ -25,14 +25,15 @@ public class Game : MonoBehaviour, ISaveable
     private string playerControlled;
 
     private bool gameOver = false;
+
     public enum Team
     {
         P1 = 0, P2 = 1
     }
-
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(GameStatus.is_Multiplayer);
         settings = gameUI.GetComponent<SettingsUI>();
 
         if (!GameStatus.isNewGame)
@@ -43,7 +44,17 @@ public class Game : MonoBehaviour, ISaveable
             return;
         }
 
-        gameUI.GetComponent<SettingsUI>().Initialize();
+        settings.Initialize();
+        
+        //Gamemode Initialization;
+        if (GameStatus.is_Multiplayer)
+        {
+            settings.Onconnect();
+        } else
+        {
+            Debug.Log("Hotseat Mode");
+            Initialized();
+        }
     }
 
     public void Initialized()
@@ -53,19 +64,9 @@ public class Game : MonoBehaviour, ISaveable
 
         //Instantiate the chesspiece when the game starts.
 
-        
-
-       if (!GameStatus.is_Multiplayer)
-        {
             currentPlayer = Player1;
             CreatePiecesforP1();
             CreatePiecesforP2();
-        } else
-        {
-            currentPlayer = Player1;
-            CreatePiecesforP1();
-            CreatePiecesforP2();
-        }
 
        
 
@@ -82,8 +83,6 @@ public class Game : MonoBehaviour, ISaveable
 
     public GameObject Create(string name, int x, int y)
     {
-        if (!GameStatus.is_Multiplayer)
-        {
             GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
             Chessman cm = obj.GetComponent<Chessman>();
@@ -93,18 +92,6 @@ public class Game : MonoBehaviour, ISaveable
             cm.Activate();
 
             return obj;
-        } else
-        {
-            GameObject obj = PhotonNetwork.Instantiate(chesspiece.name, new Vector3(0, 0, -1), Quaternion.identity);
-
-            Chessman cm = obj.GetComponent<Chessman>();
-            cm.name = name;
-            cm.SetXBoard(x);
-            cm.SetYBoard(y);
-            cm.Activate();
-
-            return obj;
-        }
     }
 
     public void CreatePiecesforP1 ()

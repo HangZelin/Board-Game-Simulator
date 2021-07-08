@@ -18,7 +18,6 @@ public class NewGame : MonoBehaviour
         GameStatus.SetNameOfGame("Chess (2D)");
         GameStatus.NumOfPlayers = 2;
         GameStatus.TypeOfGame = GameType.TwoD;
-        GameStatus.is_Multiplayer = false;
     }
 
     public void UNOButtonOnClick()
@@ -26,7 +25,6 @@ public class NewGame : MonoBehaviour
         GameStatus.SetNameOfGame("UNO");
         GameStatus.NumOfPlayers = 4;
         GameStatus.TypeOfGame = GameType.Card;
-        GameStatus.is_Multiplayer = false;
     }
 
     public void Chess3DButtonOnClick()
@@ -34,6 +32,5 @@ public class NewGame : MonoBehaviour
         GameStatus.SetNameOfGame("Chess (3D)");
         GameStatus.NumOfPlayers = 2;
         GameStatus.TypeOfGame = GameType.ThreeD;
-        GameStatus.is_Multiplayer = false;
     }
 }

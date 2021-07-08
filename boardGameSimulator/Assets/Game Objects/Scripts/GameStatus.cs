@@ -56,7 +56,6 @@ public class GameStatus : MonoBehaviour, ISaveable
 
         nameOfGame = name;
         isNewGame = true;
-        is_Multiplayer = false;
         hasRules = PlayerPrefs.GetInt(nameOfGame + "_hasRule", 0) == 1;
     }
 
@@ -146,6 +145,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         nameOfGame = "Board Game";
         numOfPlayers = 2;
         nameOfPlayers = new List<string>();
+        is_Multiplayer = false;
         hasRules = true;
         useRules = false;
     }
