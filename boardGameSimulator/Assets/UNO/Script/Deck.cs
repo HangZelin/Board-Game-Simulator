@@ -73,7 +73,11 @@ namespace UNO
             drawACardButton.onClick.AddListener(delegate { onclick(); });
             Interactable = true;
 
-            if (!GameStatus.isNewGame) return;
+            if (!GameStatus.isNewGame)
+            {
+                cardsCount.SetActive(enableCardsCount);
+                return;
+            }
 
             // Initialize cards in the deck
 
@@ -138,7 +142,7 @@ namespace UNO
                 card.name = card.GetComponent<Card>().ToString();
 
             Shuffle(cards);
-            while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 && cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
+            while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 || cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
 
             cardsCount.SetActive(enableCardsCount);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UNO 
 {
-    public class Rules : MonoBehaviour
+    public class Rules : MonoBehaviour, ISaveable
     {
         GameObject currentHand;
         Discard discardScript;
@@ -38,14 +39,18 @@ namespace UNO
             this.gameScript = gameScript;
 
             List<GameObject> discardCards = discard.GetComponent<Discard>().Cards;
-            if (GameStatus.isNewGame || discardCards.Count == 0)
+            if (GameStatus.isNewGame)
             {
                 List<GameObject> firstCard = deck.GetComponent<Deck>().DrawCards(1, gameObject.transform);
                 discard.GetComponent<Discard>().CardToPile(firstCard[0]);
                 lastCardInfo = firstCard[0].GetComponent<Card>().cardInfo;
             }
             else
-                lastCardInfo = discardCards[discardCards.Count - 1].GetComponent<Card>().cardInfo;
+            {
+                CardInfo info = discardCards[discardCards.Count - 1].GetComponent<Card>().cardInfo;
+                lastCardInfo.cardType = info.cardType;
+                lastCardInfo.num = info.num;
+            }
 
             unoButton.transform.SetAsLastSibling();
             cardDrawed = GameStatus.isNewGame;
@@ -53,9 +58,22 @@ namespace UNO
             isCheckUno = false;
         }
 
+        void OnEnable()
+        {
+            SaveLoadManager.OnSaveHandler += PopulateSaveData;
+            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
+        }
+
         private void OnDisable()
         {
+            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
+            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
+
             discardScript.DiscardOnClickHandler -= CheckValid;
+
+            Game.TurnStartHandler -= OnDraw2Draw4Played_Start;
+            Game.TurnEndHandler -= OnDraw2Draw4Played_End;
+            Game.TurnEndHandler -= IsNextTurn;
         }
 
         public void CheckValid()
@@ -210,6 +228,16 @@ namespace UNO
                 player.GetComponent<Player>().TakeCards(gameScript.DealCards(2, player));
                 isCheckUno = false;
             }
+        }
+
+        public void PopulateSaveData(SaveData sd)
+        {
+            sd.unoSaveData.lastCardColor = lastCardInfo.cardColor.ToString();
+        }
+
+        public void LoadFromSaveData(SaveData sd)
+        {
+            Enum.TryParse<CardColor>(sd.unoSaveData.lastCardColor, out lastCardInfo.cardColor);
         }
     }
 }

@@ -24,6 +24,9 @@ public class SaveData : ISaveData
     // Card fields
     public List<PlayerCards> playerCards;
 
+    // UNO field
+    public unoSD unoSaveData;
+
     public string ToJson()
     {
         dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -57,6 +60,12 @@ public struct PlayerCards
     [SerializeField] public string playerName;
     [SerializeField] public List<int> listCounts;
     [SerializeField] public List<string> cards;
+}
+
+[Serializable]
+public struct unoSD
+{
+    public string lastCardColor;
 }
 
 public interface ISaveData
