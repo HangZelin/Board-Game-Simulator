@@ -56,6 +56,7 @@ namespace UNO
             currentHand = Instantiate(currentHandPrefab, Canvas.transform);
 
             deckScript = deck.GetComponent<Deck>();
+
             deckScript.Initialize(discard, DealCard, GetComponent<UNOInfo>());
 
             discard.GetComponent<Discard>().Initialize(currentHand, GetComponent<UNOInfo>());
@@ -93,14 +94,12 @@ namespace UNO
                 // Deal 7 cards to each player
                 foreach (GameObject player in players)
                     player.GetComponent<Player>().Cards.AddRange(DealCards(7, player));
-
                 gameUI.GetComponent<SettingsUI>().AddLog("UNO: New game.");
             }
             else
             {
                 if (SaveLoadManager.OnLoadHandler != null)
                     SaveLoadManager.OnLoadHandler(SaveLoadManager.tempSD);
-
                 gameUI.GetComponent<SettingsUI>().AddLog("UNO: Load complete.");
             }
 
@@ -116,29 +115,12 @@ namespace UNO
             /////////
             // Initialize Game start handler
 
-            TurnStartHandler += () => {
-                // If without rules, enable next turn button
-                if (!GameStatus.useRules)
-                    nextTurnButton.interactable = true;
-                // Enable deck draw
-                deckScript.Interactable = true;
-                // Disable save
-                canSave = false;
-            };
             if (GameStatus.useRules)
                 TurnStartHandler += GetComponent<Rules>().OnDraw2Draw4Played_Start;
 
             /////////
             // Initialize Game end handler
 
-            TurnEndHandler += () => { 
-                // Disable next turn button
-                nextTurnButton.interactable = false;
-                // Disable deck draw
-                deckScript.Interactable = false;
-                // Enable save
-                canSave = true;
-            };
             // Get cards from hand to player
             foreach (GameObject player in players)
                 TurnEndHandler += player.GetComponent<Player>().GetCardsFromHand;
@@ -147,7 +129,7 @@ namespace UNO
                 TurnEndHandler += GetComponent<Rules>().IsNextTurn;
 
             // Set next currentPlayerIndex
-            TurnEndHandler += () => { currentPlayerIndex = NextPlayer(currentPlayerIndex); };
+            TurnEndHandler += SetCurrentPlayerIndex;
             if (GameStatus.useRules)
                 TurnEndHandler += GetComponent<Rules>().OnDraw2Draw4Played_End;
 
@@ -166,6 +148,8 @@ namespace UNO
                 player.GetComponent<Player>().PlaceCards();
             currentHand.GetComponent<CurrentHand>().EnableCover();
             canSave = true;
+
+            GameStatus.isNewGame = true;
         }
 
         void OnEnable()
@@ -179,16 +163,34 @@ namespace UNO
             SaveLoadManager.OnSaveHandler -= PopulateSaveData;
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
             Screen.orientation = ScreenOrientation.Portrait;
+
+            TurnEndHandler -= SetCurrentPlayerIndex;
+            TurnEndHandler -= SetHand;
         }
 
         public void OnTurnStart()
         {
+            // If without rules, enable next turn button
+            if (!GameStatus.useRules)
+                nextTurnButton.interactable = true;
+            // Disable save
+            canSave = false;
+            // Enable deck draw
+            deck.GetComponent<Deck>().Interactable = true;
+
             if (TurnStartHandler != null)
                 TurnStartHandler();
         }
 
         public void OnTurnEnd()
-        { 
+        {
+            // Disable next turn button
+            nextTurnButton.interactable = false;
+            // Enable save
+            canSave = true;
+            // Disable deck draw
+            deck.GetComponent<Deck>().Interactable = false;
+
             if (TurnEndHandler != null)
                 TurnEndHandler();
         }
@@ -221,6 +223,12 @@ namespace UNO
                 return index == 0
                     ? numOfPlayer - 1
                     : index - 1;
+        }
+
+        // helper
+        void SetCurrentPlayerIndex()
+        {
+            currentPlayerIndex = NextPlayer(currentPlayerIndex);
         }
 
         /// <summary>

@@ -124,14 +124,12 @@ namespace UNO
 
         public void EnableCover()
         {
-            deck.GetComponent<Deck>().Interactable = false;
             cover.gameObject.SetActive(true);
             cover.gameObject.transform.SetAsLastSibling();
         }
 
         public void DisableCover()
-        {
-            deck.GetComponent<Deck>().Interactable = true;
+        { 
             cover.gameObject.SetActive(false);
         }
 
