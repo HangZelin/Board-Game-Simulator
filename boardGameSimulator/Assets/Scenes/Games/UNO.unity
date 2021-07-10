@@ -2144,7 +2144,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 868406817}
+      objectReference: {fileID: 1264333079}
     - target: {fileID: 7227897746731120612, guid: a46430084b0d06f45918ff3b0dd7d8c8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -2159,6 +2159,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227897746731120612, guid: a46430084b0d06f45918ff3b0dd7d8c8,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UNO.Game, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7227897746803336548, guid: a46430084b0d06f45918ff3b0dd7d8c8,
         type: 3}
@@ -2419,6 +2424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Canvas: {fileID: 684566162}
   gameUI: {fileID: 1925012310}
+  sLManager: {fileID: 868406817}
   deckPrefab: {fileID: 7505503790197418650, guid: a4760e2af26464e40918c53d8c86f413,
     type: 3}
   currentHandPrefab: {fileID: 1027195749122143352, guid: 74b0f3a193ef300489fbc631df31c99f,
@@ -2459,7 +2465,6 @@ MonoBehaviour:
   gameUI: {fileID: 1570933008}
   selectColorTab: {fileID: 1012142280}
   nextTurnButton: {fileID: 945247497}
-  directionIcons: {fileID: 371178333}
   unoButton: {fileID: 1934414620}
 --- !u!114 &1264333082
 MonoBehaviour:
