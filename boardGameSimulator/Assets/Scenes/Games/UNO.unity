@@ -2458,7 +2458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameUI: {fileID: 1570933008}
   selectColorTab: {fileID: 1012142280}
-  nextTurnButton: {fileID: 945247495}
+  nextTurnButton: {fileID: 945247497}
   directionIcons: {fileID: 371178333}
   unoButton: {fileID: 1934414620}
 --- !u!114 &1264333082

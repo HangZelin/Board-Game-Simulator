@@ -17,13 +17,17 @@ namespace UNO
         [SerializeField] GameObject draw4Card;
         [SerializeField] GameObject wildCard;
 
-        [SerializeField] Button drawACardButton;
+        [SerializeField] public Button drawACardButton;
         [SerializeField] Outline buttonOutline;
         public bool Interactable
         {
             get { return drawACardButton.interactable; }
             set
             {
+                // ??? why is outline destroyed when I load from save
+                if (buttonOutline == null)
+                    buttonOutline = gameObject.transform.Find("Image3").GetComponent<Outline>();
+
                 if (value)
                     buttonOutline.effectColor = Color.blue;
                 else

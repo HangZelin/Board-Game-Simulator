@@ -22,6 +22,7 @@ namespace UNO
                 case CardColor.blue: return blue;
                 case CardColor.green: return green;
                 case CardColor.yellow: return yellow;
+                case CardColor.black: return Color.black;
                 default:
                     Debug.LogError("Failed to get color");
                     return Color.white;

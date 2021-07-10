@@ -42,9 +42,6 @@ namespace UNO
             
             cards = new List<GameObject>();
             name = playerName;
-
-            Game.TurnStartHandler += PlaceCards;
-            Game.TurnEndHandler += GetCardsFromHand;
         }
 
         public void TakeCards(List<GameObject> cards)
@@ -103,8 +100,9 @@ namespace UNO
 
         private void OnDisable()
         {
-            Game.TurnStartHandler -= PlaceCards;
             Game.TurnEndHandler -= GetCardsFromHand;
+            Game.TurnEndHandler -= PlaceCards;
+
             SaveLoadManager.OnSaveHandler -= PopulateSaveData;
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
