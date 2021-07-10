@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f3be0a65b3d6914db432a41f8282f3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: {fileID: 7505503790197418650, guid: a4760e2af26464e40918c53d8c86f413, type: 3}
+  unoInfo: {fileID: 0}
   playCard: {fileID: 7357775458308561233}
 --- !u!114 &7818225952715040681
 MonoBehaviour:

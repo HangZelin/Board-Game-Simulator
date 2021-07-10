@@ -1,15 +1,19 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UNO
 {
     public class CardReaction : MonoBehaviour, IPointerClickHandler
     {
+        // Reference
         GameObject currentHand;
 
+        // When click, the increase of card.rect.y
         [SerializeField] float y = 10f;
-        [SerializeField] bool isHighlight = false;
-        [SerializeField] int siblingsIndex;
+
+        bool isHighlight;
+        int siblingsIndex;
 
         public void Initialize(GameObject currentHand)
         {
@@ -43,6 +47,16 @@ namespace UNO
             GetComponent<RectTransform>().anchoredPosition = v;
             gameObject.transform.SetSiblingIndex(siblingsIndex);
             isHighlight = false;
+        }
+
+        void OnEnable()
+        {
+            GetComponent<Outline>().enabled = true;
+        }
+
+        void OnDisable()
+        {
+            GetComponent<Outline>().enabled = false;
         }
     }
 }

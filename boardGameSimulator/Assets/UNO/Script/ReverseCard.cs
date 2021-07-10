@@ -61,14 +61,6 @@ namespace UNO
             a_CardInfo.num = -1;
         }
 
-        public GameObject Copy(Transform transform)
-        {
-            GameObject copy = Instantiate(prefab, transform);
-            copy.GetComponent<ReverseCard>().Initialize(color, isFace);
-            copy.name = ToString();
-            return copy;
-        }
-
         public override string ToString()
         {
             return "Reverse_" + color;

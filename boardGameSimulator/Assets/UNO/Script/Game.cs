@@ -8,6 +8,7 @@ namespace UNO
     {
         [SerializeField] GameObject Canvas;
         [SerializeField] GameObject gameUI;
+        [SerializeField] SaveLoadManager sLManager;
         SettingsUI uiScript;
 
         [SerializeField] GameObject deckPrefab;
@@ -33,6 +34,10 @@ namespace UNO
         [SerializeField] GameObject directionIcons;
         bool antiClockWise;
 
+        [SerializeField] Button nextTurnButton;
+
+        bool canSave;
+
         public delegate void TurnStart();
         public static event TurnStart TurnStartHandler;
 
@@ -45,10 +50,6 @@ namespace UNO
             numOfPlayer = GameStatus.NumOfPlayers;
             uiScript = gameUI.GetComponent<SettingsUI>();
 
-            // Initialize Turn Start
-
-            TurnStartHandler += SetHand;
-
             // Initialize deck, discard, currenthand;
             deck = Instantiate(deckPrefab, Canvas.transform);
             discard = Instantiate(discardPrefab, Canvas.transform);
@@ -57,12 +58,11 @@ namespace UNO
             deckScript = deck.GetComponent<Deck>();
             deckScript.Initialize(discard, DealCard, GetComponent<UNOInfo>());
 
-            discard.GetComponent<Discard>().Initialize(currentHand, deck, GetComponent<UNOInfo>());
+            discard.GetComponent<Discard>().Initialize(currentHand, GetComponent<UNOInfo>());
 
-            currentHand.GetComponent<CurrentHand>().Initialize(discard, deck);
+            currentHand.GetComponent<CurrentHand>().Initialize(discard, deck, OnTurnStart);
 
             // Initialize hands
-
             hands = new List<GameObject>();
             for (int i = 0; i < numOfPlayer - 1; i++)
             {
@@ -73,7 +73,6 @@ namespace UNO
             Hand.SetPositions(hands);
 
             // Initialize players
-
             players = new List<GameObject>();
             for (int i = 0; i < numOfPlayer; i++)
             {
@@ -81,8 +80,10 @@ namespace UNO
                 a_Player.GetComponent<Player>().Initialize(GameStatus.GetNameOfPlayer(i + 1), currentHand, GetComponent<UNOInfo>());
                 players.Add(a_Player);
             }
-            
+
+            // Initialize settings ui
             gameUI.GetComponent<SettingsUI>().Initialize();
+
 
             if (GameStatus.isNewGame)
             {
@@ -90,9 +91,8 @@ namespace UNO
                 antiClockWise = true;
 
                 // Deal 7 cards to each player
-
                 foreach (GameObject player in players)
-                    player.GetComponent<Player>().TakeCards(DealCards(7, player));
+                    player.GetComponent<Player>().Cards.AddRange(DealCards(7, player));
 
                 gameUI.GetComponent<SettingsUI>().AddLog("UNO: New game.");
             }
@@ -104,22 +104,68 @@ namespace UNO
                 gameUI.GetComponent<SettingsUI>().AddLog("UNO: Load complete.");
             }
 
+            // Initialize rules script
+            GetComponent<Rules>().enabled = GameStatus.useRules;
             if (GameStatus.useRules)
-            {
                 GetComponent<Rules>().Initialize(currentHand, discard, deck, this);
-                GetComponent<Rules>().enabled = true;
-            }
-            else
-            {
-                GetComponent<Rules>().enabled = false;
-                directionIcons.GetComponent<DirectionIcons>().Interactable = true;
-            }
 
             // Initialize direaction Icons
-
+            directionIcons.GetComponent<DirectionIcons>().Interactable = !GameStatus.useRules;
             directionIcons.GetComponent<DirectionIcons>().DirectionIconToggle(antiClockWise);
 
-            OnTurnStart();
+            /////////
+            // Initialize Game start handler
+
+            TurnStartHandler += () => {
+                // If without rules, enable next turn button
+                if (!GameStatus.useRules)
+                    nextTurnButton.interactable = true;
+                // Enable deck draw
+                deckScript.Interactable = true;
+                // Disable save
+                canSave = false;
+            };
+            if (GameStatus.useRules)
+                TurnStartHandler += GetComponent<Rules>().OnDraw2Draw4Played_Start;
+
+            /////////
+            // Initialize Game end handler
+
+            TurnEndHandler += () => { 
+                // Disable next turn button
+                nextTurnButton.interactable = false;
+                // Disable deck draw
+                deckScript.Interactable = false;
+                // Enable save
+                canSave = true;
+            };
+            // Get cards from hand to player
+            foreach (GameObject player in players)
+                TurnEndHandler += player.GetComponent<Player>().GetCardsFromHand;
+            // If use rules, check isNextTurn
+            if (GameStatus.useRules)
+                TurnEndHandler += GetComponent<Rules>().IsNextTurn;
+
+            // Set next currentPlayerIndex
+            TurnEndHandler += () => { currentPlayerIndex = NextPlayer(currentPlayerIndex); };
+            if (GameStatus.useRules)
+                TurnEndHandler += GetComponent<Rules>().OnDraw2Draw4Played_End;
+
+            // Set Hand
+            TurnEndHandler += SetHand;
+            // Place cards on hand
+            foreach (GameObject player in players)
+                TurnEndHandler += player.GetComponent<Player>().PlaceCards;
+            // Enable current hand cover
+            TurnEndHandler += currentHand.GetComponent<CurrentHand>().EnableCover;
+
+            // Initialize first turn
+            SetHand();
+            nextTurnButton.interactable = false;
+            foreach (GameObject player in players)
+                player.GetComponent<Player>().PlaceCards();
+            currentHand.GetComponent<CurrentHand>().EnableCover();
+            canSave = true;
         }
 
         void OnEnable()
@@ -132,27 +178,19 @@ namespace UNO
         {
             SaveLoadManager.OnSaveHandler -= PopulateSaveData;
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
-            TurnStartHandler -= SetHand;
             Screen.orientation = ScreenOrientation.Portrait;
         }
 
-        private void OnTurnStart()
+        public void OnTurnStart()
         {
             if (TurnStartHandler != null)
                 TurnStartHandler();
         }
 
-        private void OnTurnEnd()
-        {
+        public void OnTurnEnd()
+        { 
             if (TurnEndHandler != null)
                 TurnEndHandler();
-            currentPlayerIndex = NextPlayer(currentPlayerIndex);
-        }
-
-        public void NextTurn()
-        {
-            OnTurnEnd();
-            OnTurnStart();
         }
 
         /**
@@ -168,8 +206,11 @@ namespace UNO
             return deckScript.DrawCards(num, player.transform);
         }
 
-        // helpers
-
+        /// <summary>
+        /// Get index of next player based on direction.
+        /// </summary>
+        /// <param name="index">Player index.</param>
+        /// <returns>Index of next player based on direction.</returns>
         int NextPlayer(int index)
         {
             if (antiClockWise)
@@ -182,9 +223,14 @@ namespace UNO
                     : index - 1;
         }
 
+        /// <summary>
+        /// Assign player to hand/currentHand.
+        /// </summary>
         void SetHand()
         {
             players[currentPlayerIndex].GetComponent<Player>().isCurrentPlayer = true;
+            players[currentPlayerIndex].GetComponent<Player>().SetCurrentHandName();
+
             int index = currentPlayerIndex;
 
             if (antiClockWise)
@@ -201,7 +247,9 @@ namespace UNO
                 }
         }
 
-        // For testing
+        /// <summary>
+        /// Deal a card to currenthand.
+        /// </summary>
         public void DealCard()
         {
             List<GameObject> list = currentHand.GetComponent<CurrentHand>().Cards;
@@ -216,13 +264,20 @@ namespace UNO
             uiScript.AddLog("Direction reversed.");
         }
 
+        public void Save()
+        {
+            if (canSave)
+                sLManager.Save();
+            else
+                gameUI.GetComponent<SettingsUI>().AddLog("Please save before turn starts!");
+        }
+
         // Save load methods
 
         public void PopulateSaveData(SaveData sd)
         {
             sd.playerInTurn = currentPlayerIndex;
             sd.antiClockwise = this.antiClockWise;
-            gameUI.GetComponent<SettingsUI>().AddLog("Save complete.");
         }
 
         public void LoadFromSaveData(SaveData sd)
@@ -234,15 +289,25 @@ namespace UNO
 
     public interface Card
     {
-        public GameObject Copy(Transform transform);
+        /** 
+         * <summary>Assign true/false to toggle card to face/back.</summary>
+         */
         public bool IsFace { get; set; }
         public CardInfo cardInfo { get; }
     }
 
-    public interface IHand
+    public interface IContainer
     {
-        public void GiveCards(GameObject player, out List<GameObject> cards);
-        public List<GameObject> Cards { get; set; }
+        public List<GameObject> Cards { get; }
+
+        /**
+         * <summary>
+         * Transfer all cards from current transform to target transform.
+         * </summary>
+         * <param name="parent">Target transform</param>
+         * <param name="transferedCards">List of transfered cards</param>
+         */
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards);
     }
 }
 

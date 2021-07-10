@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,16 +8,20 @@ namespace UNO
     public class Rules : MonoBehaviour
     {
         GameObject currentHand;
-        GameObject discard;
-        GameObject deck;
+        Discard discardScript;
         Game gameScript;
         [SerializeField] SettingsUI gameUI;
         [SerializeField] GameObject selectColorTab;
-        [SerializeField] GameObject nextTurnButton;
-        [SerializeField] GameObject directionIcons;
+        [SerializeField] Button nextTurnButton;
         [SerializeField] GameObject unoButton;
+
+        /// <summary>
+        /// Draw2/Draw4 cards drawed
+        /// </summary>
+        bool cardDrawed;
         bool unoButtonClicked;
         bool isNextTurn;
+        bool isCheckUno;
 
         CardInfo lastCardInfo;
         public CardColor lastCardColor { set { lastCardInfo.cardColor = value; } }
@@ -26,12 +29,13 @@ namespace UNO
         public void Initialize(GameObject currentHand, GameObject discard, GameObject deck, Game gameScript)
         {
             this.currentHand = currentHand;
-            this.discard = discard;
-            this.deck = deck;
-            deck.transform.Find("DrawACardButton").GetComponent<Button>().onClick.AddListener(delegate { DeckDraw(); });
+
+            discardScript = discard.GetComponent<Discard>();
+            discard.GetComponent<Discard>().DiscardOnClickHandler += CheckValid;
+
+            deck.GetComponent<Deck>().drawACardButton.onClick.AddListener(delegate { DeckDraw(); });
 
             this.gameScript = gameScript;
-            directionIcons.GetComponent<DirectionIcons>().Interactable = false;
 
             List<GameObject> discardCards = discard.GetComponent<Discard>().Cards;
             if (GameStatus.isNewGame || discardCards.Count == 0)
@@ -44,52 +48,48 @@ namespace UNO
                 lastCardInfo = discardCards[discardCards.Count - 1].GetComponent<Card>().cardInfo;
 
             unoButton.transform.SetAsLastSibling();
+            cardDrawed = GameStatus.isNewGame;
             unoButtonClicked = false;
-        }
-
-        private void OnEnable()
-        {
-            Game.TurnStartHandler += OnTurnStart;
-            discard.GetComponent<Discard>().DiscardOnClickHandler += CheckValid;
+            isCheckUno = false;
         }
 
         private void OnDisable()
         {
-            Game.TurnStartHandler -= OnTurnStart;
-            discard.GetComponent<Discard>().DiscardOnClickHandler -= CheckValid;
+            discardScript.DiscardOnClickHandler -= CheckValid;
         }
 
         public void CheckValid()
         {
-            GameObject currCard = currentHand.GetComponent<CurrentHand>().HighlightedCard;
+            CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
+            GameObject currCard = cHScript.HighlightedCard;
             if (currCard == null) return;
 
             Card cardScript = currCard.GetComponent<Card>();
             if (isAllowed(cardScript.cardInfo))
             {
-                discard.GetComponent<Discard>().PlayCard(currCard);
+                discardScript.PlayCard(currCard);
                 lastCardInfo = cardScript.cardInfo;
 
                 switch (lastCardInfo.cardType)
                 {
                     case CardType.reverse: gameScript.ToggleDirection(); break;
                     case CardType.wild: selectColorTab.SetActive(true); break;
-                    case CardType.draw2: Game.TurnStartHandler += OnDraw2Draw4Played; break;
-                    case CardType.draw4: selectColorTab.SetActive(true); Game.TurnStartHandler += OnDraw2Draw4Played; break;
+                    case CardType.draw2: cardDrawed = false; break;
+                    case CardType.draw4: cardDrawed = false; selectColorTab.SetActive(true); break;
                 }
 
-                currentHand.GetComponent<CurrentHand>().SkipTurn();
+                cHScript.SkipTurn();
 
-                if (currentHand.GetComponent<CurrentHand>().Cards.Count == 0)
+                if (cHScript.Cards.Count == 0)
                 {
-                    gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + " wins!");
+                    gameUI.AddLog(cHScript.PlayerName + " wins!");
                     return;
                 }
-                else if (currentHand.GetComponent<CurrentHand>().Cards.Count == 1)
+                else if (cHScript.Cards.Count == 1)
                     StartCoroutine(CheckUno());
                 
                 if (lastCardInfo.cardType != CardType.wild && lastCardInfo.cardType != CardType.draw4)
-                    nextTurnButton.GetComponent<Button>().interactable = true;
+                    nextTurnButton.interactable = true;
             }
         }
 
@@ -124,16 +124,32 @@ namespace UNO
             }
         }
 
-        void OnDraw2Draw4Played()
+        /// <summary>
+        /// If a draw2/draw4 card is played, deal 2/4 cards to the player
+        /// </summary>
+        public void OnDraw2Draw4Played_End()
         {
-            if (lastCardInfo.cardType == CardType.draw2)
-                for (int i = 0; i < 2; i++) gameScript.DealCard();
-            else if (lastCardInfo.cardType == CardType.draw4)
-                for (int i = 0; i < 4; i++) gameScript.DealCard();
-            currentHand.GetComponent<CurrentHand>().SkipTurn();
-            Game.TurnStartHandler -= OnDraw2Draw4Played;
+            if (!cardDrawed)
+            {
+                GameObject player = gameScript.CurrentPlayer;
+                if (lastCardInfo.cardType == CardType.draw2)
+                    player.GetComponent<Player>().TakeCards(gameScript.DealCards(2, player));
+                else if (lastCardInfo.cardType == CardType.draw4)
+                    player.GetComponent<Player>().TakeCards(gameScript.DealCards(4, player));
+            }
+        }
 
-            nextTurnButton.GetComponent<Button>().interactable = true;
+        /// <summary>
+        /// If a draw2/draw4 card is played last turn, skip this turn.
+        /// </summary>
+        public void OnDraw2Draw4Played_Start()
+        {
+            if (!cardDrawed && (lastCardInfo.cardType == CardType.draw2 || lastCardInfo.cardType == CardType.draw4))
+            {
+                currentHand.GetComponent<CurrentHand>().SkipTurn();
+                nextTurnButton.interactable = true;
+                cardDrawed = true;
+            }
         }
 
         void DeckDraw()
@@ -142,23 +158,17 @@ namespace UNO
             cHScript.SkipTurn();
             cHScript.Cards[cHScript.Cards.Count - 1].GetComponent<CardReaction>().enabled = true;
 
-            nextTurnButton.GetComponent<Button>().interactable = true;
-        }
-
-        void OnTurnStart()
-        {
-            nextTurnButton.GetComponent<Button>().interactable = false;
-            deck.GetComponent<Deck>().Interactable = true;
+            nextTurnButton.interactable = true;
         }
 
         IEnumerator CheckUno()
         {
             CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
-            string player = currentHand.GetComponent<CurrentHand>().PlayerName;
+            string player = cHScript.PlayerName;
             isNextTurn = false;
             unoButtonClicked = false;
 
-            Game.TurnEndHandler += IsNextTurn;
+            isCheckUno = true;
             unoButton.SetActive(true);
 
             gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + " has 1 card left.");
@@ -179,13 +189,11 @@ namespace UNO
                     for (int j = 0; j < 2; j++) gameScript.DealCard();
                     cHScript.SkipTurn();
                 }
-                Game.TurnEndHandler -= IsNextTurn;
             }
             else
-            {
                 gameUI.AddLog(player + ": UNO!");
-                Game.TurnEndHandler -= IsNextTurn;
-            }
+
+            isCheckUno = false;
         }
 
         public void UNOButtonOnClick()
@@ -193,12 +201,15 @@ namespace UNO
             unoButtonClicked = true;
         }
 
-        void IsNextTurn()
+        public void IsNextTurn()
         {
-            isNextTurn = true;
-            GameObject player = gameScript.CurrentPlayer;
-            player.GetComponent<Player>().TakeCards(gameScript.DealCards(2, player));
-            Game.TurnEndHandler -= IsNextTurn;
+            if (isCheckUno)
+            {
+                isNextTurn = true;
+                GameObject player = gameScript.CurrentPlayer;
+                player.GetComponent<Player>().TakeCards(gameScript.DealCards(2, player));
+                isCheckUno = false;
+            }
         }
     }
 }

@@ -43,6 +43,9 @@ public class SaveLoadManager : MonoBehaviour
                 {
                     AddNumOfSave(GameType.TwoD);
                     Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
+                    GameObject gameUI = GameObject.Find("GameUI");
+                    if (gameUI != null)
+                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in 2D_SaveData" + i + ".");
                 }
                 break;
             case GameType.ThreeD:
@@ -57,6 +60,9 @@ public class SaveLoadManager : MonoBehaviour
                 {
                     AddNumOfSave(GameType.Card);
                     Debug.Log("Save successful in Card_SaveData" + i + ".dat");
+                    GameObject gameUI = GameObject.Find("GameUI");
+                    if (gameUI != null)
+                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in Card_SaveData" + i + ".");
                 }
                 break;
         }

@@ -4,20 +4,17 @@ using UnityEngine.UI;
 
 namespace UNO
 {
-    public class Hand : MonoBehaviour, IHand
+    public class Hand : MonoBehaviour, IContainer
     {
+        // References
         [SerializeField] GameObject playerText;
         [SerializeField] GameObject playerTextLeft;
         [SerializeField] GameObject playerTextRight;
 
-        Text playerName;
-        public string PlayerName
-        {
-            get { return playerName.text; }
-            set { playerName.text = value; }
-        }
+        // Index of hand. Starts from 0. 
+        int num; 
 
-        [SerializeField] int num; // Starts from 0
+        // Cards
         List<GameObject> cards;
         public List<GameObject> Cards 
         {
@@ -30,13 +27,71 @@ namespace UNO
             }
         }
 
+        Text playerName;
+        public string PlayerName
+        {
+            get { return playerName.text; }
+            set { playerName.text = value; }
+        }
+
         public void Initialize(int num)
         {
             this.num = num;
-            gameObject.name = ToString();
+            cards = new List<GameObject>();
+
+            name = ToString();
+        }
+
+        // Set cards positions
+
+        void PlaceCards()
+        {
+            float width = GetComponent<RectTransform>().rect.width;
+            float cardWidth = cards[0].GetComponent<RectTransform>().rect.width;
+
+            float d = cards.Count <= 1 ? 0f : (width - cardWidth) / cards.Count - 1;
+            d = d > cardWidth + 10f ? cardWidth + 10f : d;
+
+            float x = -(cardWidth + ((cards.Count - 1) * d)) / 2f + 0.5f * cardWidth;
+            float y = 10f;
+
+            foreach (GameObject card in cards)
+            {
+                card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+                card.GetComponent<RectTransform>().rotation = this.GetComponent<RectTransform>().rotation;
+                x += d;
+
+                card.GetComponent<CardReaction>().enabled = false;
+            }
+        }
+
+        // IContainer Method
+
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
+        {
+            foreach (GameObject card in cards)
+                card.transform.SetParent(parent);
+
+            transferedCards = new List<GameObject>();
+            transferedCards.AddRange(cards);
 
             cards = new List<GameObject>();
         }
+
+        // Set text position
+
+        void SetTextPosition(float zRotation)
+        {
+            switch (zRotation)
+            {
+                case 90f: playerTextRight.SetActive(true); playerName = playerTextRight.GetComponent<Text>(); break;
+                case 180f: playerText.SetActive(true); playerName = playerText.GetComponent<Text>(); break;
+                case 270f: playerTextLeft.SetActive(true); playerName = playerTextLeft.GetComponent<Text>(); break;
+                default: playerText.SetActive(true); playerName = playerText.GetComponent<Text>(); break;
+            }
+        }
+
+        // Fixed positions of hands
 
         static Position position1 = new Position()
         {
@@ -73,7 +128,7 @@ namespace UNO
             rotation = Quaternion.Euler(0f, 0f, -90f)
         };
 
-        // Set hand positions
+        // Set hand positions according to number of hands
         
         public static void SetPositions(List<GameObject> hands)
         {
@@ -96,6 +151,7 @@ namespace UNO
             }
         }
 
+        // helper
         static void SetPosition(GameObject hand, Position position) 
         {
             RectTransform rect = hand.GetComponent<RectTransform>();
@@ -107,56 +163,15 @@ namespace UNO
             hand.GetComponent<Hand>().SetTextPosition(rect.rotation.eulerAngles.z);
         }
 
-        // Set text position
-
-        void SetTextPosition(float zRotation)
-        {
-            switch (zRotation)
-            {
-                case 90f: playerTextRight.SetActive(true); playerName = playerTextRight.GetComponent<Text>(); break;
-                case 180f: playerText.SetActive(true); playerName = playerText.GetComponent<Text>(); break;
-                case 270f: playerTextLeft.SetActive(true); playerName = playerTextLeft.GetComponent<Text>(); break;
-                default: playerText.SetActive(true); playerName = playerText.GetComponent<Text>();break;
-            }
-        }
-
-        // Set cards positions
-
-        void PlaceCards()
-        {
-            float width = GetComponent<RectTransform>().rect.width;
-            float cardWidth = cards[0].GetComponent<RectTransform>().rect.width;
-
-            float d = cards.Count <= 1 ? 0f : (width - cardWidth) / cards.Count - 1;
-            d = d > cardWidth + 10f ? cardWidth + 10f : d;
-
-            float x = -(cardWidth + ((cards.Count - 1) * d)) / 2f + 0.5f * cardWidth;
-            float y = 10f;
-
-            foreach (GameObject card in cards)
-            {
-                card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
-                card.GetComponent<RectTransform>().rotation = this.GetComponent<RectTransform>().rotation;
-                x += d;
-
-                card.GetComponent<CardReaction>().enabled = false;
-            }
-        }
-
-        public void GiveCards(GameObject player, out List<GameObject> cards)
-        {
-            cards = new List<GameObject>(this.cards);
-            foreach (GameObject card in this.cards)
-                card.transform.SetParent(player.transform);
-            this.cards = new List<GameObject>();
-        }
-
         public override string ToString()
         {
             return "Hand" + num.ToString();
         }
     }
 
+    /// <summary>
+    /// Position of hands.
+    /// </summary>
     public struct Position 
     {
         public Vector2 anchoredPosition;

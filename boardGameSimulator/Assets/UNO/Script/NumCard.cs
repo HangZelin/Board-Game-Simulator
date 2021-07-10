@@ -87,14 +87,6 @@ namespace UNO
             a_CardInfo.num = num;
         }
 
-        public GameObject Copy(Transform transform)
-        {
-            GameObject copy = Instantiate(prefab, transform);
-            copy.GetComponent<NumCard>().Initialize(color, num, isFace);
-            copy.name = ToString();
-            return copy;
-        }
-
         public void SetUnderline(bool isActive)
         {
             if (num == 6 || num == 9)
