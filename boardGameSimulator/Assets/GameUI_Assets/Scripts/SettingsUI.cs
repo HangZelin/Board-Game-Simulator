@@ -1,24 +1,69 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static Game;
 
 public class SettingsUI : MonoBehaviour
 {
+    [Header ("Settings Tab")]
     [SerializeField] GameObject settingsTab;
 
+    [Header("Logging Tab")]
     [SerializeField] GameObject logBar;
     [SerializeField] TMP_Text logText;
     [SerializeField] TMP_Text tempText;
+
+    [Header ("Scene Dependencies")]
+    [SerializeField] private NetworkManager networkManager;
+
+    [Header("Buttons")]
+    [SerializeField] private Button Team1Button;
+    [SerializeField] private Button Team2Button;
+
+    [Header("Screens")]
+    [SerializeField] private GameObject teamSelectionScreen;
+
     public List<string> logList;
     string lastLogLine = "";
 
     public void Initialize()
     {
         settingsTab.transform.SetAsLastSibling();
+        DisableAllScreens();
     }
 
+    public void ShowTeamSelectionScreen()
+    {
+        DisableAllScreens();
+        teamSelectionScreen.SetActive(true);
+    }
+
+    public void SelectTeam(int team)
+    {
+        networkManager.SelectTeam(team);
+
+    }
+
+    internal void RestrictTeamChoice(Team occupiedTeam)
+    {
+        Button buttontoDeactivate = occupiedTeam == Team.P1 ? Team1Button : Team2Button;
+        buttontoDeactivate.interactable = false;
+    }
+
+    public void Onconnect()
+    {
+        networkManager.Connect();
+    }
     // SettingsBar Methods
+
+    public void DisableAllScreens()
+    {
+        settingsTab.SetActive(false);
+        teamSelectionScreen.SetActive(false);
+    }
 
     public void ActivateUI()
     {
@@ -88,5 +133,6 @@ public class SettingsUI : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "UNO" && Application.platform == RuntimePlatform.Android && (Input.GetKeyDown(KeyCode.Escape)))
             settingsTab.SetActive(true);
     }
+
 }
 

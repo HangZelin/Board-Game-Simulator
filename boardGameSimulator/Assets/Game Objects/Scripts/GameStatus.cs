@@ -6,6 +6,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 {
 
     [SerializeField] static GameType typeOfGame = GameType.TwoD;
+
     public static GameType TypeOfGame 
     {
         get { return typeOfGame; }
@@ -44,6 +45,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static bool hasRules = false;
     public static bool useRules = false;
+    public static bool is_Multiplayer = false;
 
     // Setters
 
@@ -143,6 +145,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         nameOfGame = "Board Game";
         numOfPlayers = 2;
         nameOfPlayers = new List<string>();
+        is_Multiplayer = false;
         hasRules = true;
         useRules = false;
     }
