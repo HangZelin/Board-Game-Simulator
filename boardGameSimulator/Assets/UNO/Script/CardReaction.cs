@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UNO
+namespace BGS.UNO
 {
     public class CardReaction : MonoBehaviour, IPointerClickHandler
     {

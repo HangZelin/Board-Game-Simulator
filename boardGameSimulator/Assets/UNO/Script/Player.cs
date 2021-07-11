@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UNO
+namespace BGS.UNO
 {
     public class Player : MonoBehaviour, ISaveable, IContainer
     {

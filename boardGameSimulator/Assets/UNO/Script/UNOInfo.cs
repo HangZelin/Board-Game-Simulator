@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UNO
+namespace BGS.UNO
 {
     public enum CardType { num, draw2, draw4, reverse, skip, wild }
     public enum CardColor { red, yellow, blue, green, black };

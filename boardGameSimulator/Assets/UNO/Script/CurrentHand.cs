@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UNO
+namespace BGS.UNO
 {
    public class CurrentHand : MonoBehaviour, IContainer
     {

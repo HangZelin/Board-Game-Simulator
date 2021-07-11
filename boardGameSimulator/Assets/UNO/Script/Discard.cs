@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UNO
+namespace BGS.UNO
 {
     public class Discard : MonoBehaviour, IPointerClickHandler, ISaveable, IContainer
     {

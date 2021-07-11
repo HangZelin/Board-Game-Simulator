@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UNO
+namespace BGS.UNO
 {
     public class CardsCount : MonoBehaviour
     {
