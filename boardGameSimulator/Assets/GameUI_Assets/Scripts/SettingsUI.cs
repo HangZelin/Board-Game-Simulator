@@ -32,7 +32,8 @@ public class SettingsUI : MonoBehaviour
     public void Initialize()
     {
         settingsTab.transform.SetAsLastSibling();
-        DisableAllScreens();
+        if (GameStatus.is_Multiplayer)
+            DisableAllScreens();
     }
 
     public void ShowTeamSelectionScreen()

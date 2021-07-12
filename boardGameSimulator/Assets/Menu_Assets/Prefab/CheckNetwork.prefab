@@ -617,7 +617,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7465202980462826848
 RectTransform:
   m_ObjectHideFlags: 0
@@ -693,6 +693,7 @@ MonoBehaviour:
   connectionFailedPanel: {fileID: 7465202978899417970}
   testURL1: http://www.google.com
   testURL2: http://www.baidu.com
+  timeout: 10
 --- !u!1 &7465202980594161714
 GameObject:
   m_ObjectHideFlags: 0

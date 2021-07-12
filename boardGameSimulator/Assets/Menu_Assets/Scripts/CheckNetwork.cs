@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -11,16 +12,19 @@ namespace BGS.MenuUI
         [SerializeField] GameObject connectionFailedPanel;
         [SerializeField] string testURL1;
         [SerializeField] string testURL2;
+        [SerializeField] int timeout;
+
+        [SerializeField] GameObject connectingPanel;
 
         private void Start()
         {
             if (testURL1 == "") testURL1 = "http://www.google.com";
             if (testURL2 == "") testURL2 = "http://www.baidu.com";
 
-            CheckConnection();
+            CheckWifiConnection();
         }
 
-        public void CheckConnection()
+        public void CheckWifiConnection()
         {
             connectionFailedPanel.SetActive(false);
             checkNetworkPanel.SetActive(true);
@@ -28,7 +32,11 @@ namespace BGS.MenuUI
             StartCoroutine(CheckInternetConnection((isConnected) =>
             {
                 if (isConnected)
+                {
                     gameObject.SetActive(false);
+                    PhotonNetwork.ConnectUsingSettings();
+                    connectingPanel.SetActive(true);
+                }
                 else
                 {
                     checkNetworkPanel.SetActive(false);
@@ -40,7 +48,7 @@ namespace BGS.MenuUI
         IEnumerator CheckInternetConnection(Action<bool> action)
         {
             UnityWebRequest www = new UnityWebRequest(testURL1);
-            www.timeout = 10;
+            www.timeout = this.timeout == 0 ? 10 : this.timeout;
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
