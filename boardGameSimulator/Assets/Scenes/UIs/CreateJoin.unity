@@ -1368,6 +1368,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 7465202979957399218}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &639683539 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7465202980462826849, guid: b530207c85e20ba4ba5fdc49771b643d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7465202979957399218}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639683537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbdd26f65e8e2a7408b27b3bc913f1a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &771640381
 GameObject:
   m_ObjectHideFlags: 0
@@ -4592,6 +4604,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1396998941}
+    - target: {fileID: 1620326710, guid: b530207c85e20ba4ba5fdc49771b643d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 639683539}
+    - target: {fileID: 1620326710, guid: b530207c85e20ba4ba5fdc49771b643d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CheckWifiConnection
+      objectReference: {fileID: 0}
+    - target: {fileID: 1620326710, guid: b530207c85e20ba4ba5fdc49771b643d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BGS.MenuUI.CheckNetwork, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7465202980462826848, guid: b530207c85e20ba4ba5fdc49771b643d,
         type: 3}
       propertyPath: m_Pivot.x

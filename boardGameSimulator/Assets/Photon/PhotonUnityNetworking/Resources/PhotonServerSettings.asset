@@ -41,6 +41,10 @@ MonoBehaviour:
   - AddPlayerName
   - RemovePlayerName
   - SetPlayerNames
+  - ChangePlayerName
+  - TestRPC
+  - RefreshPlayerList
+  - SetMasterClientName
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -6,7 +8,7 @@ using UnityEngine.UI;
 
 namespace BGS.MenuUI
 {
-    public class RoomLobby : MonoBehaviourPunCallbacks
+    public class RoomLobby : MonoBehaviourPunCallbacks, IPunObservable
     {
         [Header("Info Bar")]
         [SerializeField] Text topBarText;
@@ -17,14 +19,20 @@ namespace BGS.MenuUI
         [SerializeField] GameObject playerList;
         [SerializeField] float playerBarHeight;
         [SerializeField] float playerListY;
+        List<GameObject> playerBars;
+
+        [Header("RemindeText")]
+        [SerializeField] GameObject refreshText;
+        [SerializeField] GameObject reminderText;
 
         [Header("Prefab")]
         [SerializeField] GameObject playerBarPrefab;
+        
 
         Room currentRoom;
         MultiplayerManager multiplayerManager;
 
-        List<string> playerNames;
+        string[] playerNames;
 
         int playerCount;
         int playerIndex;
@@ -34,14 +42,19 @@ namespace BGS.MenuUI
         {
             currentRoom = PhotonNetwork.CurrentRoom;
             multiplayerManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
-            playerNames = new List<string>();
+            playerNames = new string[GameStatus.NumOfPlayers];
+            for (int i = 0; i < playerNames.Length; i++)
+                playerNames[i] = "";
+
+            playerBars = new List<GameObject>();
             if (multiplayerManager.isHost)
             {
                 PhotonNetwork.LocalPlayer.NickName = multiplayerManager.playerName;
-                playerNames.Add(multiplayerManager.playerName);
+                playerNames[0] = multiplayerManager.playerName;
                 SetPlayerList();
             }
-            playerListY = 0f;
+            else
+                this.photonView.RPC("AddPlayerName", RpcTarget.MasterClient, multiplayerManager.playerName);
             
             topBarText.text = GameStatus.GetNameOfGame() + " - Lobby";
             infoBarText.text = "Room index: <color=black>" + multiplayerManager.roomIndex.ToString("D4") + "</color>";
@@ -66,22 +79,10 @@ namespace BGS.MenuUI
 
         #region MonobehaviourPunCallbacks Callbacks
 
-        public override void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            if (multiplayerManager.isHost)
-            {
-                object[] param = new object[] { playerNames };
-                this.photonView.RPC("SetPlayerNames", newPlayer, param);
-            }
-        }
-
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
             if (multiplayerManager.isHost)
-            {
-                object[] param = new object[] { otherPlayer.NickName };
-                this.photonView.RPC("RemovePlayerName", RpcTarget.All, param);
-            }
+                this.photonView.RPC("RemovePlayerName", RpcTarget.All, otherPlayer.NickName);
         }
 
         #endregion
@@ -90,44 +91,92 @@ namespace BGS.MenuUI
         #region RPCs
 
         [PunRPC]
-        void SetPlayerNames(List<string> nameList)
+        void SetPlayerNames(string[] nameList)
         {
-            playerNames = new List<string>(nameList);
-
-            int i = 1;
-            bool hasDuplicate = true;
-            string name = multiplayerManager.playerName;
-            while(hasDuplicate)
-            {
-                int j;
-                for (j = 0; j < playerNames.Count; j++)
-                    if (name == playerNames[j])
-                    {
-                        name = multiplayerManager.name + i;
-                        break;
-                    }
-                i++;
-                hasDuplicate = j == playerNames.Count;
-            }
-            multiplayerManager.playerName = name;
-
-            PhotonNetwork.LocalPlayer.NickName = multiplayerManager.playerName;
-            object[] param = new object[] { multiplayerManager.playerName };
-            this.photonView.RPC("AddPlayerName", RpcTarget.All, param);
+            if (!multiplayerManager.isHost)
+                for (int i = 0; i < currentRoom.PlayerCount; i++)
+                    playerNames[i] = nameList[i];
+            SetPlayerList();
         }
 
         [PunRPC]
         void AddPlayerName(string name)
         {
-            playerNames.Add(name);
-            SetPlayerList();
+/*                int i = 1;
+                bool hasDuplicate = true;
+                string temp = name;
+                while (hasDuplicate)
+                {
+                    int j;
+                    for (j = 0; j < currentRoom.PlayerCount; j++)
+                        if (temp == playerNames[j])
+                        {
+                            temp = name + i;
+                            break;
+                        }
+                    i++;
+                    hasDuplicate = j != currentRoom.PlayerCount;
+                }
+
+                if (name != temp)
+                {
+                    name = temp;
+                    this.photonView.RPC("ChangePlayerName", info.Sender, name);
+                }*/
+
+                playerNames[currentRoom.PlayerCount - 1] = name;
+                this.photonView.RPC("SetPlayerNames", RpcTarget.All, playerNames);
+                EnableReminderText(reminderText);
+        }
+
+        [PunRPC]
+        void ChangePlayerName(string name)
+        {
+            multiplayerManager.playerName = name;
+            PhotonNetwork.LocalPlayer.NickName = name;
         }
 
         [PunRPC]
         void RemovePlayerName(string name)
         {
-            playerNames.Remove(name);
+            playerNames = playerNames.Where(s => s != name).ToArray();
             SetPlayerList();
+        }
+
+        [PunRPC]
+        public void RefreshPlayerList()
+        {
+            if (playerBars.Count < currentRoom.PlayerCount)
+                if (PhotonNetwork.IsMasterClient)
+                    for (int i = 0; i < currentRoom.PlayerCount; i++)
+                        photonView.RPC("SetMasterClientName", currentRoom.Players[i], multiplayerManager.playerName, i);
+                else
+                    photonView.RPC("RefreshPlayerList", RpcTarget.MasterClient);
+            else
+                EnableReminderText(refreshText);
+        }
+
+        [PunRPC]
+        void SetMasterClientName(string guestPlayerName, int index)
+        {
+            playerNames[index] = guestPlayerName;
+        }
+
+        [PunRPC]
+        void TestRPC(string l)
+        {
+            Debug.Log(l);
+            EnableReminderText(reminderText);
+        }
+
+        #endregion
+
+
+        #region IPunObservable Implementation
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            // throw new System.NotImplementedException();
         }
 
         #endregion
@@ -142,15 +191,32 @@ namespace BGS.MenuUI
 
         void SetPlayerList()
         {
+            foreach (GameObject playerBar in playerBars)
+                Destroy(playerBar);
+
             Vector2 v = new Vector2(0f, playerListY);
-            foreach (string s in playerNames)
+            playerBars = new List<GameObject>();
+            for(int i = 0; i < currentRoom.PlayerCount; i++)
             {
                 GameObject playerBar = Instantiate(playerBarPrefab, playerList.transform);
-                playerBar.GetComponent<LobbyPlayerBar>().Initialize(s,
-                    multiplayerManager.isHost, multiplayerManager.playerName == s);
+                playerBars.Add(playerBar);
+                playerBar.GetComponent<LobbyPlayerBar>().Initialize(playerNames[i],
+                    i == 0, multiplayerManager.playerName == playerNames[i]);
                 playerBar.GetComponent<RectTransform>().anchoredPosition = v;
                 v.y -= playerBarHeight;
             }
+        }
+
+        void EnableReminderText(GameObject reminderText)
+        {
+            StartCoroutine(GameObjectForSeconds(3f, reminderText));
+        }
+
+        IEnumerator GameObjectForSeconds(float sec, GameObject go)
+        {
+            go.SetActive(true);
+            yield return new WaitForSeconds(sec);
+            go.SetActive(false);
         }
 
         #endregion

@@ -99,7 +99,7 @@ namespace BGS.MenuUI
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = Convert.ToByte(GameStatus.NumOfPlayers);
 
-            roomIndex = UnityEngine.Random.Range(0, 1000);
+            roomIndex = UnityEngine.Random.Range(0, 9999);
             PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + roomIndex.ToString("D4"));
         }
             

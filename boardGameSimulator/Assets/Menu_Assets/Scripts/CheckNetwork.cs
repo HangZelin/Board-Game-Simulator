@@ -34,6 +34,7 @@ namespace BGS.MenuUI
                 if (isConnected)
                 {
                     gameObject.SetActive(false);
+                    // PhotonNetwork.ConnectUsingSettings();
                     PhotonNetwork.ConnectUsingSettings();
                     connectingPanel.SetActive(true);
                 }

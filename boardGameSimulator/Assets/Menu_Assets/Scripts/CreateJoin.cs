@@ -37,9 +37,13 @@ namespace BGS.MenuUI
 
         void Start()
         {
-            SetButtons(false);
             if (!PhotonNetwork.IsConnected)
+            {
+                SetButtons(false);
                 checkNetwork.SetActive(true);
+            }
+            else
+                SetButtons(true);
             topBarText.text = GameStatus.GetNameOfGame() + "(Online)";
         }
 
