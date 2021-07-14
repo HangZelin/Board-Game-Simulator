@@ -47,14 +47,8 @@ public class Game : MonoBehaviour, ISaveable
         settings.Initialize();
         
         //Gamemode Initialization;
-        if (GameStatus.is_Multiplayer)
-        {
-            settings.Onconnect();
-        } else
-        {
             Debug.Log("Hotseat Mode");
             Initialized();
-        }
     }
 
     public void Initialized()

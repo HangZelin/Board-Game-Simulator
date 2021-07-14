@@ -57,13 +57,7 @@ public class BoardManager : MonoBehaviour, ISaveable
 
         settings = gameUI.GetComponent<SettingsUI>();
 
-        if (GameStatus.is_Multiplayer)
-        {
-            settings.Onconnect();
-        } else
-        {
-            Initialized();
-        }
+        Initialized();
 
         if (!GameStatus.isNewGame)
         {

@@ -17,6 +17,12 @@ public class NewGame : MonoBehaviour
         GameStatus.SetNameOfGame("Chess (2D)");
         GameStatus.NumOfPlayers = 2;
         GameStatus.TypeOfGame = GameType.TwoD;
+        GameStatus.is_Multiplayer = PlayerPrefs.GetInt(GameStatus.GetNameOfGame() + "_isMultiplayer", 0) == 1;
+
+        if (GameStatus.is_Multiplayer)
+            SceneManager.LoadScene("CreateJoin");
+        else
+            SceneManager.LoadScene("SetName");
     }
 
     public void UNOButtonOnClick()
@@ -37,5 +43,11 @@ public class NewGame : MonoBehaviour
         GameStatus.SetNameOfGame("Chess (3D)");
         GameStatus.NumOfPlayers = 2;
         GameStatus.TypeOfGame = GameType.ThreeD;
+        GameStatus.is_Multiplayer = PlayerPrefs.GetInt(GameStatus.GetNameOfGame() + "_isMultiplayer", 0) == 1;
+
+        if (GameStatus.is_Multiplayer)
+            SceneManager.LoadScene("CreateJoin");
+        else
+            SceneManager.LoadScene("SetName");
     }
 }
