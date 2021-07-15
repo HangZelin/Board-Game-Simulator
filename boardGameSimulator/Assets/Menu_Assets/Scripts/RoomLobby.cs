@@ -21,27 +21,39 @@ namespace BGS.MenuUI
         [SerializeField] float playerListY;
         List<GameObject> playerBars;
 
-        [Header("RemindeText")]
+        [Header("Reminder Text")]
         [SerializeField] GameObject refreshText;
-        [SerializeField] GameObject reminderText;
+        [SerializeField] GameObject enteredText;
+        [SerializeField] GameObject isHostText;
+
+        [Header("Panels")]
+        [SerializeField] GameObject disconnectPanel;
 
         [Header("Prefab")]
         [SerializeField] GameObject playerBarPrefab;
-        
+
+        [Header("Room Properties")]
+        [Tooltip("How long any player can be inactive (due to disconnect or leave) before the user gets removed from the playerlist.")]
+        [SerializeField] int playerTimeToLive;
+        [Tooltip("How long a room stays available after the last player becomes inactive. After this time, the room gets persisted or destroyed.")]
+        [SerializeField] int emptyRoomTimeToLive;
 
         Room currentRoom;
         MultiplayerManager multiplayerManager;
-
         string[] playerNames;
 
-        int playerCount;
-        int playerIndex;
+        int playerCount; 
         const string players = "Players: ";
-
+        
         void Start()
         {
             currentRoom = PhotonNetwork.CurrentRoom;
             multiplayerManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+            if (multiplayerManager.isHost ^ PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogError("isHost is different from IsMasterClient.");
+                multiplayerManager.isHost = PhotonNetwork.IsMasterClient;
+            }
             playerNames = new string[GameStatus.NumOfPlayers];
             for (int i = 0; i < playerNames.Length; i++)
                 playerNames[i] = "";
@@ -49,6 +61,9 @@ namespace BGS.MenuUI
             playerBars = new List<GameObject>();
             if (multiplayerManager.isHost)
             {
+                currentRoom.PlayerTtl = playerTimeToLive;
+                currentRoom.EmptyRoomTtl = emptyRoomTimeToLive;
+
                 PhotonNetwork.LocalPlayer.NickName = multiplayerManager.playerName;
                 playerNames[0] = multiplayerManager.playerName;
                 SetPlayerList();
@@ -81,8 +96,19 @@ namespace BGS.MenuUI
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
+            if (multiplayerManager.isHost ^ PhotonNetwork.IsMasterClient)
+            {
+                multiplayerManager.isHost = PhotonNetwork.IsMasterClient;
+                EnableReminderText(isHostText);
+            }
+
             if (multiplayerManager.isHost)
-                this.photonView.RPC("RemovePlayerName", RpcTarget.All, otherPlayer.NickName);
+                RefreshPlayerList();
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            disconnectPanel.SetActive(true);
         }
 
         #endregion
@@ -102,38 +128,9 @@ namespace BGS.MenuUI
         [PunRPC]
         void AddPlayerName(string name)
         {
-/*                int i = 1;
-                bool hasDuplicate = true;
-                string temp = name;
-                while (hasDuplicate)
-                {
-                    int j;
-                    for (j = 0; j < currentRoom.PlayerCount; j++)
-                        if (temp == playerNames[j])
-                        {
-                            temp = name + i;
-                            break;
-                        }
-                    i++;
-                    hasDuplicate = j != currentRoom.PlayerCount;
-                }
-
-                if (name != temp)
-                {
-                    name = temp;
-                    this.photonView.RPC("ChangePlayerName", info.Sender, name);
-                }*/
-
-                playerNames[currentRoom.PlayerCount - 1] = name;
-                this.photonView.RPC("SetPlayerNames", RpcTarget.All, playerNames);
-                EnableReminderText(reminderText);
-        }
-
-        [PunRPC]
-        void ChangePlayerName(string name)
-        {
-            multiplayerManager.playerName = name;
-            PhotonNetwork.LocalPlayer.NickName = name;
+            playerNames[currentRoom.PlayerCount - 1] = name;
+            this.photonView.RPC("SetPlayerNames", RpcTarget.All, playerNames);
+            EnableReminderText(enteredText);
         }
 
         [PunRPC]
@@ -146,12 +143,19 @@ namespace BGS.MenuUI
         [PunRPC]
         public void RefreshPlayerList()
         {
-            if (playerBars.Count < currentRoom.PlayerCount)
-                if (PhotonNetwork.IsMasterClient)
+            if (playerBars.Count != currentRoom.PlayerCount)
+                if (multiplayerManager.isHost)
+                {
+                    for (int i = 0; i < playerNames.Length; i++)
+                        playerNames[i] = "";
                     for (int i = 0; i < currentRoom.PlayerCount; i++)
-                        photonView.RPC("SetMasterClientName", currentRoom.Players[i], multiplayerManager.playerName, i);
+                        this.photonView.RPC("SetMasterClientName", currentRoom.Players[i], "", i);
+                    this.photonView.RPC("SetPlayerNames", RpcTarget.Others, playerNames);
+                }
                 else
-                    photonView.RPC("RefreshPlayerList", RpcTarget.MasterClient);
+                {
+                    this.photonView.RPC("RefreshPlayerList", RpcTarget.MasterClient);
+                }
             else
                 EnableReminderText(refreshText);
         }
@@ -159,14 +163,10 @@ namespace BGS.MenuUI
         [PunRPC]
         void SetMasterClientName(string guestPlayerName, int index)
         {
-            playerNames[index] = guestPlayerName;
-        }
-
-        [PunRPC]
-        void TestRPC(string l)
-        {
-            Debug.Log(l);
-            EnableReminderText(reminderText);
+            if (multiplayerManager.isHost)
+                playerNames[index] = guestPlayerName;
+            else
+                this.photonView.RPC("SetMasterClientName", RpcTarget.MasterClient, multiplayerManager.playerName, index);
         }
 
         #endregion
@@ -209,6 +209,7 @@ namespace BGS.MenuUI
 
         void EnableReminderText(GameObject reminderText)
         {
+            DisableReminderText();
             StartCoroutine(GameObjectForSeconds(3f, reminderText));
         }
 
@@ -217,6 +218,13 @@ namespace BGS.MenuUI
             go.SetActive(true);
             yield return new WaitForSeconds(sec);
             go.SetActive(false);
+        }
+
+        void DisableReminderText()
+        {
+            enteredText.SetActive(false);
+            refreshText.SetActive(false);
+            isHostText.SetActive(false);
         }
 
         #endregion

@@ -33,7 +33,7 @@ namespace BGS.MenuUI
 
         [Header ("References")]
         [SerializeField] GameObject checkNetwork;
-        [SerializeField] MultiplayerManager mulManager;
+        MultiplayerManager mulManager;
 
         void Start()
         {
@@ -42,9 +42,18 @@ namespace BGS.MenuUI
                 SetButtons(false);
                 checkNetwork.SetActive(true);
             }
+            else if (PhotonNetwork.Server != ServerConnection.MasterServer)
+            {
+                SetButtons(false);
+                connectingPanel.SetActive(true);
+                if (PhotonNetwork.NetworkClientState != ClientState.ConnectingToMasterServer)
+                    PhotonNetwork.ConnectUsingSettings();
+            }
             else
                 SetButtons(true);
             topBarText.text = GameStatus.GetNameOfGame() + "(Online)";
+
+            mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         }
 
         #region Create Panel Methods
@@ -58,6 +67,10 @@ namespace BGS.MenuUI
         {
             createPanel.SetActive(true);
             mulManager.isHost = true;
+            if (mulManager.playerName != "")
+                createPanelInput.text = mulManager.playerName;
+            else
+                createPanelInput.text = "";
         }
 
         public void OnCreatePanelConfirmClicked()
@@ -88,6 +101,10 @@ namespace BGS.MenuUI
         {
             joinPanel.SetActive(true);
             mulManager.isHost = false;
+            if (mulManager.playerName != "")
+                joinPlayerNameInput.text = mulManager.playerName;
+            else
+                joinPlayerNameInput.text = "";
         }
 
         public void OnJoinPanelConfirmClicked()
@@ -113,6 +130,7 @@ namespace BGS.MenuUI
         public override void OnConnectedToMaster()
         {
             SetButtons(true);
+            connectingPanel.SetActive(false);
         }
 
         public override void OnDisconnected(DisconnectCause cause)

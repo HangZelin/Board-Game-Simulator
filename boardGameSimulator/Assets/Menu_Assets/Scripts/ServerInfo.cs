@@ -24,9 +24,15 @@ namespace BGS.MenuUI
         }
 
         public override void OnDisconnected(DisconnectCause cause)
-        {            text.text = server + "-";
+        {            
+            text.text = server + "-";
         }
 
+        /// <summary>
+        /// Transform PhotonNetwork.CloudRegion token to the name of server region.
+        /// </summary>
+        /// <param name="token"> CloudRegion token to be transformed. </param>
+        /// <returns> Name of the server region. </returns>
         public static string TokenToRegionName(string token)
         {
             switch (token)

@@ -10,6 +10,7 @@ namespace BGS.MenuUI
     public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         public static MultiplayerManager multiplayerManager;
+        static System.Random random;
 
         public string playerName;
         public bool isHost;
@@ -35,6 +36,9 @@ namespace BGS.MenuUI
             // Photon
             PhotonNetwork.AutomaticallySyncScene = true;
             createRoomTimes = 0;
+
+            if (random == null)
+                random = new System.Random();
         }
 
         private void OnDestroy()
@@ -92,6 +96,11 @@ namespace BGS.MenuUI
             Debug.LogWarning("Join room failed with return code " + returnCode + ": " + message);
         }
 
+        public override void OnLeftRoom()
+        {
+            Debug.Log(playerName + " left the room with index " + roomIndex.ToString("D4"));
+        }
+
         #endregion
 
         void CreateRoom()
@@ -99,8 +108,9 @@ namespace BGS.MenuUI
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = Convert.ToByte(GameStatus.NumOfPlayers);
 
-            roomIndex = UnityEngine.Random.Range(0, 9999);
-            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + roomIndex.ToString("D4"));
+            this.roomIndex = random.Next(0, 9999);
+
+            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + this.roomIndex.ToString("D4"));
         }
             
         void CreateOrJoinRoom()
