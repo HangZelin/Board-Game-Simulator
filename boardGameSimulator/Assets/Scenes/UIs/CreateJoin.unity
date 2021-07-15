@@ -385,7 +385,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 32a9b9541dd67ea4f969cf12fe792a36, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -1276,7 +1276,6 @@ MonoBehaviour:
   joinFailedText: {fileID: 336363107}
   reminderEnableSec: 3
   checkNetwork: {fileID: 639683537}
-  mulManager: {fileID: 432385530621241102}
 --- !u!1 &545350241
 GameObject:
   m_ObjectHideFlags: 0
@@ -2219,7 +2218,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 32a9b9541dd67ea4f969cf12fe792a36, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -4290,7 +4289,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 32a9b9541dd67ea4f969cf12fe792a36, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -4457,18 +4456,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7d53d204afdd914884a20477c84d788, type: 3}
---- !u!114 &432385530621241102 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1394612234650478360, guid: b7d53d204afdd914884a20477c84d788,
-    type: 3}
-  m_PrefabInstance: {fileID: 432385530621241101}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6cafe4103126d2499b8d76760f4d0b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7401333328298790630
 PrefabInstance:
   m_ObjectHideFlags: 0

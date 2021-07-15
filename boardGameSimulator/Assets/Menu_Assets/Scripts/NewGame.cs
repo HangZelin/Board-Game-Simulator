@@ -27,7 +27,10 @@ public class NewGame : MonoBehaviour
         GameStatus.is_Multiplayer = PlayerPrefs.GetInt(GameStatus.GetNameOfGame() + "_isMultiplayer", 0) == 1;
 
         if (GameStatus.is_Multiplayer)
+        {
             SceneManager.LoadScene("CreateJoin");
+            GameStatus.NumOfPlayers = 2;
+        }
         else
             SceneManager.LoadScene("SetName");
     }
