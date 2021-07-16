@@ -352,7 +352,7 @@ namespace BGS.MenuUI
 
         bool HasDuplicate()
         {
-            return playerNames.Length == playerNames.Distinct().Count();
+            return playerNames.Length != playerNames.Distinct().Count();
         }
 
         #endregion
