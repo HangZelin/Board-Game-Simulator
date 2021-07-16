@@ -30,6 +30,7 @@ public class Chessman : MonoBehaviour
     void Start()
     {
         audio_source = GetComponent<AudioSource>();
+        Debug.Log(Screen.height / Screen.width);
     }
     public void Activate()
     {
@@ -63,11 +64,22 @@ public class Chessman : MonoBehaviour
         float x = xBoard;
         float y = yBoard;
 
-        x *= 0.57f;
-        y *= 0.57f;
+        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        {
+            x *= 0.66f;
+            y *= 0.66f;
 
-        x -= 2f;
-        y -= 2f;
+            x -= 2.3f;
+            y -= 2.3f;
+        }
+        else
+        {
+            x *= 0.57f;
+            y *= 0.57f;
+
+            x -= 2f;
+            y -= 2f;
+        }
 
         this.transform.position = new Vector3(x, y, -1.0f);//In front of the board. 
     }
@@ -270,11 +282,22 @@ public class Chessman : MonoBehaviour
         float x = BoardX;
         float y = BoardY;
 
-        x *= 0.57f;
-        y *= 0.57f;
+        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        {
+            x *= 0.66f;
+            y *= 0.66f;
 
-        x -= 2f;
-        y -= 2f;
+            x -= 2.3f;
+            y -= 2.3f;
+        }
+        else
+        {
+            x *= 0.57f;
+            y *= 0.57f;
+
+            x -= 2f;
+            y -= 2f;
+        }
 
         GameObject mp = Instantiate(movePlate, new Vector3(x, y, -3.0f), Quaternion.identity);
 
@@ -285,16 +308,28 @@ public class Chessman : MonoBehaviour
         mpScript.SetCoords(BoardX, BoardY);
     }
 
+
     public void MovePlateAttackSpawn(int BoardX, int BoardY)
     {
         float x = BoardX;
         float y = BoardY;
 
-        x *= 0.57f;
-        y *= 0.57f;
+        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        {
+            x *= 0.66f;
+            y *= 0.66f;
 
-        x -= 2f;
-        y -= 2f;
+            x -= 2.3f;
+            y -= 2.3f;
+        }
+        else
+        {
+            x *= 0.57f;
+            y *= 0.57f;
+
+            x -= 2f;
+            y -= 2f;
+        }
 
         GameObject mp = Instantiate(movePlate, new Vector3(x, y, -3.0f), Quaternion.identity);
 

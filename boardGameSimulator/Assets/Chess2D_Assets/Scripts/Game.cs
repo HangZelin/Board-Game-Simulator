@@ -22,14 +22,9 @@ public class Game : MonoBehaviour, ISaveable
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     private string currentPlayer;
-    private string playerControlled;
 
     private bool gameOver = false;
 
-    public enum Team
-    {
-        P1 = 0, P2 = 1
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -185,15 +180,6 @@ public class Game : MonoBehaviour, ISaveable
         settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
 
-    public void P1Chosen()
-    {
-        playerControlled = Player1;
-    }
-
-    public void P2Chosen()
-    {
-        playerControlled = Player2;
-    }
     public void Winner1()
     {
         gameOver = true;

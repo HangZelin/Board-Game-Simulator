@@ -27,11 +27,6 @@ public class MovePlate : MonoBehaviour
         }
     }
 
-    public void Update()
-    {
-   
-    }
-
     public void OnMouseUp()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");

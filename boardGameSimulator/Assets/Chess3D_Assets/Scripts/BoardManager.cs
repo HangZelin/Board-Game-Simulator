@@ -38,17 +38,12 @@ public class BoardManager : MonoBehaviour, ISaveable
     public AudioClip Sound_Capture;
     private AudioSource audio_source;
     private string currentPlayer;
-    private string playerControlled;
 
     private string Player1 = GameStatus.GetNameOfPlayer(1);
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     bool gameOver = false;
 
-    public enum Team
-    {
-        P1 = 0, P2 = 1
-    }
     public int[] EnPassantMove { set; get; }
 
     // Use this for initialization
@@ -376,16 +371,6 @@ public class BoardManager : MonoBehaviour, ISaveable
 
         //log
         settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
-    }
-
-    public void P1Chosen()
-    {
-        playerControlled = Player1;
-    }
-
-    public void P2Chosen()
-    {
-        playerControlled = Player2;
     }
 
     public void Winner1()
