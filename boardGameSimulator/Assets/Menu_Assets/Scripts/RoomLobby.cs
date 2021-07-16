@@ -91,12 +91,11 @@ namespace BGS.MenuUI
 
         public void OnStartGameButtonClicked()
         {
-            if (IsRoomFull())
+            if (IsRoomFull() && multiplayerManager.isHost)
             {
                 SceneLoader.LoadMultiGameScene();
             } else
             {
-                Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
                 return;
             }
 
