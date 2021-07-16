@@ -34,7 +34,7 @@ namespace BGS.MenuUI
                 Destroy(gameObject);
 
             // Photon
-            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.AutomaticallySyncScene = false;
             createRoomTimes = 0;
 
             if (random == null)
