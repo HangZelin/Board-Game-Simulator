@@ -30,7 +30,6 @@ public class Chessman : MonoBehaviour
     void Start()
     {
         audio_source = GetComponent<AudioSource>();
-        Debug.Log(Screen.height / Screen.width);
     }
     public void Activate()
     {

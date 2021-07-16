@@ -89,6 +89,19 @@ namespace BGS.MenuUI
             PhotonNetwork.LeaveRoom();
         }
 
+        public void OnStartGameButtonClicked()
+        {
+            if (IsRoomFull())
+            {
+                SceneLoader.LoadMultiGameScene();
+            } else
+            {
+                Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
+                return;
+            }
+
+        }
+
         #endregion
 
 
@@ -225,6 +238,11 @@ namespace BGS.MenuUI
             enteredText.SetActive(false);
             refreshText.SetActive(false);
             isHostText.SetActive(false);
+        }
+
+        bool IsRoomFull()
+        {
+            return PhotonNetwork.CurrentRoom.PlayerCount == GameStatus.NumOfPlayers;
         }
 
         #endregion

@@ -126,11 +126,6 @@ namespace BGS.MenuUI
             if (next.name == "Home" || next.name == "NewGame")
                 Destroy(gameObject);
         }
-
-        bool IsRoomFull()
-        {
-            return PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
-        }
     }
 }
 

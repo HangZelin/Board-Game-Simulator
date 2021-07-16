@@ -22,6 +22,12 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(GameStatus.GetNameOfGame());
     }
 
+    public static void LoadMultiGameScene()
+    {
+        lastScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(GameStatus.GetNameOfGame() + "_mul");
+    }
+
     public static void LoadSceneAdditive(string sceneName)
     {
         lastScene = SceneManager.GetActiveScene().name;
