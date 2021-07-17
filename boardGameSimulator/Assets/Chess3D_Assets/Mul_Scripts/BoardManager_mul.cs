@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class BoardManager_mul : MonoBehaviour, ISaveable
+public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 {
     public static BoardManager_mul Instance { get; set; }
     public GameObject gameUI;
@@ -24,8 +25,8 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
     private Quaternion whiteOrientation = Quaternion.Euler(0, 270, 0);
     private Quaternion blackOrientation = Quaternion.Euler(0, 90, 0);
 
-    public Chessplayer_mul[,] Chessmans { get; set; }
-    private Chessplayer_mul selectedChessman;
+    public Chessplayer[,] Chessmans { get; set; }
+    private Chessplayer selectedChessman;
 
     public bool isWhiteTurn = true;
 
@@ -90,7 +91,7 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
                     else
                     {
                         // Move the chessman
-                        MoveChessman(selectionX, selectionY);
+                        this.photonView.RPC("MoveChessman", RpcTarget.AllBuffered, selectionX, selectionY);
                     }
                 }
             }
@@ -104,7 +105,7 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
         Instance = this;
         SpawnAllChessmans();
         EnPassantMove = new int[2] { -1, -1 };
-        currentPlayer = Player1;
+        currentPlayer = PhotonNetwork.LocalPlayer.NickName;
 
         //log
 
@@ -159,12 +160,13 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
         BoardHighlights.Instance.HighLightAllowedMoves(allowedMoves);
     }
 
+    [PunRPC]
     private void MoveChessman(int x, int y)
     {
         bool Eat = false;
         if (allowedMoves[x, y])
         {
-            Chessplayer_mul c = Chessmans[x, y];
+            Chessplayer c = Chessmans[x, y];
 
             if (c != null && c.isWhite != isWhiteTurn)
             {
@@ -226,7 +228,7 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
             selectedChessman.transform.position = GetTileCenter(x, y);
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
-            if (isWhiteTurn)
+            if (currentPlayer == Player1)
             {
                 currentPlayer = Player2;
             }
@@ -287,7 +289,7 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
         }
 
         go.transform.SetParent(transform);
-        Chessmans[x, y] = go.GetComponent<Chessplayer_mul>();
+        Chessmans[x, y] = go.GetComponent<Chessplayer>();
         Chessmans[x, y].SetPosition(x, y);
         activeChessman.Add(go);
     }
@@ -304,7 +306,7 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
     private void SpawnAllChessmans()
     {
         activeChessman = new List<GameObject>();
-        Chessmans = new Chessplayer_mul[8, 8];
+        Chessmans = new Chessplayer[8, 8];
 
         /////// White ///////
 
@@ -448,17 +450,21 @@ public class BoardManager_mul : MonoBehaviour, ISaveable
 
     }
 
-    void OnEnable()
+    new void OnEnable()
     {
         SaveLoadManager.OnSaveHandler += PopulateSaveData;
     }
 
-    void OnDisable()
+    new void OnDisable()
     {
 
         SaveLoadManager.OnSaveHandler -= PopulateSaveData;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //throw new NotImplementedException();
+    }
 }
 
 

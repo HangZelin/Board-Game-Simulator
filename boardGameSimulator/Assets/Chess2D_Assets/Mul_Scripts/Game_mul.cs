@@ -143,6 +143,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         return gameOver;
     }
 
+    [PunRPC]
     public void NextTurn()
     {
         if (currentPlayer == Player1)

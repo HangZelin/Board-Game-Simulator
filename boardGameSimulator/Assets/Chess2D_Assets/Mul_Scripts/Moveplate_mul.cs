@@ -33,6 +33,7 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
         this.photonView.RPC("PerformMoveorAttack", RpcTarget.AllBuffered);
+        reference.GetComponent<Chessman_mul>().DestroyMovePlates();
     }
 
 
@@ -62,8 +63,6 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
 
         if (!controller.GetComponent<Game_mul>().IsGameOver())
             controller.GetComponent<Game_mul>().NextTurn();
-
-        reference.GetComponent<Chessman_mul>().DestroyMovePlates();
     }
 
 

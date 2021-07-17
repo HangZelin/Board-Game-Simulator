@@ -116,6 +116,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
+    [PunRPC]
     public void DestroyMovePlates()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");

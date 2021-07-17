@@ -31,6 +31,13 @@ public class MovePlate : MonoBehaviour
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
 
+        PerformMoveorAttack();
+       
+    }
+
+
+    public void PerformMoveorAttack()
+    {
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(BoardX, BoardY);
@@ -53,23 +60,21 @@ public class MovePlate : MonoBehaviour
             Destroy(cp);
         }
 
-            controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
-                reference.GetComponent<Chessman>().GetYBoard());
+        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
+            reference.GetComponent<Chessman>().GetYBoard());
 
-            reference.GetComponent<Chessman>().SetXBoard(BoardX);
-            reference.GetComponent<Chessman>().SetYBoard(BoardY);
-            reference.GetComponent<Chessman>().SetCoords();
+        reference.GetComponent<Chessman>().SetXBoard(BoardX);
+        reference.GetComponent<Chessman>().SetYBoard(BoardY);
+        reference.GetComponent<Chessman>().SetCoords();
 
-            controller.GetComponent<Game>().SetPosition(reference);
+        controller.GetComponent<Game>().SetPosition(reference);
 
-            if (!controller.GetComponent<Game>().IsGameOver())
-                controller.GetComponent<Game>().NextTurn();
+        if (!controller.GetComponent<Game>().IsGameOver())
+            controller.GetComponent<Game>().NextTurn();
 
-            reference.GetComponent<Chessman>().DestroyMovePlates();
-       
+        reference.GetComponent<Chessman>().DestroyMovePlates();
     }
-
-    
+     
 
     public void SetCoords(int x, int y)
     {
