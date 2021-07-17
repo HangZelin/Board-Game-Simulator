@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class Chessman_mul : MonoBehaviour
+public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 {
     public GameObject controller;
     public GameObject movePlate; //The new Location.
@@ -340,4 +342,11 @@ public class Chessman_mul : MonoBehaviour
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
     }
+
+    #region IPunObservable Implementation
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //throw new System.NotImplementedException();
+    }
+    #endregion
 }

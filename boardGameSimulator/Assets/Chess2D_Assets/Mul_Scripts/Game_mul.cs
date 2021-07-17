@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class Game_mul : MonoBehaviour, ISaveable
+public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 {
     public GameObject chesspiece;
     public GameObject gameUI;
@@ -43,9 +43,10 @@ public class Game_mul : MonoBehaviour, ISaveable
 
         //Gamemode Initialization;
         Debug.Log("Hotseat Mode");
-        Initialized();
+        this.photonView.RPC("Initialized", RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
     public void Initialized()
     {
 
@@ -53,7 +54,7 @@ public class Game_mul : MonoBehaviour, ISaveable
 
         //Instantiate the chesspiece when the game starts.
 
-        currentPlayer = Player1;
+        currentPlayer =  PhotonNetwork.LocalPlayer.NickName;
         CreatePiecesforP1();
         CreatePiecesforP2();
 
@@ -238,12 +239,12 @@ public class Game_mul : MonoBehaviour, ISaveable
 
     // 
 
-    void OnEnable()
+    new void OnEnable()
     {
         SceneLoader.backToGame += ActivateChessman;
     }
 
-    void OnDisable()
+    new void OnDisable()
     {
 
         SceneLoader.backToGame -= ActivateChessman;
@@ -269,5 +270,10 @@ public class Game_mul : MonoBehaviour, ISaveable
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
         foreach (GameObject go in movePlates)
             go.SetActive(true);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //throw new System.NotImplementedException();
     }
 }

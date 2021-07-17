@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class MovePlate_mul : MonoBehaviour
+public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
 {
     public GameObject controller, stepDialog;
 
@@ -30,24 +32,20 @@ public class MovePlate_mul : MonoBehaviour
     public void OnMouseUp()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
+        this.photonView.RPC("PerformMoveorAttack", RpcTarget.AllBuffered);
+    }
+
+
+    [PunRPC] 
+    public void PerformMoveorAttack()
+    {
 
         if (attack)
         {
             GameObject cp = controller.GetComponent<Game_mul>().GetPosition(BoardX, BoardY);
-            /*if (!stepDialog.activeInHierarchy)
-            {
-                Debug.Log("Toggled!");
-                stepDialog.SetActive(true);
-                Time.timeScale = 0f;
-            }
-            else
-            {
-                stepDialog.SetActive(false);
-                Time.timeScale = 1f;
-            }*/
             if (GameStatus.useRules)
             {
-                if (cp.name == "white_king") controller.GetComponent <Game_mul>().GameWinner(GameStatus.GetNameOfPlayer(1));
+                if (cp.name == "white_king") controller.GetComponent<Game_mul>().GameWinner(GameStatus.GetNameOfPlayer(1));
                 if (cp.name == "black_king") controller.GetComponent<Game_mul>().GameWinner(GameStatus.GetNameOfPlayer(2));
             }
             Destroy(cp);
@@ -66,9 +64,7 @@ public class MovePlate_mul : MonoBehaviour
             controller.GetComponent<Game_mul>().NextTurn();
 
         reference.GetComponent<Chessman_mul>().DestroyMovePlates();
-
     }
-
 
 
     public void SetCoords(int x, int y)
@@ -87,4 +83,8 @@ public class MovePlate_mul : MonoBehaviour
         return reference;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //throw new System.NotImplementedException();
+    }
 }
