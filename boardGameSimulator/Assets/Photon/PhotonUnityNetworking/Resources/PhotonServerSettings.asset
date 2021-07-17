@@ -45,6 +45,12 @@ MonoBehaviour:
   - TestRPC
   - RefreshPlayerList
   - SetMasterClientName
+  - SetHostName
+  - SetPlayerCount
+  - StartMultiGame
+  - SetPlayerIndex
+  - ForcedRefreshPlayerList
+  - ToggleDirection
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
