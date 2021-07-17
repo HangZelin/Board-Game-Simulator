@@ -3361,7 +3361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2061400632
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4841,7 +4841,7 @@ MonoBehaviour:
     type: 3}
   drawACardButton: {fileID: 9201655154933223636}
   buttonOutline: {fileID: 2969169546216574709}
-  Note: {fileID: 2326083645492107343}
+  note: {fileID: 2326083645492107343}
   unoInfo: {fileID: 1264333082}
   drawCardAudio: {fileID: 1389925690689178918}
   enableCardsCount: 1
@@ -5120,9 +5120,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UNO.Deck, Assembly-CSharp
-        m_MethodName: DeactiveNote
+      - m_Target: {fileID: 7505503790088745214}
+        m_TargetAssemblyTypeName: BGS.UNO.DeckMul, Assembly-CSharp
+        m_MethodName: OnDeckButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

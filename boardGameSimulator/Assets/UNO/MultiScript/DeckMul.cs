@@ -1,3 +1,4 @@
+using BGS.MenuUI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -41,12 +42,13 @@ namespace BGS.UNO
             }
         }
 
-        [SerializeField] GameObject Note;
+        [SerializeField] GameObject note;
 
         [SerializeField] UNOInfo unoInfo;
 
         [SerializeField] AudioSource drawCardAudio;
 
+        [Header("Card count")]
         [SerializeField] bool enableCardsCount;
         [SerializeField] GameObject cardsCount;
 
@@ -64,21 +66,120 @@ namespace BGS.UNO
                 }
             }
         }
+        MultiplayerManager mulManager;
 
         public void Initialize(Action onclick)
         {
             name = ToString();
-            cards = new List<GameObject>();
             drawACardButton.onClick.AddListener(delegate { onclick(); });
             Interactable = true;
+            mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
 
-            if (!GameStatus.isNewGame)
+            if (mulManager.isHost)
             {
-                cardsCount.SetActive(enableCardsCount);
-                return;
+                InitializeCards();
+                BroadcastCards();
             }
 
-            // Initialize cards in the deck
+            cardsCount.SetActive(enableCardsCount);
+        }
+
+        /** <summary>
+         * Draw a number of cards from head of the list.
+         * </summary> 
+         * <returns>List of cards drawed.</returns>
+         * <param name="num">Number of cards to draw</param>
+         * <param name="transform">Target transform.</param>
+         */
+        public List<GameObject> DrawCards(int num, Transform transform)
+        {
+            if (num > cards.Count)
+            {
+                // Transfer all cards from discard
+                List<GameObject> transferedCards;
+                discard.GetComponent<IContainer>().TransferAllCards(unused.transform, out transferedCards);
+                cards.AddRange(transferedCards);
+
+                Shuffle(Cards);
+
+                if (num > cards.Count)
+                {
+                    Debug.LogError("No more cards to draw.");
+                    return null;
+                }
+
+                this.photonView.RPC("ClearDiscard", RpcTarget.Others);
+                BroadcastCards();
+            }
+
+            List<GameObject> drawCards = new List<GameObject>();
+            for (int i = 0; i < num; i++)
+            {
+                cards[i].transform.SetParent(transform);
+                drawCards.Add(cards[i]);
+            }
+            cards.RemoveRange(0, num);
+
+            drawCardAudio.Play();
+
+            return drawCards;
+        }
+
+
+        #region Button Callbacks
+
+        public void OnDeckButtonClicked()
+        {
+            if (note.activeSelf)
+                note.SetActive(false);
+        }
+
+        #endregion
+
+
+        #region RPCs
+
+        [PunRPC]
+        void GetCards(string[] cardInfoArr)
+        {
+            this.cards = new List<GameObject>();
+            List<string> cardInfoList = new List<string>(cardInfoArr);
+            for (int i = 0; i < cardInfoList.Count; i += 3)
+            {
+                this.cards.Add(unoInfo.ListToCard(
+                    cardInfoList.GetRange(i, 3)
+                    ));
+            }
+        }
+
+        [PunRPC]
+        void ClearDiscard()
+        {
+            // UnImplemented
+        }
+
+        #endregion
+
+
+        #region Helpers
+
+        void BroadcastCards()
+        {
+            List<string> cardInfoList = new List<string>();
+            foreach (GameObject card in this.cards)
+            {
+                List<string> list = UNOInfo.CardToList(card);
+                cardInfoList.AddRange(list);
+            }
+            this.photonView.RPC("GetCards", RpcTarget.Others, cardInfoList.ToArray());
+        }
+
+        /// <summary>
+        /// Initialize cards in the deck.
+        /// </summary>
+        public void InitializeCards()
+        {
+            cards = new List<GameObject>();
 
             // Color cards
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -143,46 +244,6 @@ namespace BGS.UNO
             Shuffle(cards);
             while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 || cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
-
-            cardsCount.SetActive(enableCardsCount);
-        }
-
-        /** <summary>
-         * Draw a number of cards from head of the list.
-         * </summary> 
-         * <returns>List of cards drawed.</returns>
-         * <param name="num">Number of cards to draw</param>
-         * <param name="transform">Target transform.</param>
-         */
-        public List<GameObject> DrawCards(int num, Transform transform)
-        {
-            if (num > cards.Count)
-            {
-                // Transfer all cards from discard
-                List<GameObject> transferedCards;
-                discard.GetComponent<IContainer>().TransferAllCards(unused.transform, out transferedCards);
-                cards.AddRange(transferedCards);
-
-                Shuffle(Cards);
-
-                if (num > cards.Count)
-                {
-                    Debug.LogError("No more cards to draw.");
-                    return null;
-                }
-            }
-
-            List<GameObject> drawCards = new List<GameObject>();
-            for (int i = 0; i < num; i++)
-            {
-                cards[i].transform.SetParent(transform);
-                drawCards.Add(cards[i]);
-            }
-            cards.RemoveRange(0, num);
-
-            drawCardAudio.Play();
-
-            return drawCards;
         }
 
         public void Shuffle(List<GameObject> list)
@@ -200,12 +261,15 @@ namespace BGS.UNO
             }
         }
 
-        public void DeactiveNote()
+        public override string ToString()
         {
-            Note.SetActive(false);
+            return "Deck";
         }
 
-        // IContainer method
+        #endregion
+
+
+        #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
@@ -218,56 +282,7 @@ namespace BGS.UNO
             cards = new List<GameObject>();
         }
 
-        void OnEnable()
-        {
-            SaveLoadManager.OnSaveHandler += PopulateSaveData;
-            SaveLoadManager.OnLoadHandler += LoadFromSaveData;
-        }
-
-        void OnDisable()
-        {
-            SaveLoadManager.OnSaveHandler -= PopulateSaveData;
-            SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
-        }
-
-        // Save load methods
-
-        public void PopulateSaveData(SaveData sd)
-        {
-            if (sd.playerCards == null) sd.playerCards = new List<PlayerCards>();
-            sd.playerCards.Add(UNOInfo.CardsToSaveStruct(name, cards));
-        }
-
-        public void LoadFromSaveData(SaveData sd)
-        {
-            List<int> listCounts = new List<int>();
-            List<string> cardsString = new List<string>();
-
-            foreach (PlayerCards playerCards in sd.playerCards)
-            {
-                if (playerCards.playerName.Equals(name))
-                {
-                    listCounts = playerCards.listCounts;
-                    cardsString = playerCards.cards;
-                    break;
-                }
-            }
-
-            int i = 0;
-            foreach (int listCount in listCounts)
-            {
-                List<string> list = cardsString.GetRange(i, listCount);
-                GameObject card = unoInfo.ListToCard(list);
-                card.transform.SetParent(unused.transform);
-                this.cards.Add(card);
-                i += listCount;
-            }
-        }
-
-        public override string ToString()
-        {
-            return "Deck";
-        }
+        #endregion
 
 
         #region IPunObservable Implementation

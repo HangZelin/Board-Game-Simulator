@@ -51,6 +51,8 @@ MonoBehaviour:
   - SetPlayerIndex
   - ForcedRefreshPlayerList
   - ToggleDirection
+  - GetCards
+  - ClearDiscard
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
