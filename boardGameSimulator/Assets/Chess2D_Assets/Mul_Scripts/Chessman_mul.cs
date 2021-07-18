@@ -107,7 +107,8 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnMouseUp()
     {
-        if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player)
+        if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player 
+               && controller.GetComponent<Game_mul>().IsLocalTurn())
         {
             DestroyMovePlates();
 
@@ -116,10 +117,9 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-    [PunRPC]
     public void DestroyMovePlates()
     {
-        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate_mul");
         if (is_attack == 0)
         {
             audio_source.PlayOneShot(Sound_Move, 0.7F);

@@ -32,12 +32,15 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
     public void OnMouseUp()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-        this.photonView.RPC("PerformMoveorAttack", RpcTarget.AllBuffered);
+        photonView.RPC(nameof(PerformMoveorAttack), RpcTarget.All);
+
+        if (!controller.GetComponent<Game_mul>().IsGameOver())
+            controller.GetComponent<Game_mul>().photonView.RPC("NextTurn", RpcTarget.All);
+
         reference.GetComponent<Chessman_mul>().DestroyMovePlates();
     }
 
-
-    [PunRPC] 
+    [PunRPC]
     public void PerformMoveorAttack()
     {
 
@@ -46,8 +49,8 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
             GameObject cp = controller.GetComponent<Game_mul>().GetPosition(BoardX, BoardY);
             if (GameStatus.useRules)
             {
-                if (cp.name == "white_king") controller.GetComponent<Game_mul>().GameWinner(GameStatus.GetNameOfPlayer(1));
-                if (cp.name == "black_king") controller.GetComponent<Game_mul>().GameWinner(GameStatus.GetNameOfPlayer(2));
+                if (cp.name == "white_king") controller.GetComponent<Game_mul>().photonView.RPC("GameWinner", RpcTarget.All, GameStatus.GetNameOfPlayer(1));
+                if (cp.name == "black_king") controller.GetComponent<Game_mul>().photonView.RPC("GameWinner", RpcTarget.All, GameStatus.GetNameOfPlayer(2));
             }
             Destroy(cp);
         }
@@ -61,8 +64,6 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
 
         controller.GetComponent<Game_mul>().SetPosition(reference);
 
-        if (!controller.GetComponent<Game_mul>().IsGameOver())
-            controller.GetComponent<Game_mul>().NextTurn();
     }
 
 

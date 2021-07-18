@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 714895229171237698}
   - component: {fileID: -4199402459860985748}
   - component: {fileID: 5352652224443820287}
+  - component: {fileID: 8650653648851540462}
   m_Layer: 0
   m_Name: ChessBoard_mul
   m_TagString: Untagged
@@ -272,6 +273,28 @@ MonoBehaviour:
   Sound_Move: {fileID: 8300000, guid: 47ed1be98af019b48941ed3cb0472020, type: 3}
   Sound_Eat: {fileID: 8300000, guid: eee184f26792b844ea8534d44198662c, type: 3}
   Sound_Capture: {fileID: 8300000, guid: 8b82019cec0d663458ed89f434a06f99, type: 3}
+--- !u!114 &8650653648851540462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714895229171237710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &714895228474259271
 PrefabInstance:
   m_ObjectHideFlags: 0

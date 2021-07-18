@@ -39,6 +39,9 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     public AudioClip Sound_Capture;
     private AudioSource audio_source;
     private string currentPlayer;
+    private string localPlayer;
+
+    private bool is_localPlayer;
 
     private string Player1 = GameStatus.GetNameOfPlayer(1);
     private string Player2 = GameStatus.GetNameOfPlayer(2);
@@ -53,7 +56,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         settings = gameUI.GetComponent<SettingsUI>();
 
-        Initialized();
+        photonView.RPC(nameof(Initialized),RpcTarget.All);
 
         if (!GameStatus.isNewGame)
         {
@@ -91,13 +94,15 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     else
                     {
                         // Move the chessman
-                        this.photonView.RPC("MoveChessman", RpcTarget.AllBuffered, selectionX, selectionY);
+                        photonView.RPC(nameof(MoveChessman), RpcTarget.All, selectionX, selectionY);
+                        photonView.RPC(nameof(NextTurn),RpcTarget.All);
                     }
                 }
             }
         }
     }
 
+    [PunRPC]
     public void Initialized()
     {
         audio_source = GetComponent<AudioSource>();
@@ -105,7 +110,16 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         Instance = this;
         SpawnAllChessmans();
         EnPassantMove = new int[2] { -1, -1 };
-        currentPlayer = PhotonNetwork.LocalPlayer.NickName;
+        currentPlayer = Player1;
+        localPlayer = PhotonNetwork.LocalPlayer.NickName;
+
+        if (currentPlayer == localPlayer)
+        {
+            is_localPlayer = true;
+        } else
+        {
+            is_localPlayer = false;
+        }
 
         //log
 
@@ -116,7 +130,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     {
         if (Chessmans[x, y] == null) return;
 
-        if (Chessmans[x, y].isWhite != isWhiteTurn) return;
+        if (Chessmans[x, y].isWhite != isWhiteTurn || !is_localPlayer) return;
 
         bool hasAtLeastOneMove = false;
         bool[,] all_possible = new bool[8, 8];
@@ -157,7 +171,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         selectedMat.mainTexture = previousMat.mainTexture;
         selectedChessman.GetComponent<MeshRenderer>().material = selectedMat;
 
-        BoardHighlights.Instance.HighLightAllowedMoves(allowedMoves);
+        BoardHighlights_mul.Instance.HighLightAllowedMoves(allowedMoves);
     }
 
     [PunRPC]
@@ -228,33 +242,20 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
             selectedChessman.transform.position = GetTileCenter(x, y);
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
-            if (currentPlayer == Player1)
-            {
-                currentPlayer = Player2;
-            }
-            else
-            {
-                currentPlayer = Player1;
-            }
-            isWhiteTurn = !isWhiteTurn;
+
             if (Eat)
             {
                 audio_source.PlayOneShot(Sound_Eat, 0.7F);
-            } else
+            }
+            else
             {
                 audio_source.PlayOneShot(Sound_Move, 0.7F);
             }
-
-
-            //Log
-
-            settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
-
         }
 
         selectedChessman.GetComponent<MeshRenderer>().material = previousMat;
 
-        BoardHighlights.Instance.HideHighlights();
+        BoardHighlights_mul.Instance.HideHighlights();
         selectedChessman = null;
     }
 
@@ -274,6 +275,30 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         }
     }
 
+    [PunRPC]
+    public void NextTurn()
+    {
+        if (currentPlayer == Player1)
+        {
+            currentPlayer = Player2;
+        }
+        else
+        {
+            currentPlayer = Player1;
+        }
+        isWhiteTurn = !isWhiteTurn;
+
+        if (currentPlayer == localPlayer)
+        {
+            is_localPlayer = true; 
+        } else
+        {
+            is_localPlayer = false;
+        }
+
+        //Log
+        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
+    }
     private void SpawnChessman(int index, int x, int y, bool isWhite)
     {
         Vector3 position = GetTileCenter(x, y);

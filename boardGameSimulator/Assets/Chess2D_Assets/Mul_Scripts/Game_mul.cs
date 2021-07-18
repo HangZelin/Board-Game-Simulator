@@ -22,13 +22,14 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     private string currentPlayer;
+    private string localPlayer;
+    private bool is_localturn = false;
 
     private bool gameOver = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(GameStatus.is_Multiplayer);
         settings = gameUI.GetComponent<SettingsUI>();
 
         if (!GameStatus.isNewGame)
@@ -42,8 +43,14 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         settings.Initialize();
 
         //Gamemode Initialization;
-        Debug.Log("Hotseat Mode");
-        this.photonView.RPC("Initialized", RpcTarget.AllBuffered);
+        if (!GameStatus.is_Multiplayer)
+        {
+            Debug.Log("Hotseat Mode");
+        } else
+        {
+            Debug.Log("Multiplayer Mode");
+        }
+        this.photonView.RPC("Initialized", RpcTarget.All);
     }
 
     [PunRPC]
@@ -54,7 +61,15 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 
         //Instantiate the chesspiece when the game starts.
 
-        currentPlayer =  PhotonNetwork.LocalPlayer.NickName;
+        currentPlayer =  Player1;
+        localPlayer = PhotonNetwork.LocalPlayer.NickName;
+        if (currentPlayer == localPlayer)
+        {
+            is_localturn = true;
+        } else
+        {
+            is_localturn = false;
+        }
         CreatePiecesforP1();
         CreatePiecesforP2();
 
@@ -104,7 +119,10 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
             Create("white_pawn", 2, 1),Create("white_pawn", 3, 1),Create("white_pawn", 4, 1),Create("white_pawn", 5, 1),Create("white_pawn", 6, 1),
             Create("white_pawn", 7, 1)
        };
+    
     }
+
+    [PunRPC]
     public void SetPosition(GameObject obj)
     {
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
@@ -149,10 +167,20 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         if (currentPlayer == Player1)
         {
             currentPlayer = Player2;
+            
         }
         else
         {
             currentPlayer = Player1;
+        }
+
+        if (currentPlayer == localPlayer)
+        {
+            is_localturn = true;
+        }
+        else
+        {
+            is_localturn = false;
         }
 
         // Log 
@@ -164,11 +192,22 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
     {
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
-            gameOver = false;
-            GameStatus.isNewGame = true;
-
-            SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
+            this.photonView.RPC("RestartGame", RpcTarget.All);
         }
+    }
+
+    [PunRPC]
+    public void RestartGame()
+    {
+        gameOver = false;
+        GameStatus.isNewGame = true;
+
+        SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
+    }
+
+    public bool IsLocalTurn()
+    {
+        return is_localturn;
     }
 
     public void GameWinner(string winner)
