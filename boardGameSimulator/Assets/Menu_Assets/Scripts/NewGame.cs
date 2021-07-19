@@ -36,6 +36,7 @@ public class NewGame : MonoBehaviour
         {
             SceneManager.LoadScene("CreateJoin");
             GameStatus.NumOfPlayers = 2;
+            GameStatus.useRules = true;
         }
         else
             SceneManager.LoadScene("SetName");

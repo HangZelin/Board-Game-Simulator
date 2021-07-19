@@ -112,6 +112,22 @@ public class GameStatus : MonoBehaviour, ISaveable
         return "";
     }
 
+    public static string GetNextPlayerName(string playerName)
+    {
+        int i = nameOfPlayers.IndexOf(playerName);
+        if (i == -1)
+        {
+            Debug.LogError("Playername" + playerName + "is not found.");
+            return "";
+        }
+
+        i++;
+        if (i < nameOfPlayers.Count)
+            return nameOfPlayers[i];
+        else
+            return nameOfPlayers[0];
+    }
+
     // helper methods
 
     public static bool IsNameUnique()

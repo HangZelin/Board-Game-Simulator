@@ -155,7 +155,7 @@ namespace BGS.UNO
         [PunRPC]
         void ClearDiscard()
         {
-            // UnImplemented
+            discard.GetComponent<DiscardMul>().RemoveAll();
         }
 
         #endregion

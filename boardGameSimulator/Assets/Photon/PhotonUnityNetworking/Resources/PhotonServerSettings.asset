@@ -53,6 +53,14 @@ MonoBehaviour:
   - ToggleDirection
   - GetCards
   - ClearDiscard
+  - SyncCurrentPlayerIndex
+  - SyncLastCardInfo
+  - OnTurnStart
+  - SetCardDrawed
+  - SyncDealCards
+  - SyncDirection
+  - UpdateLastCardInfo
+  - PlayCard
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
