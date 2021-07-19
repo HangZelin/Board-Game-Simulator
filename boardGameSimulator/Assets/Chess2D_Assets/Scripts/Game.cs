@@ -22,13 +22,13 @@ public class Game : MonoBehaviour, ISaveable
     private string Player2 = GameStatus.GetNameOfPlayer(2);
 
     private string currentPlayer;
+    private float ratio;
 
     private bool gameOver = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(GameStatus.is_Multiplayer);
         settings = gameUI.GetComponent<SettingsUI>();
 
         if (!GameStatus.isNewGame)
@@ -43,7 +43,8 @@ public class Game : MonoBehaviour, ISaveable
         
         //Gamemode Initialization;
             Debug.Log("Hotseat Mode");
-            Initialized();
+        
+        Initialized();
     }
 
     public void Initialized()

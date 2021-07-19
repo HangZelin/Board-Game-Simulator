@@ -40,6 +40,7 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
         reference.GetComponent<Chessman_mul>().DestroyMovePlates();
     }
 
+    #region RPCs
     [PunRPC]
     public void PerformMoveorAttack()
     {
@@ -65,16 +66,15 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
         controller.GetComponent<Game_mul>().SetPosition(reference);
 
     }
+    #endregion
 
 
-    [PunRPC]
     public void SetCoords(int x, int y)
     {
         BoardX = x;
         BoardY = y;
     }
 
-      [PunRPC]
     public void SetReference(GameObject obj)
     {
         reference = obj;
@@ -85,8 +85,10 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
         return reference;
     }
 
+    #region IPunObservable Implementation
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //throw new System.NotImplementedException();
     }
+    #endregion
 }

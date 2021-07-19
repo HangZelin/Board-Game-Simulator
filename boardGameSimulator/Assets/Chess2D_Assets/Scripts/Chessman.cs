@@ -14,6 +14,7 @@ public class Chessman : MonoBehaviour
 
     //Keep track of "black" player or "White" player
     private string player;
+    private float ratio;
 
     //Sprites for chesspieces
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
@@ -36,6 +37,7 @@ public class Chessman : MonoBehaviour
         //Getting access to controller
         controller = GameObject.FindGameObjectWithTag("GameController");
 
+        ratio = (float)Screen.height / Screen.width;
         //Take the instantiated location and adjust the transform
         SetCoords();
 
@@ -63,7 +65,7 @@ public class Chessman : MonoBehaviour
         float x = xBoard;
         float y = yBoard;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;
@@ -281,7 +283,7 @@ public class Chessman : MonoBehaviour
         float x = BoardX;
         float y = BoardY;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;
@@ -313,7 +315,7 @@ public class Chessman : MonoBehaviour
         float x = BoardX;
         float y = BoardY;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;

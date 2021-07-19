@@ -123,12 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &146728428 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
-    type: 3}
-  m_PrefabInstance: {fileID: 8734426569705576695}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &146728429 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8734426569582722330, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
@@ -1444,11 +1438,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1233379474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8d449f54f64f74e8a6f5959e9bab3f, type: 3}
+  m_Script: {fileID: 11500000, guid: 974ead3374ef6af4096b15874c8e0df8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
-  stepDialog: {fileID: 146728428}
+  controller: {fileID: 3551374403148552679}
+  stepDialog: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
+    type: 3}
   attack: 0
 --- !u!1 &1261829502
 GameObject:
@@ -2827,6 +2822,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4711359779968609573, guid: 18422213171be8f4c841209f1def32a8,
+        type: 3}
+      propertyPath: gameUI
+      value: 
+      objectReference: {fileID: 6103659490208069247}
     - target: {fileID: 8166053626732693417, guid: 18422213171be8f4c841209f1def32a8,
         type: 3}
       propertyPath: sceneViewId
@@ -2841,11 +2841,11 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3551374403148552678}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3551374403148552680
+--- !u!114 &3551374403148552682 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4711359779968609573, guid: 18422213171be8f4c841209f1def32a8,
+    type: 3}
+  m_PrefabInstance: {fileID: 3551374403148552678}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3551374403148552679}
   m_Enabled: 1
@@ -2853,10 +2853,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1bd91b780891d24b9ddc180039fa4f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chesspiece: {fileID: 1054453202266070466, guid: 764b08e87b9d52641b1c42c702d17fac,
-    type: 3}
-  gameUI: {fileID: 6103659490208069247}
-  Board: {fileID: 1272713079}
 --- !u!1001 &5240901793165711340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3276,7 +3272,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3551374403148552680}
+      objectReference: {fileID: 3551374403148552682}
     - target: {fileID: 7522869770173768580, guid: 185d4abcba5bd554db2b2b5d7bd52299,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -3291,7 +3287,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3551374403148552680}
+      objectReference: {fileID: 3551374403148552682}
     - target: {fileID: 7522869770462789215, guid: 185d4abcba5bd554db2b2b5d7bd52299,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName

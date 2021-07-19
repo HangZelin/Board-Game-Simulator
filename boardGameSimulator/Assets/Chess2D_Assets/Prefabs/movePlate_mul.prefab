@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6730530993434636184}
-  - component: {fileID: -6669780453130930937}
+  - component: {fileID: 1533097959905140640}
   - component: {fileID: 6730530993434636187}
   - component: {fileID: 9010728864195878568}
   - component: {fileID: 7112988206061486304}
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6669780453130930937
+--- !u!114 &1533097959905140640
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,9 +242,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
-  - {fileID: -6669780453130930937}
+  - {fileID: 1533097959905140640}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

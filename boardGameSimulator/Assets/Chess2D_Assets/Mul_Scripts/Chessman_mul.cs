@@ -16,6 +16,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
     //Keep track of "black" player or "White" player
     private string player;
+    private float ratio;
 
     //Sprites for chesspieces
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
@@ -65,7 +66,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         float x = xBoard;
         float y = yBoard;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;
@@ -285,7 +286,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         float x = BoardX;
         float y = BoardY;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;
@@ -317,7 +318,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         float x = BoardX;
         float y = BoardY;
 
-        if (Screen.height / Screen.width >= 1 && Screen.height / Screen.width < 2)
+        if (ratio >= 1 && ratio <= 1.8)
         {
             x *= 0.66f;
             y *= 0.66f;

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3551374404534158586
+--- !u!1 &2872861359733237810
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3551374404534158587}
-  - component: {fileID: 4711359779968609573}
-  - component: {fileID: 8166053626732693417}
+  - component: {fileID: 2872861360272620242}
+  - component: {fileID: 4868985666416015713}
+  - component: {fileID: 2872861359733237809}
   m_Layer: 0
   m_Name: Controller
   m_TagString: GameController
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3551374404534158587
+--- !u!4 &2872861360272620242
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3551374404534158586}
+  m_GameObject: {fileID: 2872861359733237810}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 136.09618, y: -20.834635, z: -6327.2144}
   m_LocalScale: {x: 69.78181, y: 69.78181, z: 69.78181}
@@ -32,29 +32,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4711359779968609573
+--- !u!114 &4868985666416015713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3551374404534158586}
+  m_GameObject: {fileID: 2872861359733237810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1bd91b780891d24b9ddc180039fa4f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a4b6c0054b8637419dadc36a5fb9cb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chesspiece: {fileID: 1054453202266070466, guid: eed6672b223dc9e40a3111c9c725b090,
+  chesspiece: {fileID: 1054453202266070466, guid: f5a9a5b5d74d61f4c95cef8995a0f1b1,
     type: 3}
-  gameUI: {fileID: 3497032899031827373, guid: 28758041a3003f847a45b9f397a0b24e, type: 3}
-  Board: {fileID: 880890243971828215, guid: 2ff47631f6961694db2750655684924f, type: 3}
---- !u!114 &8166053626732693417
+  gameUI: {fileID: 0}
+  Board: {fileID: 0}
+--- !u!114 &2872861359733237809
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3551374404534158586}
+  m_GameObject: {fileID: 2872861359733237810}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
@@ -66,8 +66,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 4711359779968609573}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

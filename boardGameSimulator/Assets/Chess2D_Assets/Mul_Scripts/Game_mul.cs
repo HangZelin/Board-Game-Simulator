@@ -53,6 +53,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         this.photonView.RPC(nameof(Initialized), RpcTarget.All);
     }
 
+    #region RPCs
     [PunRPC]
     public void Initialized()
     {
@@ -85,6 +86,56 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         // Log
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
+
+    [PunRPC]
+    public void NextTurn()
+    {
+        if (currentPlayer == Player1)
+        {
+            currentPlayer = Player2;
+
+        }
+        else
+        {
+            currentPlayer = Player1;
+        }
+
+        if (currentPlayer == localPlayer)
+        {
+            is_localturn = true;
+        }
+        else
+        {
+            is_localturn = false;
+        }
+
+        // Log 
+
+        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
+    }
+
+    [PunRPC]
+    public void RestartGame()
+    {
+        gameOver = false;
+        GameStatus.isNewGame = true;
+
+        SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
+    }
+
+    [PunRPC]
+    public void GameWinner(string winner)
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = winner + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+
+        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+    }
+    #endregion
 
     public GameObject Create(string name, int x, int y)
     {
@@ -120,6 +171,11 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
             Create("white_pawn", 7, 1)
        };
     
+    }
+
+    public bool IsLocalTurn()
+    {
+        return is_localturn;
     }
 
     public void SetPosition(GameObject obj)
@@ -160,66 +216,12 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         return gameOver;
     }
 
-    [PunRPC]
-    public void NextTurn()
-    {
-        if (currentPlayer == Player1)
-        {
-            currentPlayer = Player2;
-            
-        }
-        else
-        {
-            currentPlayer = Player1;
-        }
-
-        if (currentPlayer == localPlayer)
-        {
-            is_localturn = true;
-        }
-        else
-        {
-            is_localturn = false;
-        }
-
-        // Log 
-
-        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
-    }
-
     public void Update()
     {
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
             photonView.RPC(nameof(RestartGame), RpcTarget.All);
         }
-    }
-
-    [PunRPC]
-    public void RestartGame()
-    {
-        gameOver = false;
-        GameStatus.isNewGame = true;
-
-        SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
-    }
-
-    public bool IsLocalTurn()
-    {
-        return is_localturn;
-    }
-
-    [PunRPC]
-    public void GameWinner(string winner)
-    {
-        gameOver = true;
-
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = winner + " is the winner";
-
-        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
-
-        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
 
     public void Winner1()
@@ -312,8 +314,10 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
             go.SetActive(true);
     }
 
+    #region IPunObservable Implementation
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //throw new System.NotImplementedException();
     }
+    #endregion
 }
