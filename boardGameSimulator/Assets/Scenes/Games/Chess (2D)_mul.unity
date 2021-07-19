@@ -2853,7 +2853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1bd91b780891d24b9ddc180039fa4f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chesspiece: {fileID: 1054453202266070466, guid: eed6672b223dc9e40a3111c9c725b090,
+  chesspiece: {fileID: 1054453202266070466, guid: 764b08e87b9d52641b1c42c702d17fac,
     type: 3}
   gameUI: {fileID: 6103659490208069247}
   Board: {fileID: 1272713079}

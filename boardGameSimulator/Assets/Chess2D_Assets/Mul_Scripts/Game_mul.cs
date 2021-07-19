@@ -50,7 +50,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         {
             Debug.Log("Multiplayer Mode");
         }
-        this.photonView.RPC("Initialized", RpcTarget.All);
+        this.photonView.RPC(nameof(Initialized), RpcTarget.All);
     }
 
     [PunRPC]
@@ -88,7 +88,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 
     public GameObject Create(string name, int x, int y)
     {
-        GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
+        GameObject obj =  Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
         cm.name = name;
@@ -122,7 +122,6 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
     
     }
 
-    [PunRPC]
     public void SetPosition(GameObject obj)
     {
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
@@ -192,7 +191,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
     {
         if (gameOver == true && Input.GetMouseButtonDown(0))
         {
-            this.photonView.RPC("RestartGame", RpcTarget.All);
+            photonView.RPC(nameof(RestartGame), RpcTarget.All);
         }
     }
 
@@ -210,6 +209,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         return is_localturn;
     }
 
+    [PunRPC]
     public void GameWinner(string winner)
     {
         gameOver = true;

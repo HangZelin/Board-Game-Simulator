@@ -58,6 +58,17 @@ MonoBehaviour:
   - MoveChessman
   - RestartGame
   - SetPosition
+  - GameWinner
+  - InitiateMovePlates
+  - LineMovePlate
+  - LMovePlate
+  - MovePlateAttackSpawn
+  - MovePlateSpawn
+  - PawnMovePlate
+  - PointMovePlate
+  - SetCoords
+  - SetReference
+  - SurroundMovePlate
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

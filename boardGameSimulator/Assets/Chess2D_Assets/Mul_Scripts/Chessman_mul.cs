@@ -107,7 +107,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnMouseUp()
     {
-        if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player 
+        if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player
                && controller.GetComponent<Game_mul>().IsLocalTurn())
         {
             DestroyMovePlates();

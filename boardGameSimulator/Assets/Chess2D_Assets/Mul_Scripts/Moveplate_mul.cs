@@ -67,12 +67,14 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
+    [PunRPC]
     public void SetCoords(int x, int y)
     {
         BoardX = x;
         BoardY = y;
     }
 
+      [PunRPC]
     public void SetReference(GameObject obj)
     {
         reference = obj;
