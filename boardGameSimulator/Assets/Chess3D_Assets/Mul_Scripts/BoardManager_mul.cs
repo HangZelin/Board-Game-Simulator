@@ -56,7 +56,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         settings = gameUI.GetComponent<SettingsUI>();
 
-        photonView.RPC(nameof(Initialized),RpcTarget.All);
+        photonView.RPC(nameof(Initialized),RpcTarget.AllBuffered);
 
         if (!GameStatus.isNewGame)
         {
@@ -94,8 +94,8 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     else
                     {
                         // Move the chessman
-                        photonView.RPC(nameof(MoveChessman), RpcTarget.All, selectionX, selectionY);
-                        photonView.RPC(nameof(NextTurn),RpcTarget.All);
+                        photonView.RPC(nameof(MoveChessman), RpcTarget.AllBuffered, selectionX, selectionY);
+                        photonView.RPC(nameof(NextTurn),RpcTarget.AllBuffered);
                     }
                 }
             }
@@ -306,16 +306,17 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         if (isWhite)
         {
-            go = Instantiate(chessmanPrefabs[index], position, whiteOrientation) as GameObject;
+            go = Instantiate(chessmanPrefabs[index], position, whiteOrientation);
         }
         else
         {
-            go = Instantiate(chessmanPrefabs[index], position, blackOrientation) as GameObject;
+            go = Instantiate(chessmanPrefabs[index], position, blackOrientation);
         }
-
+        
         go.transform.SetParent(transform);
         Chessmans[x, y] = go.GetComponent<Chessplayer>();
         Chessmans[x, y].SetPosition(x, y);
+        Chessmans[x, y].photonView.ViewID = 100 + index + x * 8 + y;
         activeChessman.Add(go);
     }
 

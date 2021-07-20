@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public abstract class Chessplayer : MonoBehaviour
+public abstract class Chessplayer : MonoBehaviourPunCallbacks, IPunObservable
 {
 
     public int CurrentX { set; get; }
@@ -38,4 +39,11 @@ public abstract class Chessplayer : MonoBehaviour
         }
         return false;
     }
+
+    #region IPunObservable Implementation
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //throw new System.NotImplementedException();
+    }
+    #endregion
 }
