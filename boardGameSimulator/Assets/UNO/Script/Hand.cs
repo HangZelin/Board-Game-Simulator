@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-    public class Hand : MonoBehaviour, IContainer
+    public class Hand : MonoBehaviour, IContainer, IHand
     {
         // References
         [SerializeField] GameObject playerText;
@@ -80,7 +80,7 @@ namespace BGS.UNO
 
         // Set text position
 
-        void SetTextPosition(float zRotation)
+        public void SetTextPosition(float zRotation)
         {
             switch (zRotation)
             {
@@ -160,7 +160,7 @@ namespace BGS.UNO
             rect.rotation = position.rotation;
             rect.anchoredPosition = position.anchoredPosition;
 
-            hand.GetComponent<Hand>().SetTextPosition(rect.rotation.eulerAngles.z);
+            hand.GetComponent<IHand>().SetTextPosition(rect.rotation.eulerAngles.z);
         }
 
         public override string ToString()
@@ -177,5 +177,10 @@ namespace BGS.UNO
         public Vector2 anchoredPosition;
         public Vector2 anchor;
         public Quaternion rotation;
+    }
+
+    interface IHand
+    {
+        void SetTextPosition(float zRotation);
     }
 }

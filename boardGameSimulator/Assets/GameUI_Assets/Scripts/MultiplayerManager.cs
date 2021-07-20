@@ -15,6 +15,7 @@ namespace BGS.MenuUI
         public string playerName;
         public bool isHost;
         public int roomIndex;
+        public int playerIndex;
 
         [SerializeField] byte createRoomTimes;
 

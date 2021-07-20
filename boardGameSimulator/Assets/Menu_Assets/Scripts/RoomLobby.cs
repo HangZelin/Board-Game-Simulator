@@ -280,6 +280,7 @@ namespace BGS.MenuUI
         void StartMultiGame()
         {
             PhotonNetwork.LocalPlayer.NickName = multiplayerManager.playerName;
+            multiplayerManager.playerIndex = this.playerIndex;
             for (int i = 0; i < playerNames.Length; i++)
                 GameStatus.SetNameOfPlayer(i + 1, playerNames[i]);
             SceneLoader.LoadMultiGameScene();

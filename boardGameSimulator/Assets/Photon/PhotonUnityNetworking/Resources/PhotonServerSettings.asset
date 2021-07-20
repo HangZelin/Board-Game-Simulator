@@ -50,6 +50,19 @@ MonoBehaviour:
   - StartMultiGame
   - SetPlayerIndex
   - ForcedRefreshPlayerList
+  - ToggleDirection
+  - GetCards
+  - ClearDiscard
+  - SyncCurrentPlayerIndex
+  - SyncLastCardInfo
+  - OnTurnStart
+  - SetCardDrawed
+  - SyncDealCards
+  - SyncDirection
+  - UpdateLastCardInfo
+  - PlayCard
+  - GuestSceneLoaded
+  - SyncIndexToKey
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
