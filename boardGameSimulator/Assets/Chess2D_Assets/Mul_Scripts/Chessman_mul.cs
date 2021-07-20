@@ -307,6 +307,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
         //Keep Track of everything in the script.
         MovePlate_mul mpScript = mp.GetComponent <MovePlate_mul>();
+        mpScript.photonView.ViewID = BoardX * 8 + BoardY + 200;
         is_attack = 0;
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
@@ -339,6 +340,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
 
         //Keep Track of everything in the script.
         MovePlate_mul mpScript = mp.GetComponent<MovePlate_mul>();
+        mpScript.photonView.ViewID = BoardX * 8 + BoardY + 200;
         mpScript.attack = true;
         is_attack = 1;
         mpScript.SetReference(gameObject);
