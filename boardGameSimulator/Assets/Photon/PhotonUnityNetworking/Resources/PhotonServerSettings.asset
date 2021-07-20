@@ -69,6 +69,17 @@ MonoBehaviour:
   - SetCoords
   - SetReference
   - SurroundMovePlate
+  - ClearDiscard
+  - GetCards
+  - GuestSceneLoaded
+  - OnTurnStart
+  - PlayCard
+  - SetCardDrawed
+  - SyncCurrentPlayerIndex
+  - SyncDealCards
+  - SyncDirection
+  - SyncIndexToKey
+  - SyncLastCardInfo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

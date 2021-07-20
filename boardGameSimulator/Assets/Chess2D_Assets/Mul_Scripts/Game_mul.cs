@@ -43,13 +43,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         settings.Initialize();
 
         //Gamemode Initialization;
-        if (!GameStatus.is_Multiplayer)
-        {
-            Debug.Log("Hotseat Mode");
-        } else
-        {
             Debug.Log("Multiplayer Mode");
-        }
         this.photonView.RPC(nameof(Initialized), RpcTarget.AllBuffered);
     }
 

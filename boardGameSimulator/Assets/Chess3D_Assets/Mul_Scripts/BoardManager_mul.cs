@@ -398,7 +398,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
         //log
-        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+      /*  settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
     }
 
     public void Winner1()
@@ -411,7 +411,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
         //log
-        settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+       /* settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
     }
 
     public void Winner2()
@@ -425,7 +425,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         //log
 
-        settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");
+      /*  settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");*/
 
     }
 
