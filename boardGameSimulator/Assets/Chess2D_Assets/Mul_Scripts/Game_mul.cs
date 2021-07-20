@@ -142,6 +142,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         GameObject obj =  Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
+        cm.photonView.ViewID = x*10 + y + 100;
         cm.name = name;
         cm.SetXBoard(x);
         cm.SetYBoard(y);
