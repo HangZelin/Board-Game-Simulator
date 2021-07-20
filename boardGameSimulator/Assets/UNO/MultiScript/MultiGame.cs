@@ -1,7 +1,9 @@
 using BGS.MenuUI;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +18,7 @@ namespace BGS.UNO
         MultiplayerManager mulManager;
 
         [Header("Containers")]
-        [SerializeField]GameObject deck;
+        [SerializeField] GameObject deck;
         DeckMul deckScript;
 
         [SerializeField] GameObject discard;
@@ -43,6 +45,9 @@ namespace BGS.UNO
         public int currentPlayerIndex;
         bool antiClockWise;
 
+        List<bool> sceneLoaded;
+        int[] indexToKey;
+
         public delegate void TurnStart();
         public static event TurnStart TurnStartHandler;
 
@@ -51,12 +56,37 @@ namespace BGS.UNO
 
         private void Start()
         {
+            mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+            PhotonNetwork.LocalPlayer.NickName = mulManager.playerName;
+            if (mulManager.isHost)
+            {
+                sceneLoaded = new List<bool>();
+            }
+
             Screen.orientation = ScreenOrientation.Landscape;
             numOfPlayer = GameStatus.NumOfPlayers;
             uiScript = gameUI.GetComponent<SettingsUI>();
-            mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+            
             clientName = mulManager.playerName;
             clientIndex = mulManager.playerIndex;
+
+            if (!mulManager.isHost)
+            {
+                this.photonView.RPC("GuestSceneLoaded", RpcTarget.MasterClient);
+            }
+            StartCoroutine(Initialize());
+        }
+
+        IEnumerator Initialize()
+        {
+            while (mulManager.isHost && sceneLoaded.Count < numOfPlayer - 1)
+                yield return new WaitForSeconds(0.1f);
+
+            // Initialize Index to key
+            indexToKey = new int[numOfPlayer];
+            Dictionary<int, Photon.Realtime.Player> punPlayers = PhotonNetwork.CurrentRoom.Players;
+            for (int i = 0; i < numOfPlayer; i++)
+                indexToKey[i] = punPlayers.FirstOrDefault(p => p.Value.NickName == GameStatus.GetNameOfPlayer(i + 1)).Key;
 
             // Initialize deck, discard, currenthand;
             deckScript = deck.GetComponent<DeckMul>();
@@ -66,12 +96,17 @@ namespace BGS.UNO
 
             currentHand.GetComponent<CurrentHandMul>().Initialize(discard, deck);
 
+            // Initialize rules script
+            GetComponent<RulesMul>().enabled = GameStatus.useRules;
+            if (GameStatus.useRules)
+                GetComponent<RulesMul>().Initialize();
+
             // Initialize hands
             hands = new List<GameObject>();
             for (int i = 0; i < numOfPlayer - 1; i++)
             {
                 GameObject a_Hand = Instantiate(handPrefab, Canvas.transform);
-                a_Hand.GetComponent<Hand>().Initialize(i);
+                a_Hand.GetComponent<HandMul>().Initialize(i, discard.GetComponent<DiscardMul>());
                 hands.Add(a_Hand);
             }
             Hand.SetPositions(hands);
@@ -99,15 +134,11 @@ namespace BGS.UNO
 
             // Deal 7 cards to each player
             if (mulManager.isHost)
+            {
                 foreach (GameObject player in players)
                     player.GetComponent<PlayerMul>().TakeCards(DealCards(7, player));
+            }
             gameUI.GetComponent<SettingsUI>().AddLog("UNO: New game.");
-
-
-            // Initialize rules script
-            GetComponent<RulesMul>().enabled = GameStatus.useRules;
-            if (GameStatus.useRules)
-                GetComponent<RulesMul>().Initialize();
 
             // Initialize direaction Icons
             directionIcons.GetComponent<DirectionIconsMul>().DirectionIconToggle(antiClockWise);
@@ -115,11 +146,14 @@ namespace BGS.UNO
             /////////
             // Initialize Game start handler
 
+            MultiGame.TurnStartHandler += currentHand.GetComponent<CurrentHandMul>().EnableCardReaction;
             if (GameStatus.useRules)
                 TurnStartHandler += GetComponent<RulesMul>().OnDraw2Draw4Played_Start;
 
             /////////
             // Initialize Game end handler
+
+            TurnEndHandler += GetComponent<RulesMul>().UpdateLastCardInfo;
 
             // If use rules, check isNextTurn
             if (GameStatus.useRules)
@@ -136,6 +170,10 @@ namespace BGS.UNO
             if (mulManager.isHost)
             {
                 OnTurnStart();
+            }
+            else
+            {
+                currentHand.GetComponent<CurrentHandMul>().SkipTurn();
             }
 
             nextTurnButton.interactable = false;
@@ -201,16 +239,13 @@ namespace BGS.UNO
 
         void SetNextPlayerIndex()
         {
-            if (mulManager.isHost)
-            {
-                currentPlayerIndex = NextPlayer(currentPlayerIndex);
-                this.photonView.RPC("SyncCurrentPlayerIndex", RpcTarget.Others, currentPlayerIndex);
-            }
+            currentPlayerIndex = NextPlayer(currentPlayerIndex);
+            this.photonView.RPC("SyncCurrentPlayerIndex", RpcTarget.Others, currentPlayerIndex);
         }
 
         public Photon.Realtime.Player GetPunPlayer(int playerIndex)
         {
-            return PhotonNetwork.CurrentRoom.Players[playerIndex];
+            return PhotonNetwork.CurrentRoom.Players[indexToKey[playerIndex]];
         }
 
         public Photon.Realtime.Player GetNextPunPlayer()
@@ -243,10 +278,24 @@ namespace BGS.UNO
                     : index - 1;
         }
 
+        IEnumerator SyncDealCardsHelper(int num, int playerIndex)
+        {
+            while (!GetComponent<RulesMul>().firstCardDrawed)
+                yield return new WaitForSeconds(0.1f);
+            players[playerIndex].GetComponent<PlayerMul>().TakeCards(
+                deckScript.DrawCards(num, players[playerIndex].transform));
+        }
+
         #endregion
 
 
         #region RPCs
+
+        [PunRPC]
+        public void GuestSceneLoaded()
+        {
+            this.sceneLoaded.Add(true);
+        }
 
         [PunRPC]
         public void OnTurnStart()
@@ -264,8 +313,13 @@ namespace BGS.UNO
         [PunRPC]
         void SyncDealCards(int num, int playerIndex)
         {
-            players[playerIndex].GetComponent<PlayerMul>().TakeCards(
-                deckScript.DrawCards(num, players[playerIndex].transform));
+            if (GetComponent<RulesMul>().firstCardDrawed)
+            {
+                players[playerIndex].GetComponent<PlayerMul>().TakeCards(
+                    deckScript.DrawCards(num, players[playerIndex].transform));
+            }
+            else
+                StartCoroutine(SyncDealCardsHelper(num, playerIndex));
         }
 
         [PunRPC]

@@ -35,12 +35,14 @@ namespace BGS.UNO
             set { playerName.text = value; }
         }
 
-        public void Initialize(int num)
+        public void Initialize(int num, DiscardMul discardScript)
         {
             this.num = num;
             cards = new List<GameObject>();
 
             name = ToString();
+
+            this.discardScript = discardScript;
         }
 
         // Set cards positions

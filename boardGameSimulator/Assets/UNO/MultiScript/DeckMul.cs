@@ -68,17 +68,21 @@ namespace BGS.UNO
         }
         MultiplayerManager mulManager;
 
+        public bool cardsInitialized;
+
         public void Initialize(Action onclick)
         {
             name = ToString();
             drawACardButton.onClick.AddListener(delegate { onclick(); });
             Interactable = true;
             mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+            cardsInitialized = false;
 
             if (mulManager.isHost)
             {
                 InitializeCards();
                 BroadcastCards();
+                cardsInitialized = true;
             }
 
             cardsCount.SetActive(enableCardsCount);
@@ -146,10 +150,12 @@ namespace BGS.UNO
             List<string> cardInfoList = new List<string>(cardInfoArr);
             for (int i = 0; i < cardInfoList.Count; i += 3)
             {
-                this.cards.Add(unoInfo.ListToCard(
-                    cardInfoList.GetRange(i, 3)
-                    ));
+                GameObject card = unoInfo.ListToCard(cardInfoList.GetRange(i, 3));
+                card.transform.SetParent(unused.transform);
+                this.cards.Add(card);
             }
+            Debug.Log(cards.Count);
+            cardsInitialized = true;
         }
 
         [PunRPC]

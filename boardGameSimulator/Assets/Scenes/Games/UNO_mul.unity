@@ -283,7 +283,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1012142283}
-        m_TargetAssemblyTypeName: UNO.SelectColorTab, Assembly-CSharp
+        m_TargetAssemblyTypeName: BGS.UNO.SelectColorTabMul, Assembly-CSharp
         m_MethodName: GreenOnClick
         m_Mode: 1
         m_Arguments:
@@ -581,7 +581,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1012142283}
-        m_TargetAssemblyTypeName: UNO.SelectColorTab, Assembly-CSharp
+        m_TargetAssemblyTypeName: BGS.UNO.SelectColorTabMul, Assembly-CSharp
         m_MethodName: BlueOnClick
         m_Mode: 1
         m_Arguments:
@@ -1842,7 +1842,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1012142280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bbe0a9ee898dfe4dbc22c81d18477f1, type: 3}
+  m_Script: {fileID: 11500000, guid: c5735ee4ecbff834f98448d7331fc9e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   yellow: {fileID: 1769886569}
@@ -1850,7 +1850,7 @@ MonoBehaviour:
   blue: {fileID: 316503539}
   red: {fileID: 1599283744}
   nextTurnButton: {fileID: 945247495}
-  rules: {fileID: 0}
+  rules: {fileID: 1264333081}
 --- !u!1 &1105647319
 GameObject:
   m_ObjectHideFlags: 0
@@ -2084,6 +2084,7 @@ MonoBehaviour:
   selectColorTab: {fileID: 1012142280}
   nextTurnButton: {fileID: 945247497}
   unoButton: {fileID: 1934414620}
+  firstCardDrawed: 0
 --- !u!114 &1264333082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2433,7 +2434,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1012142283}
-        m_TargetAssemblyTypeName: UNO.SelectColorTab, Assembly-CSharp
+        m_TargetAssemblyTypeName: BGS.UNO.SelectColorTabMul, Assembly-CSharp
         m_MethodName: RedOnClick
         m_Mode: 1
         m_Arguments:
@@ -2700,7 +2701,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1012142283}
-        m_TargetAssemblyTypeName: UNO.SelectColorTab, Assembly-CSharp
+        m_TargetAssemblyTypeName: BGS.UNO.SelectColorTabMul, Assembly-CSharp
         m_MethodName: YellowOnClick
         m_Mode: 1
         m_Arguments:
@@ -3697,7 +3698,7 @@ PrefabInstance:
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: UNO
+      value: UNO_mul
       objectReference: {fileID: 0}
     - target: {fileID: 2992891426545880842, guid: 1e684b6d36a6306479e9ce1c8921e530,
         type: 3}
@@ -5452,6 +5453,7 @@ MonoBehaviour:
   drawCardAudio: {fileID: 1389925690689178918}
   enableCardsCount: 1
   cardsCount: {fileID: 4635875588207638348}
+  cardsInitialized: 0
 --- !u!222 &7505503790088745215
 CanvasRenderer:
   m_ObjectHideFlags: 0

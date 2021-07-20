@@ -46,11 +46,13 @@ namespace BGS.UNO
         public void CardToPile(GameObject card)
         {
             card.transform.SetParent(gameObject.transform);
+            card.GetComponent<CardReaction>().enabled = false;
+            card.GetComponent<Card>().IsFace = true;
+            
             card.transform.rotation = Quaternion.identity;
             card.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
             card.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
             card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            card.GetComponent<CardReaction>().enabled = false;
 
             cards.Add(card);
             playCard.Play();

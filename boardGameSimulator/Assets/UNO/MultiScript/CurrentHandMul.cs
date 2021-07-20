@@ -64,6 +64,17 @@ namespace BGS.UNO
             name = ToString();
         }
 
+        void OnDisable()
+        {
+            MultiGame.TurnStartHandler -= EnableCardReaction;
+        }
+
+        public void EnableCardReaction()
+        {
+            foreach (GameObject card in cards)
+                card.GetComponent<CardReaction>().enabled = true;
+        }
+
         void PlaceCards()
         {
             // If there is no cards to place, return

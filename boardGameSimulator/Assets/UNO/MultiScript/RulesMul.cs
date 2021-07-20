@@ -32,6 +32,7 @@ namespace BGS.UNO
         bool unoButtonClicked;
         bool isNextTurn;
         bool isCheckUno;
+        public bool firstCardDrawed;
 
         CardInfo lastCardInfo;
         public CardColor lastCardColor { set { lastCardInfo.cardColor = value; } }
@@ -44,23 +45,33 @@ namespace BGS.UNO
 
             this.gameScript = GetComponent<MultiGame>();
 
-            List<GameObject> firstCard = deckScript.DrawCards(1, gameObject.transform);
-            discardScript.CardToPile(firstCard[0]);
-            lastCardInfo = firstCard[0].GetComponent<Card>().cardInfo;
-
             unoButton.transform.SetAsLastSibling();
             cardDrawed = true;
             unoButtonClicked = false;
             isCheckUno = false;
+            firstCardDrawed = false;
+
+            StartCoroutine(DrawFirstCard());
+        }
+
+        IEnumerator DrawFirstCard()
+        {
+            while (!deckScript.cardsInitialized)
+                yield return new WaitForSeconds(0.1f);
+            List<GameObject> firstCard = deckScript.DrawCards(1, gameObject.transform);
+            discardScript.CardToPile(firstCard[0]);
+            lastCardInfo = firstCard[0].GetComponent<Card>().cardInfo;
+            firstCardDrawed = true;
         }
 
         private void OnDisable()
         {
             discardScript.DiscardOnClickHandler -= CheckValid;
 
-            Game.TurnStartHandler -= OnDraw2Draw4Played_Start;
-            Game.TurnEndHandler -= OnDraw2Draw4Played_End;
-            Game.TurnEndHandler -= IsNextTurn;
+            MultiGame.TurnStartHandler -= OnDraw2Draw4Played_Start;
+            MultiGame.TurnEndHandler -= OnDraw2Draw4Played_End;
+            MultiGame.TurnEndHandler -= UpdateLastCardInfo;
+            MultiGame.TurnEndHandler -= IsNextTurn;
         }
 
         public void CheckValid()
@@ -72,7 +83,6 @@ namespace BGS.UNO
             if (isAllowed(cardScript.cardInfo))
             {
                 discardScript.PlayCard(currCard);
-                this.photonView.RPC("UpdateLastCardInfo", RpcTarget.Others);
 
                 switch (lastCardInfo.cardType)
                 {
@@ -150,7 +160,7 @@ namespace BGS.UNO
         {
             if (!cardDrawed && (lastCardInfo.cardType == CardType.draw2 || lastCardInfo.cardType == CardType.draw4))
             {
-                currentHand.GetComponent<CurrentHand>().SkipTurn();
+                currentHand.GetComponent<CurrentHandMul>().SkipTurn();
                 nextTurnButton.interactable = true;
                 cardDrawed = true;
             }
@@ -166,7 +176,7 @@ namespace BGS.UNO
 
         IEnumerator CheckUno()
         {
-            CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
+            CurrentHandMul cHScript = currentHand.GetComponent<CurrentHandMul>();
             string player = cHScript.PlayerName;
             isNextTurn = false;
             unoButtonClicked = false;
@@ -174,7 +184,7 @@ namespace BGS.UNO
             isCheckUno = true;
             unoButton.SetActive(true);
 
-            gameUI.AddLog(currentHand.GetComponent<CurrentHand>().PlayerName + " has 1 card left.");
+            gameUI.AddLog(cHandScript.PlayerName + " has 1 card left.");
             int i = 30;
             while (i > 0 && !unoButtonClicked && !isNextTurn)
             {
@@ -210,17 +220,22 @@ namespace BGS.UNO
             {
                 isNextTurn = true;
                 GameObject player = gameScript.CurrentPlayer;
-                player.GetComponent<Player>().TakeCards(gameScript.DealCards(2, player));
+                player.GetComponent<PlayerMul>().TakeCards(gameScript.DealCards(2, player));
                 isCheckUno = false;
             }
         }
 
-        #region RPCs
-        
-        [PunRPC]
-        void UpdateLastCardInfo()
+        public void UpdateLastCardInfo()
         {
-            this.lastCardInfo = discardScript.LastCard.GetComponent<Card>().cardInfo;
+            this.photonView.RPC("SyncLastCardInfo", RpcTarget.Others, UNOInfo.CardInfoToArr(lastCardInfo));
+        }
+
+        #region RPCs
+
+        [PunRPC]
+        void SyncLastCardInfo(string[] cardInfoArr)
+        {
+            this.lastCardInfo = UNOInfo.ArrToCardInfo(cardInfoArr);
         }
 
         [PunRPC]

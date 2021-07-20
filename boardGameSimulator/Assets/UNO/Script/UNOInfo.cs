@@ -172,6 +172,20 @@ namespace BGS.UNO
             card.name = card.GetComponent<Card>().ToString();
             return card;
         }
+
+        public static string[] CardInfoToArr(CardInfo cardInfo)
+        {
+            return new string[] { cardInfo.cardType.ToString(), cardInfo.cardColor.ToString(), cardInfo.num.ToString()};
+        }
+
+        public static CardInfo ArrToCardInfo(string[] arr)
+        {
+            CardInfo cardInfo;
+            Enum.TryParse(arr[0], out cardInfo.cardType);
+            Enum.TryParse(arr[1], out cardInfo.cardColor);
+            cardInfo.num = int.Parse(arr[2]);
+            return cardInfo;
+        }
     }
 }
 

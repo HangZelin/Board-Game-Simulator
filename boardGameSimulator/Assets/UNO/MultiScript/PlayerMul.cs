@@ -89,7 +89,7 @@ namespace BGS.UNO
             }
             else
             {
-                List<GameObject> temp = new List<GameObject>(currentHand.GetComponent<CurrentHandMul>().Cards);
+                List<GameObject> temp = new List<GameObject>(hand.GetComponent<HandMul>().Cards);
                 temp.AddRange(this.cards);
                 this.cards = new List<GameObject>(temp);
 
