@@ -10,9 +10,9 @@ namespace BGS.UNO
         [SerializeField] GameObject cIcon_1;
         [SerializeField] GameObject cIcon_2;
 
-        public void DirectionIconToggle(bool isClockWise)
+        public void DirectionIconToggle(bool isAntiClockWise)
         {
-            if (isClockWise)
+            if (!isAntiClockWise)
             {
                 antiCIcon_1.SetActive(false);
                 antiCIcon_2.SetActive(false);

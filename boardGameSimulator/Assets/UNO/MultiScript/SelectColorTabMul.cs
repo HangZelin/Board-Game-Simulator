@@ -13,24 +13,21 @@ namespace BGS.UNO
         [SerializeField] GameObject nextTurnButton;
         [SerializeField] RulesMul rules;
 
-        CardColor color;
+        public CardColor color;
 
         private void OnEnable()
         {
-            MultiGame.TurnEndHandler += SetLastCardColor;
             nextTurnButton.GetComponent<Button>().interactable = false;
         }
 
         private void OnDisable()
         {
             DisableOutlines();
-            MultiGame.TurnEndHandler -= SetLastCardColor;
         }
 
         public void SetLastCardColor()
         {
             DisableOutlines();
-            rules.lastCardColor = color;
             gameObject.SetActive(false);
         }
 

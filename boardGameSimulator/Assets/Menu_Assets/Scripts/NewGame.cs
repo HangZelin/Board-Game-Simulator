@@ -35,7 +35,7 @@ public class NewGame : MonoBehaviour
         if (GameStatus.is_Multiplayer)
         {
             SceneManager.LoadScene("CreateJoin");
-            GameStatus.NumOfPlayers = 2;
+            GameStatus.NumOfPlayers = 4;
             GameStatus.useRules = true;
         }
         else

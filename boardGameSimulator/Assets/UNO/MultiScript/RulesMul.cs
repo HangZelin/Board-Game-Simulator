@@ -30,6 +30,7 @@ namespace BGS.UNO
         /// </summary>
         bool cardDrawed;
         bool unoButtonClicked;
+        bool wildCardPlayed;
         bool isNextTurn;
         bool isCheckUno;
         public bool firstCardDrawed;
@@ -72,6 +73,7 @@ namespace BGS.UNO
             MultiGame.TurnEndHandler -= OnDraw2Draw4Played_End;
             MultiGame.TurnEndHandler -= UpdateLastCardInfo;
             MultiGame.TurnEndHandler -= IsNextTurn;
+            MultiGame.TurnEndHandler -= OnWildCardPlayed_End;
         }
 
         public void CheckValid()
@@ -86,10 +88,23 @@ namespace BGS.UNO
 
                 switch (lastCardInfo.cardType)
                 {
-                    case CardType.reverse: gameScript.ToggleDirection(); break;
-                    case CardType.wild: selectColorTab.SetActive(true); break;
-                    case CardType.draw2: this.photonView.RPC("SetCardDrawed", gameScript.GetNextPunPlayer(), false); break;
-                    case CardType.draw4: this.photonView.RPC("SetCardDrawed", gameScript.GetNextPunPlayer(), false); selectColorTab.SetActive(true); break;
+                    case CardType.reverse: 
+                        gameScript.ToggleDirection(); 
+                        break;
+                    case CardType.wild: 
+                        selectColorTab.SetActive(true); 
+                        wildCardPlayed = true; 
+                        break;
+                    case CardType.draw2: 
+                        this.photonView.RPC("SetCardDrawed", gameScript.GetNextPunPlayer(), false); 
+                        cardDrawed = false; 
+                        break;
+                    case CardType.draw4: 
+                        this.photonView.RPC("SetCardDrawed", gameScript.GetNextPunPlayer(), false); 
+                        selectColorTab.SetActive(true); 
+                        wildCardPlayed = true;
+                        cardDrawed = false;
+                        break;
                 }
 
                 cHandScript.SkipTurn();
@@ -150,6 +165,7 @@ namespace BGS.UNO
                     player.GetComponent<PlayerMul>().TakeCards(gameScript.DealCards(2, player));
                 else if (lastCardInfo.cardType == CardType.draw4)
                     player.GetComponent<PlayerMul>().TakeCards(gameScript.DealCards(4, player));
+                cardDrawed = true;
             }
         }
 
@@ -163,6 +179,16 @@ namespace BGS.UNO
                 currentHand.GetComponent<CurrentHandMul>().SkipTurn();
                 nextTurnButton.interactable = true;
                 cardDrawed = true;
+            }
+        }
+
+        public void OnWildCardPlayed_End()
+        {
+            if (wildCardPlayed)
+            {
+                lastCardInfo.cardColor = selectColorTab.GetComponent<SelectColorTabMul>().color;
+                selectColorTab.SetActive(false);
+                wildCardPlayed = false;
             }
         }
 

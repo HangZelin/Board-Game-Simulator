@@ -146,13 +146,13 @@ namespace BGS.UNO
             /////////
             // Initialize Game start handler
 
-            MultiGame.TurnStartHandler += currentHand.GetComponent<CurrentHandMul>().EnableCardReaction;
+            TurnStartHandler += currentHand.GetComponent<CurrentHandMul>().EnableCardReaction;
             if (GameStatus.useRules)
                 TurnStartHandler += GetComponent<RulesMul>().OnDraw2Draw4Played_Start;
 
             /////////
             // Initialize Game end handler
-
+            TurnEndHandler += GetComponent<RulesMul>().OnWildCardPlayed_End;
             TurnEndHandler += GetComponent<RulesMul>().UpdateLastCardInfo;
 
             // If use rules, check isNextTurn
