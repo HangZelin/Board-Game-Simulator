@@ -111,13 +111,16 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player
                && controller.GetComponent<Game_mul>().IsLocalTurn())
         {
-            DestroyMovePlates();
+            this.photonView.RPC(nameof(DestroyMovePlates), RpcTarget.AllBuffered);
 
-            InitiateMovePlates();
+            this.photonView.RPC(nameof(InitiateMovePlates), RpcTarget.AllBuffered);
         }
 
     }
 
+
+    #region RPCs
+    [PunRPC]
     public void DestroyMovePlates()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate_mul");
@@ -137,6 +140,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    [PunRPC]
     public void InitiateMovePlates()
     {
         audio_source.PlayOneShot(Sound_Capture, 0.7F);
@@ -196,6 +200,7 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
+    #endregion
 
     public void LineMovePlate(int xIncr, int yIncr)
     {
