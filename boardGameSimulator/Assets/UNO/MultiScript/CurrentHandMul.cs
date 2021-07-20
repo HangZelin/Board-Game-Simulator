@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +7,12 @@ using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-   public class CurrentHand : MonoBehaviour, IContainer, ICurrentHand
+    public class CurrentHandMul : MonoBehaviourPun, IContainer, ICurrentHand
     {
         // References
         GameObject discard;
         GameObject deck;
-        [SerializeField] Button cover;
+        [SerializeField] MultiGame gameScript;
 
         [SerializeField] Text playerName;
         public string PlayerName
@@ -36,7 +38,7 @@ namespace BGS.UNO
         public GameObject HighlightedCard
         {
             get { return highlightedCard; }
-            set 
+            set
             {
                 if (value == null)
                 {
@@ -49,15 +51,14 @@ namespace BGS.UNO
                         highlightedCard.GetComponent<CardReaction>().PutBack();
                     highlightedCard = value;
                     discard.GetComponent<Outline>().enabled = true;
-                }  
+                }
             }
         }
 
-        public void Initialize(GameObject discard, GameObject deck, Action onTurnStart)
+        public void Initialize(GameObject discard, GameObject deck)
         {
             this.discard = discard;
             this.deck = deck;
-            cover.onClick.AddListener(delegate { onTurnStart(); });
 
             cards = new List<GameObject>();
             name = ToString();
@@ -65,7 +66,7 @@ namespace BGS.UNO
 
         void OnDisable()
         {
-            Game.TurnEndHandler -= EnableCover;
+            MultiGame.TurnStartHandler -= EnableCardReaction;
         }
 
         void PlaceCards()
@@ -89,16 +90,12 @@ namespace BGS.UNO
 
             // Distance to left and right
             float x = -(cardWidth + ((cards.Count - 1) * d)) / 2f + 0.5f * cardWidth;
-            
+
             // Distance to bottom
             float y = 10f;
 
             foreach (GameObject card in cards)
             {
-                // Initialize Card Reaction
-                card.GetComponent<CardReaction>().enabled = true;
-                card.GetComponent<CardReaction>().Initialize(gameObject);
-
                 // Place cards from left to right
                 card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
                 card.GetComponent<RectTransform>().rotation = Quaternion.identity;
@@ -108,6 +105,7 @@ namespace BGS.UNO
 
         public void PlayCard()
         {
+            gameScript.SyncPlayCard(cards.IndexOf(highlightedCard));
             cards.Remove(highlightedCard);
             highlightedCard = null;
             PlaceCards();
@@ -115,25 +113,43 @@ namespace BGS.UNO
 
         public void SkipTurn()
         {
-            if (highlightedCard != null) 
+            if (highlightedCard != null)
                 highlightedCard.GetComponent<CardReaction>().PutBack();
+            DisableCardReaction();
+            deck.GetComponent<DeckMul>().Interactable = false;
+        }
+
+        #region Helpers
+
+        public void EnableCardReaction()
+        {
+            foreach (GameObject card in cards)
+            {
+                card.GetComponent<CardReaction>().enabled = true;
+                card.GetComponent<CardReaction>().Initialize(gameObject);
+            }
+        }
+
+        public void EnableLastCardReaction()
+        {
+            cards[cards.Count - 1].GetComponent<CardReaction>().enabled = true;
+            cards[cards.Count - 1].GetComponent<CardReaction>().Initialize(gameObject);
+        }
+
+        public void DisableCardReaction()
+        {
             foreach (GameObject card in cards)
                 card.GetComponent<CardReaction>().enabled = false;
-            deck.GetComponent<Deck>().Interactable = false;
         }
 
-        public void EnableCover()
+        public override string ToString()
         {
-            cover.gameObject.SetActive(true);
-            cover.gameObject.transform.SetAsLastSibling();
+            return "CurrentHand";
         }
 
-        public void DisableCover()
-        { 
-            cover.gameObject.SetActive(false);
-        }
+        #endregion
 
-        // IContainer Method
+        #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
@@ -146,10 +162,12 @@ namespace BGS.UNO
             cards = new List<GameObject>();
         }
 
-        public override string ToString()
-        {
-            return "CurrentHand";
-        }
+        #endregion
+    }
+
+    public interface ICurrentHand
+    {
+        public GameObject HighlightedCard { get; set; }
     }
 }
 

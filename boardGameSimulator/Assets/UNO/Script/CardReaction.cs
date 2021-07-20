@@ -26,7 +26,7 @@ namespace BGS.UNO
         {
             if (!isHighlight)
             {
-                currentHand.GetComponent<CurrentHand>().HighlightedCard = gameObject;
+                currentHand.GetComponent<ICurrentHand>().HighlightedCard = gameObject;
                 Vector2 v = GetComponent<RectTransform>().anchoredPosition;
                 v.y += this.y;
                 GetComponent<RectTransform>().anchoredPosition = v;
@@ -35,7 +35,7 @@ namespace BGS.UNO
             }
             else
             {
-                currentHand.GetComponent<CurrentHand>().HighlightedCard = null;
+                currentHand.GetComponent<ICurrentHand>().HighlightedCard = null;
                 PutBack();
             }
         }

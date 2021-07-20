@@ -130,6 +130,62 @@ namespace BGS.UNO
             card.name = card.GetComponent<Card>().ToString();
             return card;
         }
+
+        public GameObject InfoToCard(CardInfo info, Transform targetTransform)
+        {
+            CardType type = info.cardType;
+            CardColor color = info.cardColor;
+            int num = info.num;
+            GameObject card = null;
+
+            switch (type)
+            {
+                case CardType.draw2:
+                    card = Instantiate(draw2Card, targetTransform);
+                    card.GetComponent<Draw2Card>().Initialize(color, true);
+                    break;
+                case CardType.num:
+                    card = Instantiate(numCard, targetTransform);
+                    card.GetComponent<NumCard>().Initialize(color, num, true);
+                    break;
+                case CardType.draw4:
+                    card = Instantiate(draw4Card, targetTransform);
+                    card.GetComponent<Draw4Card>().Initialize(true);
+                    break;
+                case CardType.reverse:
+                    card = Instantiate(reverseCard, targetTransform);
+                    card.GetComponent<ReverseCard>().Initialize(color, true);
+                    break;
+                case CardType.skip:
+                    card = Instantiate(skipCard, targetTransform);
+                    card.GetComponent<SkipCard>().Initialize(color, true);
+                    break;
+                case CardType.wild:
+                    card = Instantiate(wildCard, targetTransform);
+                    card.GetComponent<WildCard>().Initialize(true);
+                    break;
+                default:
+                    Debug.LogError("Invalid Card Type");
+                    break;
+            }
+
+            card.name = card.GetComponent<Card>().ToString();
+            return card;
+        }
+
+        public static string[] CardInfoToArr(CardInfo cardInfo)
+        {
+            return new string[] { cardInfo.cardType.ToString(), cardInfo.cardColor.ToString(), cardInfo.num.ToString()};
+        }
+
+        public static CardInfo ArrToCardInfo(string[] arr)
+        {
+            CardInfo cardInfo;
+            Enum.TryParse(arr[0], out cardInfo.cardType);
+            Enum.TryParse(arr[1], out cardInfo.cardColor);
+            cardInfo.num = int.Parse(arr[2]);
+            return cardInfo;
+        }
     }
 }
 
