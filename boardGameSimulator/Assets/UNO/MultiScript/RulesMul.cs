@@ -195,8 +195,7 @@ namespace BGS.UNO
         void DeckDraw()
         {
             cHandScript.SkipTurn();
-            cHandScript.Cards[cHandScript.Cards.Count - 1].GetComponent<CardReaction>().enabled = true;
-
+            cHandScript.EnableLastCardReaction();
             nextTurnButton.interactable = true;
         }
 

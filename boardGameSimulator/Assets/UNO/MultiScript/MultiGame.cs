@@ -69,6 +69,7 @@ namespace BGS.UNO
             
             clientName = mulManager.playerName;
             clientIndex = mulManager.playerIndex;
+            indexToKey = new int[numOfPlayer];
 
             if (!mulManager.isHost)
             {
@@ -83,10 +84,14 @@ namespace BGS.UNO
                 yield return new WaitForSeconds(0.1f);
 
             // Initialize Index to key
-            indexToKey = new int[numOfPlayer];
-            Dictionary<int, Photon.Realtime.Player> punPlayers = PhotonNetwork.CurrentRoom.Players;
-            for (int i = 0; i < numOfPlayer; i++)
-                indexToKey[i] = punPlayers.FirstOrDefault(p => p.Value.NickName == GameStatus.GetNameOfPlayer(i + 1)).Key;
+            if (mulManager.isHost)
+            {
+                Dictionary<int, Photon.Realtime.Player> punPlayers = PhotonNetwork.CurrentRoom.Players;
+                for (int i = 0; i < numOfPlayer; i++)
+                    indexToKey[i] = punPlayers.FirstOrDefault(p => p.Value.NickName == GameStatus.GetNameOfPlayer(i + 1)).Key;
+                this.photonView.RPC("SyncIndexToKey", RpcTarget.Others, indexToKey);
+            }
+
 
             // Initialize deck, discard, currenthand;
             deckScript = deck.GetComponent<DeckMul>();
@@ -144,14 +149,15 @@ namespace BGS.UNO
             directionIcons.GetComponent<DirectionIconsMul>().DirectionIconToggle(antiClockWise);
 
             /////////
-            // Initialize Game start handler
+            // Initialize Turn start handler
 
             TurnStartHandler += currentHand.GetComponent<CurrentHandMul>().EnableCardReaction;
             if (GameStatus.useRules)
                 TurnStartHandler += GetComponent<RulesMul>().OnDraw2Draw4Played_Start;
 
             /////////
-            // Initialize Game end handler
+            // Initialize Turn end handler
+            TurnEndHandler += currentHand.GetComponent<CurrentHandMul>().DisableCardReaction;
             TurnEndHandler += GetComponent<RulesMul>().OnWildCardPlayed_End;
             TurnEndHandler += GetComponent<RulesMul>().UpdateLastCardInfo;
 
@@ -295,6 +301,12 @@ namespace BGS.UNO
         public void GuestSceneLoaded()
         {
             this.sceneLoaded.Add(true);
+        }
+
+        [PunRPC]
+        public void SyncIndexToKey(int[] indexToKey)
+        {
+            indexToKey.CopyTo(this.indexToKey, 0);
         }
 
         [PunRPC]

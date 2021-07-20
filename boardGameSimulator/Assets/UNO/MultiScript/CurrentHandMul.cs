@@ -69,12 +69,6 @@ namespace BGS.UNO
             MultiGame.TurnStartHandler -= EnableCardReaction;
         }
 
-        public void EnableCardReaction()
-        {
-            foreach (GameObject card in cards)
-                card.GetComponent<CardReaction>().enabled = true;
-        }
-
         void PlaceCards()
         {
             // If there is no cards to place, return
@@ -102,10 +96,6 @@ namespace BGS.UNO
 
             foreach (GameObject card in cards)
             {
-                // Initialize Card Reaction
-                card.GetComponent<CardReaction>().enabled = true;
-                card.GetComponent<CardReaction>().Initialize(gameObject);
-
                 // Place cards from left to right
                 card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
                 card.GetComponent<RectTransform>().rotation = Quaternion.identity;
@@ -125,17 +115,39 @@ namespace BGS.UNO
         {
             if (highlightedCard != null)
                 highlightedCard.GetComponent<CardReaction>().PutBack();
-            foreach (GameObject card in cards)
-                card.GetComponent<CardReaction>().enabled = false;
+            DisableCardReaction();
             deck.GetComponent<DeckMul>().Interactable = false;
         }
 
+        #region Helpers
+
+        public void EnableCardReaction()
+        {
+            foreach (GameObject card in cards)
+            {
+                card.GetComponent<CardReaction>().enabled = true;
+                card.GetComponent<CardReaction>().Initialize(gameObject);
+            }
+        }
+
+        public void EnableLastCardReaction()
+        {
+            cards[cards.Count - 1].GetComponent<CardReaction>().enabled = true;
+            cards[cards.Count - 1].GetComponent<CardReaction>().Initialize(gameObject);
+        }
+
+        public void DisableCardReaction()
+        {
+            foreach (GameObject card in cards)
+                card.GetComponent<CardReaction>().enabled = false;
+        }
 
         public override string ToString()
         {
             return "CurrentHand";
         }
 
+        #endregion
 
         #region IContainer Implementation
 

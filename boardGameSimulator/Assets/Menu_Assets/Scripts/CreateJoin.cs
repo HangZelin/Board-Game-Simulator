@@ -24,6 +24,7 @@ namespace BGS.MenuUI
 
         [Header("Connecting Panel")]
         [SerializeField] GameObject connectingPanel;
+        [SerializeField] GameObject reconnectingPanel;
 
         [Header ("Reminder Text")]
         [SerializeField] GameObject reminderText;
@@ -42,12 +43,13 @@ namespace BGS.MenuUI
                 SetButtons(false);
                 checkNetwork.SetActive(true);
             }
-            else if (PhotonNetwork.Server != ServerConnection.MasterServer)
+            else if (PhotonNetwork.Server == ServerConnection.GameServer)
             {
                 SetButtons(false);
-                connectingPanel.SetActive(true);
-                if (PhotonNetwork.NetworkClientState != ClientState.ConnectingToMasterServer)
-                    PhotonNetwork.ConnectUsingSettings();
+                reconnectingPanel.SetActive(true);
+                PhotonNetwork.Disconnect();
+                PhotonNetwork.ConnectUsingSettings();
+                StartCoroutine(ReconnectingUiHelper());
             }
             else
                 SetButtons(true);
@@ -131,13 +133,17 @@ namespace BGS.MenuUI
         {
             SetButtons(true);
             connectingPanel.SetActive(false);
+            Debug.Log("a");
         }
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            SetButtons(false);
-            connectingPanel.SetActive(false);
-            StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, connectionFailedText));
+            if (cause != DisconnectCause.None)
+            {
+                SetButtons(false);
+                connectingPanel.SetActive(false);
+                StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, connectionFailedText));
+            }
         }
 
         public override void OnJoinedRoom()
@@ -155,6 +161,14 @@ namespace BGS.MenuUI
 
 
         #region Helpers
+
+        IEnumerator ReconnectingUiHelper()
+        {
+            while (PhotonNetwork.Server != ServerConnection.MasterServer)
+                yield return new WaitForSeconds(0.1f);
+            SetButtons(true);
+            reconnectingPanel.SetActive(false);
+        }
 
         void SetButtons(bool interactable)
         {
