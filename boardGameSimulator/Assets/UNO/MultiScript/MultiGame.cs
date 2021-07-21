@@ -14,7 +14,7 @@ namespace BGS.UNO
         [Header("Basic")]
         [SerializeField] GameObject Canvas;
         [SerializeField] GameObject gameUI;
-        SettingsUI uiScript;
+        SettingsUIMul uiScript;
         MultiplayerManager mulManager;
 
         [Header("Containers")]
@@ -54,6 +54,8 @@ namespace BGS.UNO
         public delegate void TurnEnd();
         public static event TurnEnd TurnEndHandler;
 
+        #region Initialize
+
         private void Start()
         {
             mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
@@ -65,7 +67,7 @@ namespace BGS.UNO
 
             Screen.orientation = ScreenOrientation.Landscape;
             numOfPlayer = GameStatus.NumOfPlayers;
-            uiScript = gameUI.GetComponent<SettingsUI>();
+            uiScript = gameUI.GetComponent<SettingsUIMul>();
             
             clientName = mulManager.playerName;
             clientIndex = mulManager.playerIndex;
@@ -92,7 +94,7 @@ namespace BGS.UNO
                 this.photonView.RPC("SyncIndexToKey", RpcTarget.Others, indexToKey);
             }
 
-
+            
             // Initialize deck, discard, currenthand;
             deckScript = deck.GetComponent<DeckMul>();
             deckScript.Initialize(DealCard);
@@ -132,7 +134,7 @@ namespace BGS.UNO
             }
 
             // Initialize settings ui
-            gameUI.GetComponent<SettingsUI>().Initialize();
+            gameUI.GetComponent<ISettingsUI>().Initialize();
 
             currentPlayerIndex = 0;
             antiClockWise = true;
@@ -143,7 +145,7 @@ namespace BGS.UNO
                 foreach (GameObject player in players)
                     player.GetComponent<PlayerMul>().TakeCards(DealCards(7, player));
             }
-            gameUI.GetComponent<SettingsUI>().AddLog("UNO: New game.");
+            uiScript.AddLog("UNO: New game.");
 
             // Initialize direaction Icons
             directionIcons.GetComponent<DirectionIconsMul>().DirectionIconToggle(antiClockWise);
@@ -185,6 +187,8 @@ namespace BGS.UNO
             nextTurnButton.interactable = false;
             GameStatus.isNewGame = true;
         }
+
+        #endregion
 
         private void OnDisable()
         {
@@ -317,6 +321,9 @@ namespace BGS.UNO
                 nextTurnButton.interactable = true;
             // Enable deck draw
             deck.GetComponent<DeckMul>().Interactable = true;
+
+            uiScript.AddLog(mulManager.playerName + ": Your turn!");
+            uiScript.AddLogToOthers(mulManager.playerName + "'s turn.");
 
             if (TurnStartHandler != null)
                 TurnStartHandler();

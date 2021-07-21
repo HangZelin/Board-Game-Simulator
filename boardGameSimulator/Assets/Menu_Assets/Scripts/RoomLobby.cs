@@ -59,6 +59,8 @@ namespace BGS.MenuUI
         {
             currentRoom = PhotonNetwork.CurrentRoom;
             multiplayerManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+            
+            // Should not happen
             if (multiplayerManager.isHost ^ PhotonNetwork.IsMasterClient)
             {
                 Debug.LogError("isHost is different from IsMasterClient.");
@@ -121,12 +123,10 @@ namespace BGS.MenuUI
             }
             if (IsRoomFull() && multiplayerManager.isHost)
             {
+                // Start the game
+                currentRoom.IsOpen = false;
                 this.photonView.RPC("SetPlayerNames", RpcTarget.Others, playerNames);
                 this.photonView.RPC("StartMultiGame", RpcTarget.All);
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -160,6 +160,7 @@ namespace BGS.MenuUI
         {
             if (multiplayerManager.isHost ^ PhotonNetwork.IsMasterClient)
             {
+                // Previous host left room, local player becomes host
                 multiplayerManager.isHost = PhotonNetwork.IsMasterClient;
                 hostName = multiplayerManager.playerName;
                 playerIndex = 0;
@@ -179,7 +180,7 @@ namespace BGS.MenuUI
 
 
         #region RPCs
-
+        
         [PunRPC]
         void SetPlayerNames(string[] nameList)
         {
@@ -357,15 +358,6 @@ namespace BGS.MenuUI
         }
 
         #endregion
-
-        /*        void RemoveEmptyNames()
-        {
-            string[] temp = playerNames.Where(s => s != "").ToArray();
-            for (int i = 0; i < temp.Length; i++)
-                playerNames[i] = temp[i];
-            for (int i = temp.Length; i < playerNames.Length; i++)
-                playerNames[i] = "";
-        }*/
     }
 }
 

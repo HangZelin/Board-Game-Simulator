@@ -62,11 +62,15 @@ namespace BGS.UNO
 
             cards = new List<GameObject>();
             name = ToString();
+
+            if (!PhotonNetwork.IsMasterClient)
+                DisableCardReaction();
         }
 
         void OnDisable()
         {
             MultiGame.TurnStartHandler -= EnableCardReaction;
+            MultiGame.TurnEndHandler -= DisableCardReaction;
         }
 
         void PlaceCards()

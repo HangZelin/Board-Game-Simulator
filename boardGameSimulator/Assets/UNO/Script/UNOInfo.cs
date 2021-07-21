@@ -28,6 +28,20 @@ namespace BGS.UNO
                     return Color.white;
             }
         }
+
+        public static string ColorToHex(CardColor color)
+        {
+            switch (color)
+            {
+                case CardColor.red: return "#FF5555";
+                case CardColor.blue: return "#5555FD";
+                case CardColor.green: return "#55AA55";
+                case CardColor.yellow: return "#FFAA00";
+                default:
+                    Debug.LogError("Failed to get color");
+                    return "#FFFFFF";
+            }
+        }
     }
 
     public struct CardInfo
