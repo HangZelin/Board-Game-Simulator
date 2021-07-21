@@ -75,7 +75,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         if (gameOver && Input.GetMouseButtonDown(0))
         {
             gameOver = false;
-            SceneManager.LoadScene("Chess (3D)");
+            SceneManager.LoadScene("Chess (3D)_mul");
         }
 
 
@@ -89,7 +89,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     if (selectedChessman == null)
                     {
                         // Select the chessman
-                        SelectChessman(selectionX, selectionY);
+                        photonView.RPC(nameof(SelectChessman), RpcTarget.AllBuffered, selectionX, selectionY);
                     }
                     else
                     {
@@ -102,6 +102,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         }
     }
 
+    #region RPCs
     [PunRPC]
     public void Initialized()
     {
@@ -126,6 +127,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
+    [PunRPC]
     private void SelectChessman(int x, int y)
     {
         if (Chessmans[x, y] == null) return;
@@ -258,7 +260,54 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         BoardHighlights_mul.Instance.HideHighlights();
         selectedChessman = null;
     }
+    [PunRPC]
+    public void NextTurn()
+    {
+        if (currentPlayer == Player1)
+        {
+            currentPlayer = Player2;
+        }
+        else
+        {
+            currentPlayer = Player1;
+        }
+        isWhiteTurn = !isWhiteTurn;
 
+        if (currentPlayer == localPlayer)
+        {
+            is_localPlayer = true;
+        }
+        else
+        {
+            is_localPlayer = false;
+        }
+
+        //Log
+        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
+    }
+
+    [PunRPC]
+    private void SpawnChessman(int index, int x, int y, bool isWhite)
+    {
+        Vector3 position = GetTileCenter(x, y);
+        GameObject go;
+
+        if (isWhite)
+        {
+            go = Instantiate(chessmanPrefabs[index], position, whiteOrientation);
+        }
+        else
+        {
+            go = Instantiate(chessmanPrefabs[index], position, blackOrientation);
+        }
+
+        go.transform.SetParent(transform);
+        Chessmans[x, y] = go.GetComponent<Chessplayer>();
+        Chessmans[x, y].SetPosition(x, y);
+        Chessmans[x, y].photonView.ViewID = 100 + x * 8 + y;
+        activeChessman.Add(go);
+    }
+    #endregion
     private void UpdateSelection()
     {
         if (!Camera.main) return;
@@ -275,50 +324,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         }
     }
 
-    [PunRPC]
-    public void NextTurn()
-    {
-        if (currentPlayer == Player1)
-        {
-            currentPlayer = Player2;
-        }
-        else
-        {
-            currentPlayer = Player1;
-        }
-        isWhiteTurn = !isWhiteTurn;
-
-        if (currentPlayer == localPlayer)
-        {
-            is_localPlayer = true; 
-        } else
-        {
-            is_localPlayer = false;
-        }
-
-        //Log
-        settings.AddLog("<b>" + currentPlayer + "</b>'s turn!");
-    }
-    private void SpawnChessman(int index, int x, int y, bool isWhite)
-    {
-        Vector3 position = GetTileCenter(x, y);
-        GameObject go;
-
-        if (isWhite)
-        {
-            go = Instantiate(chessmanPrefabs[index], position, whiteOrientation);
-        }
-        else
-        {
-            go = Instantiate(chessmanPrefabs[index], position, blackOrientation);
-        }
-        
-        go.transform.SetParent(transform);
-        Chessmans[x, y] = go.GetComponent<Chessplayer>();
-        Chessmans[x, y].SetPosition(x, y);
-        Chessmans[x, y].photonView.ViewID = 100 + index + x * 8 + y;
-        activeChessman.Add(go);
-    }
+   
 
     private Vector3 GetTileCenter(int x, int y)
     {
@@ -487,10 +493,12 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         SaveLoadManager.OnSaveHandler -= PopulateSaveData;
     }
 
+    #region IPunObservable Implementation
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //throw new NotImplementedException();
     }
+    #endregion
 }
 
 

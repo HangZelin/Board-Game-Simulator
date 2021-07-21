@@ -114,7 +114,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         gameOver = false;
         GameStatus.isNewGame = true;
 
-        SceneManager.LoadScene("Chess (2D)");//Reset the game for us.
+        SceneManager.LoadScene("Chess (2D)_mul");//Reset the game for us.
     }
 
     [PunRPC]
@@ -136,7 +136,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         GameObject obj =  Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
-        cm.photonView.ViewID = x* 8 + y + 100;
+        cm.photonView.ViewID = x* 8 + y + 100 + 1;
         cm.name = name;
         cm.SetXBoard(x);
         cm.SetYBoard(y);
