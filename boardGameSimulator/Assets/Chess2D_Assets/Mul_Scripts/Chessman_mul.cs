@@ -111,11 +111,9 @@ public class Chessman_mul : MonoBehaviourPunCallbacks, IPunObservable
         if (!controller.GetComponent<Game_mul>().IsGameOver() && controller.GetComponent<Game_mul>().GetCurrentPlayer() == player
                && controller.GetComponent<Game_mul>().IsLocalTurn())
         {
-            this.photonView.RPC(nameof(DestroyMovePlates), RpcTarget.AllBuffered);
-
-            this.photonView.RPC(nameof(InitiateMovePlates), RpcTarget.AllBuffered);
+            DestroyMovePlates();
+            InitiateMovePlates();
         }
-
     }
 
 

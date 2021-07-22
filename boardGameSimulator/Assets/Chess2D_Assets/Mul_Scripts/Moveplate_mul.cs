@@ -32,7 +32,7 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
     public void OnMouseUp()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-        photonView.RPC(nameof(PerformMoveorAttack), RpcTarget.AllBuffered);
+        PerformMoveorAttack();
 
         if (!controller.GetComponent<Game_mul>().IsGameOver())
             controller.GetComponent<Game_mul>().photonView.RPC("NextTurn", RpcTarget.AllBuffered);
@@ -56,6 +56,10 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
             Destroy(cp);
         }
 
+        // Call the other to sync
+        controller.GetComponent<Game_mul>().photonView.RPC("SyncMoveChessPiece", RpcTarget.Others,
+            reference.GetComponent<Chessman_mul>().GetXBoard(), reference.GetComponent<Chessman_mul>().GetYBoard(), BoardX, BoardY);
+
         controller.GetComponent<Game_mul>().SetPositionEmpty(reference.GetComponent<Chessman_mul>().GetXBoard(),
             reference.GetComponent<Chessman_mul>().GetYBoard());
 
@@ -66,7 +70,6 @@ public class MovePlate_mul : MonoBehaviourPunCallbacks, IPunObservable
         controller.GetComponent<Game_mul>().SetPosition(reference);
 
         reference.GetComponent<Chessman_mul>().DestroyMovePlates();
-
     }
     #endregion
 

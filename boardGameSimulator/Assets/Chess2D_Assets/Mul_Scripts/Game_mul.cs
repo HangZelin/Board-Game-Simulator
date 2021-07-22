@@ -129,6 +129,25 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 
         settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
     }
+
+    [PunRPC]
+    public void SyncMoveChessPiece(int movedCPX, int movedCPY, int targetX, int targetY)
+    {
+        if (positions[targetX,targetY] != null)
+        {
+            // Check win
+            Destroy(positions[targetX, targetY]);
+        }
+
+        GameObject movedCP = positions[movedCPX, movedCPY];
+        movedCP.GetComponent<Chessman_mul>().SetXBoard(targetX);
+        movedCP.GetComponent<Chessman_mul>().SetYBoard(targetY);
+        movedCP.GetComponent<Chessman_mul>().SetCoords();
+
+        SetPosition(movedCP);
+        SetPositionEmpty(movedCPX, movedCPY);
+    }
+
     #endregion
 
     public GameObject Create(string name, int x, int y)
@@ -136,11 +155,12 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
         GameObject obj =  Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
 
         Chessman_mul cm = obj.GetComponent<Chessman_mul>();
-        cm.photonView.ViewID = x* 8 + y + 100 + 1;
+        
         cm.name = name;
         cm.SetXBoard(x);
         cm.SetYBoard(y);
         cm.Activate();
+        cm.photonView.ViewID = x * 8 + y + 100;
 
         return obj;
     }
