@@ -25,8 +25,8 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     private Quaternion whiteOrientation = Quaternion.Euler(0, 270, 0);
     private Quaternion blackOrientation = Quaternion.Euler(0, 90, 0);
 
-    public Chessplayer[,] Chessmans { get; set; }
-    private Chessplayer selectedChessman;
+    public Chessplayer_mul[,] Chessmans { get; set; }
+    private Chessplayer_mul selectedChessman;
 
     public bool isWhiteTurn = true;
 
@@ -127,12 +127,14 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
     }
 
-    [PunRPC]
     private void SelectChessman(int x, int y)
     {
         if (Chessmans[x, y] == null) return;
+        Debug.Log("Not Null");
 
         if (Chessmans[x, y].isWhite != isWhiteTurn || !is_localPlayer) return;
+        Debug.Log("Selected!");
+
 
         bool hasAtLeastOneMove = false;
         bool[,] all_possible = new bool[8, 8];
@@ -182,7 +184,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         bool Eat = false;
         if (allowedMoves[x, y])
         {
-            Chessplayer c = Chessmans[x, y];
+            Chessplayer_mul c = Chessmans[x, y];
 
             if (c != null && c.isWhite != isWhiteTurn)
             {
@@ -260,6 +262,8 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         BoardHighlights_mul.Instance.HideHighlights();
         selectedChessman = null;
     }
+
+
     [PunRPC]
     public void NextTurn()
     {
@@ -302,7 +306,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         }
 
         go.transform.SetParent(transform);
-        Chessmans[x, y] = go.GetComponent<Chessplayer>();
+        Chessmans[x, y] = go.GetComponent<Chessplayer_mul>();
         Chessmans[x, y].SetPosition(x, y);
         Chessmans[x, y].photonView.ViewID = 100 + x * 8 + y;
         activeChessman.Add(go);
@@ -338,7 +342,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     private void SpawnAllChessmans()
     {
         activeChessman = new List<GameObject>();
-        Chessmans = new Chessplayer[8, 8];
+        Chessmans = new Chessplayer_mul[8, 8];
 
         /////// White ///////
 

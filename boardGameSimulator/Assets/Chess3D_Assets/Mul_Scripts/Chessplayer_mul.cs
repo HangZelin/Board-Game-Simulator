@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public abstract class Chessplayer : MonoBehaviourPunCallbacks, IPunObservable
+public abstract class Chessplayer_mul : MonoBehaviourPunCallbacks, IPunObservable
 {
 
     public int CurrentX { set; get; }
@@ -28,7 +28,7 @@ public abstract class Chessplayer : MonoBehaviourPunCallbacks, IPunObservable
         if (x >= 0 && x < 8 && y >= 0 && y < 8)
         {
 
-            Chessplayer c = BoardManager.Instance.Chessmans[x, y];
+            Chessplayer_mul c = BoardManager_mul.Instance.Chessmans[x, y];
             if (c == null)
                 r[x, y] = true;
             else
