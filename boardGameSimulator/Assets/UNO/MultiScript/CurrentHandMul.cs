@@ -1,19 +1,17 @@
 using Photon.Pun;
-using Photon.Realtime;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-    public class CurrentHandMul : MonoBehaviourPun, IContainer, ICurrentHand
+    public class CurrentHandMul : MonoBehaviourPun, ICurrentHand
     {
-        // References
-        GameObject discard;
-        GameObject deck;
+        [Header("References")]
+        [SerializeField] GameObject discard;
         [SerializeField] MultiGame gameScript;
 
+        [Header("Components")]
         [SerializeField] Text playerName;
         public string PlayerName
         {
@@ -55,16 +53,11 @@ namespace BGS.UNO
             }
         }
 
-        public void Initialize(GameObject discard, GameObject deck)
+        public void Initialize()
         {
-            this.discard = discard;
-            this.deck = deck;
-
             cards = new List<GameObject>();
-            name = ToString();
 
-            if (!PhotonNetwork.IsMasterClient)
-                DisableCardReaction();
+            name = ToString();
         }
 
         void OnDisable()
@@ -72,6 +65,8 @@ namespace BGS.UNO
             MultiGame.TurnStartHandler -= EnableCardReaction;
             MultiGame.TurnEndHandler -= DisableCardReaction;
         }
+
+        #region Cards Methods
 
         void PlaceCards()
         {
@@ -107,23 +102,36 @@ namespace BGS.UNO
             }
         }
 
+        /// <summary>
+        /// Play the highlighted card.
+        /// </summary>
+        /// <remarks>
+        /// Put the card to discard, call game script to sync with other clients.
+        /// </remarks>
         public void PlayCard()
         {
+            discard.GetComponent<DiscardMul>().CardToPile(highlightedCard);
             gameScript.SyncPlayCard(cards.IndexOf(highlightedCard));
+
+            // Remove references
             cards.Remove(highlightedCard);
             highlightedCard = null;
             PlaceCards();
         }
 
+        #endregion
+
+        #region Helpers
+
         public void SkipTurn()
         {
             if (highlightedCard != null)
+            {
                 highlightedCard.GetComponent<CardReaction>().PutBack();
+                HighlightedCard = null;
+            }
             DisableCardReaction();
-            deck.GetComponent<DeckMul>().Interactable = false;
         }
-
-        #region Helpers
 
         public void EnableCardReaction()
         {
@@ -142,6 +150,11 @@ namespace BGS.UNO
 
         public void DisableCardReaction()
         {
+            if (highlightedCard != null)
+            {
+                highlightedCard.GetComponent<CardReaction>().PutBack();
+                HighlightedCard = null;
+            }
             foreach (GameObject card in cards)
                 card.GetComponent<CardReaction>().enabled = false;
         }
@@ -160,18 +173,20 @@ namespace BGS.UNO
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
         }
 
-        #endregion
-    }
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+            PlaceCards();
+        }
 
-    public interface ICurrentHand
-    {
-        public GameObject HighlightedCard { get; set; }
+        #endregion
     }
 }
 

@@ -2884,8 +2884,7 @@ MonoBehaviour:
     type: 3}
   directionIcons: {fileID: 371178333}
   nextTurnButton: {fileID: 945247497}
-  unusedViewID: 100
-  currentPlayerIndex: 0
+  playerInitialViewID: 30
 --- !u!1 &1268496241
 GameObject:
   m_ObjectHideFlags: 0
@@ -5526,6 +5525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8af2aaaa6b458c447b72fff08fd664f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  discard: {fileID: 7978030338681492029}
   gameScript: {fileID: 1264333083}
   playerName: {fileID: 3364208939175329359}
 --- !u!222 &1027195748568172465
@@ -6547,7 +6547,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9477d6e1c34b2bd4cb2d1102143eb49f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  container: {fileID: 7505503790088745210}
   text: {fileID: 8601369346719801945}
 --- !u!1001 &7227897746455795115
 PrefabInstance:
@@ -7453,7 +7452,6 @@ MonoBehaviour:
   drawCardAudio: {fileID: 1389925690689178918}
   enableCardsCount: 1
   cardsCount: {fileID: 4635875588207638348}
-  cardsInitialized: 0
 --- !u!222 &7505503790088745215
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7522,7 +7520,6 @@ GameObject:
   - component: {fileID: 7818225953404815887}
   - component: {fileID: 7978030338681492033}
   - component: {fileID: 7357775458729948407}
-  - component: {fileID: 7978030338681492032}
   m_Layer: 5
   m_Name: Discard
   m_TagString: Untagged
@@ -7580,29 +7577,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7978030338681492032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7978030338681492029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7978030338681492033}
-  sceneViewId: 3
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &7978030338681492033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7616,7 +7590,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHand: {fileID: 1027195748568172364}
-  unoInfo: {fileID: 1264333082}
   playCard: {fileID: 7357775458729948407}
 --- !u!222 &8515733613613483486
 CanvasRenderer:
@@ -7970,6 +7943,18 @@ MonoBehaviour:
       - m_Target: {fileID: 7505503790088745214}
         m_TargetAssemblyTypeName: BGS.UNO.DeckMul, Assembly-CSharp
         m_MethodName: OnDeckButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1264333083}
+        m_TargetAssemblyTypeName: BGS.UNO.MultiGame, Assembly-CSharp
+        m_MethodName: DealCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

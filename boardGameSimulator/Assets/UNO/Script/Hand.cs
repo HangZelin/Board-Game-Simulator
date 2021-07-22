@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-    public class Hand : MonoBehaviour, IContainer, IHand
+    public class Hand : MonoBehaviour, IHand
     {
         // References
         [SerializeField] GameObject playerText;
@@ -65,18 +65,27 @@ namespace BGS.UNO
             }
         }
 
-        // IContainer Method
+        #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
         }
+
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+            PlaceCards();
+        }
+
+        #endregion
 
         // Set text position
 
@@ -177,10 +186,5 @@ namespace BGS.UNO
         public Vector2 anchoredPosition;
         public Vector2 anchor;
         public Quaternion rotation;
-    }
-
-    interface IHand
-    {
-        void SetTextPosition(float zRotation);
     }
 }

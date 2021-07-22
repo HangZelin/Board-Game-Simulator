@@ -27,30 +27,31 @@ namespace BGS.GameUI
 
         Room currentRoom;
         string roomName;
-        Player host;
+        string hostId;
         Player localPlayer;
         List<Player> rejoinPlayers;
         bool isHost;
+
+        /// <summary>
+        /// If must quit, then block all actions other than quit to Home page.
+        /// </summary>
+        /// <remarks>
+        /// If mustQuit is true, then either hostLostPanel or guestLostPanel is active.
+        /// </remarks>
         bool mustQuit;
+
         bool rejoining;
-
-
-        Dictionary<string, bool> userManuallyQuit;
 
         private void Start()
         {
             this.currentRoom = PhotonNetwork.CurrentRoom;
             this.roomName = currentRoom.Name;
-            this.host = PhotonNetwork.MasterClient;
+            this.hostId = PhotonNetwork.MasterClient.UserId;
             this.localPlayer = PhotonNetwork.LocalPlayer;
             this.rejoinPlayers = new List<Player>();
             mustQuit = false;
             rejoining = false;
             isHost = PhotonNetwork.IsMasterClient;
-
-            userManuallyQuit = new Dictionary<string, bool>();
-            foreach (Player player in currentRoom.Players.Values)
-                userManuallyQuit.Add(player.UserId, false);
         }
 
         void OnApplicationQuit()
@@ -65,18 +66,13 @@ namespace BGS.GameUI
         {
             mustQuit = mustQuit || timeCount > playerTTL;
             if (!mustQuit)
-                if (otherPlayer == this.host)
+                if (otherPlayer.UserId == hostId)
                 {
+                    // Host has left the room
                     DisableAllPanels();
                     hostLostPanel.SetActive(true);
                     mustQuit = true;
-                }
-                else if (userManuallyQuit[otherPlayer.UserId])
-                {
-                    DisableAllPanels();
-                    guestQuitPanel.SetActive(true);
-                    guestQuitText.text = otherPlayer.NickName + " has left the room. Game is lost. Return to home page.";
-                    mustQuit = true;
+                    currentRoom.IsOpen = false;
                 }
                 else
                 {
@@ -96,12 +92,13 @@ namespace BGS.GameUI
             connectingPanel.SetActive(false);
             if (isHost)
             {
-                DisableAllPanels();
-                hostLostPanel.SetActive(true);
-                mustQuit = true;
+                // I am host. I leave the room.
+                OnHostInactive();
             }
             else if (cause != DisconnectCause.None)
             {
+                DisableAllPanels();
+                // I am not host. I did not manually quit: try to rejoin
                 rejoinPanel.SetActive(true);
                 rejoining = true;
             }
@@ -113,19 +110,28 @@ namespace BGS.GameUI
             if (returnCode == 32758)
             {
                 // Room does not exist
-                DisableAllPanels();
-                hostLostPanel.SetActive(true);
-                mustQuit = true;
+                OnHostInactive();
             }
         }
 
         public override void OnJoinedRoom()
         {
+            // Do nothing if join room first time
             if (rejoining)
             {
-                DisableAllPanels();
-                rejoining = false;
-                waitForRejoinPanel.SetActive(!currentRoom.Players.Values.Any(p => p.IsInactive));
+                if (PhotonNetwork.MasterClient.UserId != hostId || PhotonNetwork.MasterClient.IsInactive)
+                {
+                    // If host has changed or host is inactive
+                    OnHostInactive();
+                }
+                else
+                {
+                    // Successfully rejoined
+                    DisableAllPanels();
+                    rejoining = false;
+                    // If there is any other player rejoining, enable waitForRejoinPanel
+                    waitForRejoinPanel.SetActive(currentRoom.Players.Values.Any(p => p.IsInactive));
+                }
             }
         }
 
@@ -147,22 +153,16 @@ namespace BGS.GameUI
 
         public void OnRejoinButtonClicked()
         {
+            connectingPanel.SetActive(true);
             if (PhotonNetwork.IsConnectedAndReady)
                 PhotonNetwork.RejoinRoom(roomName);
             else
                 PhotonNetwork.ReconnectAndRejoin();
-            connectingPanel.SetActive(true);
         }
 
         #endregion
 
         #region RPCs
-
-        [PunRPC]
-        void SyncManuallyQuit(string userId)
-        {
-            userManuallyQuit[userId] = true;
-        }
 
         [PunRPC]
         void DisableWaitForRejoinPanel()
@@ -173,8 +173,13 @@ namespace BGS.GameUI
         [PunRPC]
         void EnableGuestQuitPanel()
         {
-            DisableAllPanels();
-            guestQuitPanel.SetActive(true);
+            if (!mustQuit)
+            {
+                DisableAllPanels();
+                guestQuitPanel.SetActive(true);
+                mustQuit = true;
+                currentRoom.IsOpen = false;
+            }
         }
 
         #endregion
@@ -190,19 +195,21 @@ namespace BGS.GameUI
                 rejoinPlayers = rejoinPlayers.Where(p => !p.HasRejoined).ToList();
             }
 
-            if (timeCount > playerTTL)
+            if (timeCount > playerTTL || mustQuit)
             {
+                // Wait for too much time, or mustQuit is set to true elsewhere
                 this.photonView.RPC(nameof(EnableGuestQuitPanel), RpcTarget.All);
             }
-            else if (!mustQuit)
+            else
             {
+                // All players have rejoined
                 this.photonView.RPC(nameof(DisableWaitForRejoinPanel), RpcTarget.All);
             }
         }
 
         public void OnManuallyQuit()
         {
-            this.photonView.RPC(nameof(SyncManuallyQuit), RpcTarget.Others, PhotonNetwork.LocalPlayer.UserId);
+            this.photonView.RPC(nameof(EnableGuestQuitPanel), RpcTarget.Others);
         }
 
         void DisableAllPanels()
@@ -212,6 +219,14 @@ namespace BGS.GameUI
             waitForRejoinPanel.SetActive(false);
             rejoinPanel.SetActive(false);
             connectingPanel.SetActive(false);
+        }
+
+        void OnHostInactive()
+        {
+            DisableAllPanels();
+            hostLostPanel.SetActive(true);
+            mustQuit = true;
+            currentRoom.IsOpen = false;
         }
 
         #endregion

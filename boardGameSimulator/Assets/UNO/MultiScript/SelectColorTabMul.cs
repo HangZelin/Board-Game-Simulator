@@ -25,12 +25,6 @@ namespace BGS.UNO
             DisableOutlines();
         }
 
-        public void SetLastCardColor()
-        {
-            DisableOutlines();
-            gameObject.SetActive(false);
-        }
-
         public void YellowOnClick()
         {
             DisableOutlines();

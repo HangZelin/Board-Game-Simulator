@@ -108,10 +108,11 @@ namespace BGS.MenuUI
         {
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = Convert.ToByte(GameStatus.NumOfPlayers);
+            roomOptions.PublishUserId = true;
 
             this.roomIndex = random.Next(0, 9999);
 
-            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + this.roomIndex.ToString("D4"));
+            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + this.roomIndex.ToString("D4"), roomOptions);
         }
             
         void CreateOrJoinRoom()

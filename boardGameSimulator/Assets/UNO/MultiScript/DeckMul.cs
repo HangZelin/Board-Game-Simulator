@@ -1,6 +1,5 @@
 using BGS.MenuUI;
 using Photon.Pun;
-using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +12,7 @@ namespace BGS.UNO
         [Header("References")]
         [SerializeField] GameObject unused;
         [SerializeField] GameObject discard;
+        MultiplayerManager mulManager;
 
         [Header("Card Prefabs")]
         [SerializeField] GameObject numCard;
@@ -43,9 +43,7 @@ namespace BGS.UNO
         }
 
         [SerializeField] GameObject note;
-
         [SerializeField] UNOInfo unoInfo;
-
         [SerializeField] AudioSource drawCardAudio;
 
         [Header("Card count")]
@@ -56,24 +54,19 @@ namespace BGS.UNO
         public List<GameObject> Cards
         {
             get { return cards; }
-            set
-            {
-                if (value != null && value[0].GetComponent<Card>() != null)
-                {
-                    cards = value;
-                    foreach (GameObject card in value)
-                        card.transform.SetParent(unused.transform);
-                }
-            }
         }
-        MultiplayerManager mulManager;
 
-        public bool cardsInitialized;
+        bool cardsInitialized;
+        /// <summary>
+        /// Are deck cards created, shuffled and synced?
+        /// </summary>
+        public bool CardsInitialized { get { return cardsInitialized; } }
 
-        public void Initialize(Action onclick)
+        #region Initialize
+
+        public void Initialize()
         {
             name = ToString();
-            drawACardButton.onClick.AddListener(delegate { onclick(); });
             Interactable = true;
             mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
             cardsInitialized = false;
@@ -86,98 +79,6 @@ namespace BGS.UNO
             }
 
             cardsCount.SetActive(enableCardsCount);
-        }
-
-        /** <summary>
-         * Draw a number of cards from head of the list.
-         * </summary> 
-         * <returns>List of cards drawed.</returns>
-         * <param name="num">Number of cards to draw</param>
-         * <param name="transform">Target transform.</param>
-         */
-        public List<GameObject> DrawCards(int num, Transform transform)
-        {
-            if (num > cards.Count)
-            {
-                // Transfer all cards from discard
-                List<GameObject> transferedCards;
-                discard.GetComponent<IContainer>().TransferAllCards(unused.transform, out transferedCards);
-                cards.AddRange(transferedCards);
-
-                Shuffle(Cards);
-
-                if (num > cards.Count)
-                {
-                    Debug.LogError("No more cards to draw.");
-                    return null;
-                }
-
-                this.photonView.RPC("ClearDiscard", RpcTarget.Others);
-                BroadcastCards();
-            }
-
-            List<GameObject> drawCards = new List<GameObject>();
-            for (int i = 0; i < num; i++)
-            {
-                cards[i].transform.SetParent(transform);
-                drawCards.Add(cards[i]);
-            }
-            cards.RemoveRange(0, num);
-
-            drawCardAudio.Play();
-
-            return drawCards;
-        }
-
-
-        #region Button Callbacks
-
-        public void OnDeckButtonClicked()
-        {
-            if (note.activeSelf)
-                note.SetActive(false);
-        }
-
-        #endregion
-
-
-        #region RPCs
-
-        [PunRPC]
-        void GetCards(string[] cardInfoArr)
-        {
-            this.cards = new List<GameObject>();
-            List<string> cardInfoList = new List<string>(cardInfoArr);
-            for (int i = 0; i < cardInfoList.Count; i += 3)
-            {
-                GameObject card = unoInfo.ListToCard(cardInfoList.GetRange(i, 3));
-                card.transform.SetParent(unused.transform);
-                this.cards.Add(card);
-            }
-            Debug.Log(cards.Count);
-            cardsInitialized = true;
-        }
-
-        [PunRPC]
-        void ClearDiscard()
-        {
-            discard.GetComponent<DiscardMul>().RemoveAll();
-        }
-
-        #endregion
-
-
-        #region Helpers
-
-        void BroadcastCards()
-        {
-            List<string> cardInfoList = new List<string>();
-            foreach (GameObject card in this.cards)
-            {
-                List<string> list = UNOInfo.CardToList(card);
-                cardInfoList.AddRange(list);
-            }
-            this.photonView.RPC("GetCards", RpcTarget.Others, cardInfoList.ToArray());
         }
 
         /// <summary>
@@ -248,9 +149,119 @@ namespace BGS.UNO
                 card.name = card.GetComponent<Card>().ToString();
 
             Shuffle(cards);
+            // If first card has no card color (is black), shuffle again.
             while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 || cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
         }
+
+        #endregion
+
+        #region Card Methods
+
+        /// <summary>
+        /// Clear other client's deck, sync this client's deck to others.
+        /// </summary>
+        void BroadcastCards()
+        {
+            List<string> cardInfoList = new List<string>();
+            foreach (GameObject card in this.cards)
+            {
+                List<string> list = UNOInfo.CardToList(card);
+                cardInfoList.AddRange(list);
+            }
+            this.photonView.RPC(nameof(GetCards), RpcTarget.Others, cardInfoList.ToArray());
+        }
+
+        /** <summary>
+         * Draw a number of cards from head of the list.
+         * </summary> 
+         * <returns>List of cards drawed.</returns>
+         * <param name="num">Number of cards to draw</param>
+         * <param name="transform">Target transform.</param>
+         */
+        public List<GameObject> DrawCards(int num, Transform transform)
+        {
+            if (num > cards.Count)
+            {
+                // Transfer all cards from discard
+                List<GameObject> transferedCards;
+                discard.GetComponent<IContainer>().TransferAllCards(unused.transform, out transferedCards);
+                Shuffle(transferedCards);
+                cards.AddRange(transferedCards);
+
+                if (num > cards.Count)
+                {
+                    // Card is not enough
+                    Debug.LogError("No more cards to draw.");
+                    return null;
+                }
+
+                BroadcastCards();
+            }
+
+            List<GameObject> drawCards = new List<GameObject>();
+            for (int i = 0; i < num; i++)
+            {
+                cards[i].transform.SetParent(transform);
+                drawCards.Add(cards[i]);
+            }
+            cards.RemoveRange(0, num);
+
+            // Play audio
+            drawCardAudio.Play();
+
+            // Update card count
+            cardsCount.GetComponent<CardsCount>().OnCardsCountChanged(cards.Count);
+
+            return drawCards;
+        }
+
+        #endregion
+
+        #region Button Callbacks
+
+        public void OnDeckButtonClicked()
+        {
+            if (note.activeSelf)
+                note.SetActive(false);
+        }
+
+        #endregion
+
+        #region RPCs
+
+        /// <summary>
+        /// Clear this client's deck. Fill deck with cards created by card info array.
+        /// </summary>
+        /// <remarks>
+        /// This method get called when a client call BroadcastCards().
+        /// </remarks>
+        /// <param name="cardInfoArr"></param>
+        [PunRPC]
+        void GetCards(string[] cardInfoArr)
+        {
+            // Remove everything under unused.transform
+            if (cards != null && cards.Count > 0)
+                foreach (GameObject card in cards)
+                    Destroy(card);
+            this.cards = new List<GameObject>();
+
+            List<string> cardInfoList = new List<string>(cardInfoArr);
+            for (int i = 0; i < cardInfoList.Count; i += 3)
+            {
+                GameObject card = unoInfo.ListToCard(cardInfoList.GetRange(i, 3));
+                card.transform.SetParent(unused.transform);
+                this.cards.Add(card);
+            }
+            cardsInitialized = true;
+
+            // Update card count
+            cardsCount.GetComponent<CardsCount>().OnCardsCountChanged(cards.Count);
+        }
+
+        #endregion
+
+        #region Helpers
 
         public void Shuffle(List<GameObject> list)
         {
@@ -274,7 +285,6 @@ namespace BGS.UNO
 
         #endregion
 
-
         #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
@@ -282,14 +292,19 @@ namespace BGS.UNO
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
         }
 
-        #endregion
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+        }
 
+        #endregion
 
         #region IPunObservable Implementation
 

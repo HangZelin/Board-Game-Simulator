@@ -1,5 +1,4 @@
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,25 +6,12 @@ namespace BGS.UNO
 {
     public class PlayerMul : MonoBehaviourPun, IContainer, IPunObservable
     {
-        UNOInfo unoInfo;
+        // Only one of these are assigned
         GameObject currentHand;
         GameObject hand;
-        public GameObject Hand
-        {
-            get { return hand; }
-            set
-            {
-                if (value.GetComponent<Hand>() != null)
-                {
-                    hand = value;
-                    hand.GetComponent<Hand>().PlayerName = name;
-                }
-            }
-        }
 
         string playerName;
         bool isClient;
-        public bool isCurrentPlayer;
         public int playerIndex;
 
         List<GameObject> cards;
@@ -33,16 +19,12 @@ namespace BGS.UNO
 
         /// <summary>
         /// Initialize a player object. 
-        /// <remarks>
-        /// Assign references and properties. Set names in respective hands.
-        /// </remarks>
         /// </summary>
         /// <param name="playerName">Name of this player.</param>
         /// <param name="isClient">Is it the client?</param>
         /// <param name="hand">Hand of this player.</param>
-        public void Initialize(UNOInfo unoInfo, string playerName, bool isClient, int playerIndex, GameObject hand)
+        public void Initialize(string playerName, bool isClient, int playerIndex, GameObject hand)
         {
-            this.unoInfo = unoInfo;
             this.playerName = playerName;
             this.isClient = isClient;
             this.playerIndex = playerIndex;
@@ -61,40 +43,25 @@ namespace BGS.UNO
             name = playerName;
         }
 
-        public void TakeCards(List<GameObject> cards)
-        {
-            this.cards.AddRange(cards);
-            PlaceCards();
-        }
-
+        /// <summary>
+        /// Place cards in hand/currentHand.
+        /// </summary>
         public void PlaceCards()
         {
             if (cards.Count == 0) return;
 
-            // If is current player, toggle card to face. Otherwise toggle card to back.
+            // If is client, toggle card to face. Otherwise toggle card to back.
             if (cards[0].GetComponent<Card>().IsFace != isClient)
                 foreach (GameObject card in cards)
                     card.GetComponent<Card>().IsFace = isClient;
 
-            // Transfer all cards to hand/currenthand. 
-            List<GameObject> transferedCards;
             if (isClient)
             {
-                List<GameObject> temp = new List<GameObject>(currentHand.GetComponent<CurrentHandMul>().Cards);
-                temp.AddRange(this.cards);
-                this.cards = new List<GameObject>(temp);
-
-                TransferAllCards(currentHand.transform, out transferedCards);
-                currentHand.GetComponent<CurrentHandMul>().Cards = transferedCards;
+                currentHand.GetComponent<IContainer>().TakeCards(this.cards);
             }
             else
             {
-                List<GameObject> temp = new List<GameObject>(hand.GetComponent<HandMul>().Cards);
-                temp.AddRange(this.cards);
-                this.cards = new List<GameObject>(temp);
-
-                TransferAllCards(hand.transform, out transferedCards);
-                hand.GetComponent<HandMul>().Cards = transferedCards;
+                hand.GetComponent<IContainer>().TakeCards(this.cards);
             }
 
             // Remove the cards list.
@@ -108,6 +75,13 @@ namespace BGS.UNO
 
         #region RPCs
 
+        /// <summary>
+        /// Play a card from the player's hand to discard.
+        /// </summary>
+        /// <remarks>
+        /// When a client play card, this method is called on other clients to sync the scenario.
+        /// </remarks>
+        /// <param name="cardIndex">Index of played card in card list.</param>
         [PunRPC]
         public void PlayCard(int cardIndex)
         {
@@ -130,16 +104,22 @@ namespace BGS.UNO
 
         #region IContainer Implementation
 
-        // IContainer Method
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
+        }
+
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+            PlaceCards();
         }
 
         #endregion

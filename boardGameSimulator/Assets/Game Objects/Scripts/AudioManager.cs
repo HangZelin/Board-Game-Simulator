@@ -1,13 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager audioManager;
-    public static string nameOfLoadingScene = "HomeLoading";
+
+    [SerializeField] List<string> stopSceneList;
     
     // 1 is true, 0 is false
     protected bool musicOn;
@@ -21,6 +21,8 @@ public class AudioManager : MonoBehaviour
     // Initialize Audio Manager at Home scene
     protected void Awake()
     {
+        SceneManager.activeSceneChanged += OnSceneChange;
+
         // Singleton
         if (audioManager == null)
         {
@@ -54,6 +56,11 @@ public class AudioManager : MonoBehaviour
     {
         if (musicOn && !music.isPlaying)
             PlayMusic();
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChange;
     }
 
     // Toggle Handling
@@ -116,5 +123,11 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetInt("musicVolume", musicVolume);
         PlayerPrefs.SetInt("soundOn", soundOn ? 1 : 0);
         PlayerPrefs.SetInt("soundVolume", soundVolume);
+    }
+
+    void OnSceneChange(Scene current, Scene next)
+    {
+        if (stopSceneList.Any(s => s == next.name || s == current.name))
+            Destroy(gameObject);
     }
 }

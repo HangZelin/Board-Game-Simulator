@@ -57,7 +57,7 @@ namespace BGS.UNO
 
         IEnumerator DrawFirstCard()
         {
-            while (!deckScript.cardsInitialized)
+            while (!deckScript.CardsInitialized)
                 yield return new WaitForSeconds(0.1f);
             List<GameObject> firstCard = deckScript.DrawCards(1, gameObject.transform);
             discardScript.CardToPile(firstCard[0]);
@@ -83,8 +83,11 @@ namespace BGS.UNO
 
             if (isAllowed(currCard.GetComponent<Card>().cardInfo))
             {
-                discardScript.PlayCard(currCard);
+                cHandScript.PlayCard();
+                cHandScript.SkipTurn();
+                deckScript.Interactable = false;
 
+                // Special cards effects
                 switch (lastCardInfo.cardType)
                 {
                     case CardType.reverse: 
@@ -105,8 +108,6 @@ namespace BGS.UNO
                         cardDrawed = false;
                         break;
                 }
-
-                cHandScript.SkipTurn();
 
                 if (cHandScript.Cards.Count == 0)
                 {
@@ -232,8 +233,10 @@ namespace BGS.UNO
                 gameUI.AddLogToAll(player + " did not say UNO. Draw 2 cards.");
                 if (!isNextTurn)
                 {
-                    for (int j = 0; j < 2; j++) gameScript.DealCard();
+                    GameObject currPlayer = gameScript.CurrentPlayer;
+                    currPlayer.GetComponent<PlayerMul>().TakeCards(gameScript.DealCards(2, currPlayer));
                     cHScript.SkipTurn();
+                    deckScript.Interactable = false;
                 }
             }
             else

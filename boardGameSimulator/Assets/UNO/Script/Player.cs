@@ -5,7 +5,6 @@ namespace BGS.UNO
 {
     public class Player : MonoBehaviour, ISaveable, IContainer
     {
-        string playerName;
         GameObject currentHand;
         UNOInfo unoInfo;
 
@@ -26,70 +25,26 @@ namespace BGS.UNO
         List<GameObject> cards;
         public List<GameObject> Cards { get { return cards; } }
 
+        string playerName;
         public bool isCurrentPlayer;
 
+        #region Initialize
+
         /// <summary>
-        /// Initialize Player. Add PlaceCards to TurnStartHandler. Add GetCardsFromHand to TurnEndHandler.
+        /// Initialize Player.
         /// </summary>
         /// <param name="playerName">Name of this player.</param>
         /// <param name="currentHand">Reference of current hand.</param>
         /// <param name="unoInfo">Reference of uno info script.</param>
         public void Initialize(string playerName, GameObject currentHand, UNOInfo unoInfo)
         {
-            this.playerName = playerName;
             this.currentHand = currentHand;
             this.unoInfo = unoInfo;
-            
             cards = new List<GameObject>();
+
+            this.playerName = playerName;
+            isCurrentPlayer = false;
             name = playerName;
-        }
-
-        public void TakeCards(List<GameObject> cards)
-        {
-            this.cards.AddRange(cards);
-        }
-
-        public void PlaceCards()
-        {
-            if (cards.Count == 0) return;
-
-            // If is current player, toggle card to face. Otherwise toggle card to back.
-            if (cards[0].GetComponent<Card>().IsFace != isCurrentPlayer)
-                foreach (GameObject card in cards)
-                    card.GetComponent<Card>().IsFace = isCurrentPlayer;
-
-            // Transfer all cards to hand/currenthand. 
-            List<GameObject> transferedCards;
-            if (isCurrentPlayer)
-            {
-                TransferAllCards(currentHand.transform, out transferedCards);
-                currentHand.GetComponent<CurrentHand>().Cards = transferedCards;
-            }
-            else
-            {
-                TransferAllCards(hand.transform, out transferedCards);
-                hand.GetComponent<Hand>().Cards = transferedCards;
-            }
-
-            // Remove the cards list.
-            cards = new List<GameObject>();
-        }
-
-        public void GetCardsFromHand()
-        {
-            if (isCurrentPlayer)
-            {
-                currentHand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
-                isCurrentPlayer = false;
-            }
-            else
-                hand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
-        }
-
-        public void SetCurrentHandName()
-        {
-            // Set the name of current hand.
-            if (isCurrentPlayer) currentHand.GetComponent<CurrentHand>().PlayerName = name;
         }
 
         void OnEnable()
@@ -107,7 +62,60 @@ namespace BGS.UNO
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
 
-        // IContainer Method
+        #endregion
+
+        #region Card Methods
+
+        public void PlaceCards()
+        {
+            if (cards.Count == 0) return;
+
+            // If is current player, toggle card to face. Otherwise toggle card to back.
+            if (cards[0].GetComponent<Card>().IsFace != isCurrentPlayer)
+                foreach (GameObject card in cards)
+                    card.GetComponent<Card>().IsFace = isCurrentPlayer;
+
+            // Transfer all cards to hand/currenthand. 
+            if (isCurrentPlayer)
+            {
+                currentHand.GetComponent<IContainer>().TakeCards(cards);
+            }
+            else
+            {
+                hand.GetComponent<IContainer>().TakeCards(cards);
+            }
+        }
+
+        public void GetCardsFromHand()
+        {
+            if (isCurrentPlayer)
+            {
+                currentHand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
+                isCurrentPlayer = false;
+            }
+            else
+                hand.GetComponent<IContainer>().TransferAllCards(gameObject.transform, out cards);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        public void SetCurrentHandName()
+        {
+            // Set the name of current hand.
+            if (isCurrentPlayer) currentHand.GetComponent<CurrentHand>().PlayerName = name;
+        }
+
+        public override string ToString()
+        {
+            return playerName;
+        }
+
+        #endregion
+
+        #region IContainer Implementation
+
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
             foreach (GameObject card in cards)
@@ -119,7 +127,16 @@ namespace BGS.UNO
             cards = new List<GameObject>();
         }
 
-        // Save load methods
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+        }
+
+        #endregion
+
+        #region ISaveable Implementation
 
         public void PopulateSaveData(SaveData sd)
         {
@@ -156,9 +173,6 @@ namespace BGS.UNO
             }
         }
 
-        public override string ToString()
-        {
-            return playerName;
-        }
+        #endregion
     }
 }
