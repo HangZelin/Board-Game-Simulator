@@ -89,7 +89,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     if (selectedChessman == null)
                     {
                         // Select the chessman
-                        photonView.RPC(nameof(SelectChessman), RpcTarget.AllBuffered, selectionX, selectionY);
+                        SelectChessman(selectionX, selectionY);
                     }
                     else
                     {
