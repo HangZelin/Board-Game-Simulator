@@ -44,7 +44,7 @@ public class Game_mul : MonoBehaviourPunCallbacks, IPunObservable, ISaveable
 
         //Gamemode Initialization;
             Debug.Log("Multiplayer Mode");
-        this.photonView.RPC(nameof(Initialized), RpcTarget.AllBuffered);
+        Initialized();
     }
 
     #region RPCs
