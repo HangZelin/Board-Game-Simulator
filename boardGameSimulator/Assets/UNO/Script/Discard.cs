@@ -9,8 +9,8 @@ namespace BGS.UNO
     {
         // References
         GameObject currentHand;
-        [SerializeField] UNOInfo unoInfo;
-        [SerializeField] AudioSource playCard;
+        UNOInfo unoInfo;
+        [SerializeField] AudioSource playCardAudio;
 
         // Cards
         List<GameObject> cards;
@@ -20,66 +20,15 @@ namespace BGS.UNO
         public delegate void DiscardOnClick();
         public event DiscardOnClick DiscardOnClickHandler;
 
+        #region Initialize
+
         public void Initialize(GameObject currentHand, UNOInfo unoInfo)
         {
-            this.unoInfo = unoInfo;
             this.currentHand = currentHand;
-
+            this.unoInfo = unoInfo;
             cards = new List<GameObject>();
 
             name = ToString();
-        }
-
-        // Put a card into the discard, place it in the end of the list
-        public void CardToPile(GameObject card)
-        {
-            card.transform.SetParent(gameObject.transform);
-            card.transform.rotation = Quaternion.identity;
-            card.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
-            card.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
-            card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            card.GetComponent<CardReaction>().enabled = false;
-
-            cards.Add(card);
-            playCard.Play();
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            // For Enforce Rules
-            if (DiscardOnClickHandler != null)
-            {
-                DiscardOnClickHandler();
-                return;
-            }
-
-            // For default hotseat mode without rules
-            GameObject card = currentHand.GetComponent<CurrentHand>().HighlightedCard;
-            PlayCard(card);
-        }
-
-        public void PlayCard(GameObject card)
-        {
-            if (card != null)
-            {
-                CardToPile(card);
-                currentHand.GetComponent<CurrentHand>().PlayCard();
-            }
-
-            GetComponent<Outline>().enabled = false;
-        }
-
-        // IContainer Methods
-
-        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
-        {
-            foreach (GameObject card in cards)
-                card.transform.SetParent(parent);
-
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
-
-            cards = new List<GameObject>();
         }
 
         void OnEnable()
@@ -94,7 +43,86 @@ namespace BGS.UNO
             SaveLoadManager.OnLoadHandler -= LoadFromSaveData;
         }
 
-        // Save load methods
+        #endregion
+
+        #region Card Methods
+
+        /// <summary>
+        /// Put a card onto the top of discard.
+        /// </summary>
+        /// <remarks>
+        /// Card's transform is set to discard; card's reference is added to the end of discard card list.
+        /// </remarks>
+        /// <param name="card">Card to put in discard.</param>
+        public void CardToPile(GameObject card)
+        {
+            card.transform.SetParent(gameObject.transform);
+            card.transform.rotation = Quaternion.identity;
+            card.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
+            card.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
+            card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            card.GetComponent<CardReaction>().enabled = false;
+
+            cards.Add(card);
+            playCardAudio.Play();
+        }
+
+        public void PlayCard(GameObject card)
+        {
+            if (card != null)
+            {
+                CardToPile(card);
+                currentHand.GetComponent<CurrentHand>().PlayCard();
+            }
+
+            GetComponent<Outline>().enabled = false;
+        }
+
+        #endregion
+
+        #region IPointerClickHandler Implementation
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            // For Enforce Rules
+            if (GameStatus.useRules)
+            {
+                if (DiscardOnClickHandler != null)
+                {
+                    DiscardOnClickHandler();
+                }
+                return;
+            }
+
+            // For default hotseat mode without rules
+            GameObject card = currentHand.GetComponent<CurrentHand>().HighlightedCard;
+            PlayCard(card);
+        }
+
+        #endregion
+
+        #region IContainer Implementation
+
+        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
+        {
+            foreach (GameObject card in cards)
+                card.transform.SetParent(parent);
+
+            transferedCards = new List<GameObject>(cards);
+
+            cards = new List<GameObject>();
+        }
+
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+        }
+
+        #endregion
+
+        #region ISaveable Implementation
 
         public void PopulateSaveData(SaveData sd)
         {
@@ -130,9 +158,15 @@ namespace BGS.UNO
                 cards[cards.Count - 1].transform.SetAsLastSibling();
         }
 
+        #endregion
+
+        #region Helpers
+
         public override string ToString()
         {
             return "Discard";
         }
+
+        #endregion
     }
 }

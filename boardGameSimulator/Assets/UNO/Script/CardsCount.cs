@@ -5,19 +5,20 @@ namespace BGS.UNO
 {
     public class CardsCount : MonoBehaviour
     {
-        [SerializeField] GameObject container;
-        IContainer containerScript;
         [SerializeField] Text text;
-
-        private void Start()
+        
+        public void Initialize(int cardsCount)
         {
-            containerScript = container.GetComponent<IContainer>();
-            text.text = containerScript.Cards.Count + " Left";
+            text.text = cardsCount + " Left";
         }
 
-        void Update()
+        /// <summary>
+        /// Change display card count to given card count.
+        /// </summary>
+        /// <param name="cardsCount">Current card count.</param>
+        public void OnCardsCountChanged(int cardsCount)
         {
-            text.text = containerScript.Cards.Count + " Left";
+            text.text = cardsCount + " Left";
         }
     }
 }

@@ -30,6 +30,7 @@ namespace BGS.MenuUI
         [SerializeField] GameObject reminderText;
         [SerializeField] GameObject connectionFailedText;
         [SerializeField] GameObject joinFailedText;
+        string joinFailedOrignal;
         [SerializeField] float reminderEnableSec;
 
         [Header ("References")]
@@ -54,7 +55,7 @@ namespace BGS.MenuUI
             else
                 SetButtons(true);
             topBarText.text = GameStatus.GetNameOfGame() + "(Online)";
-
+            joinFailedOrignal = joinFailedText.GetComponent<Text>().text;
             mulManager = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         }
 
@@ -133,7 +134,6 @@ namespace BGS.MenuUI
         {
             SetButtons(true);
             connectingPanel.SetActive(false);
-            Debug.Log("a");
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -153,7 +153,29 @@ namespace BGS.MenuUI
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
+            if (returnCode == 32749)
+            {
+                // JoinFailedFoundInactiveJoiner: the list of InactiveActors already contains an actor with the requested ActorNror UserId.
+                PhotonNetwork.RejoinRoom(mulManager.GetRoomName());
+            }
+
             connectingPanel.SetActive(false);
+            Text text = joinFailedText.GetComponent<Text>();
+            switch (returnCode)
+            {
+                case 32765:
+                    // Room is full
+                    text.text = joinFailedOrignal + ": Room is full.";
+                    break;
+                case 32764:
+                    // Room is close
+                    text.text = joinFailedOrignal + ": Room is closed.";
+                    break;
+                case 32758:
+                    // Room does not exist
+                    text.text = joinFailedOrignal + ": Room does not exist. Please check your server region.";
+                    break;
+            }
             StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, joinFailedText));
         }
 
@@ -189,6 +211,8 @@ namespace BGS.MenuUI
             go.SetActive(true);
             yield return new WaitForSeconds(sec);
             go.SetActive(false);
+            if (go == joinFailedText)
+                go.GetComponent<Text>().text = joinFailedOrignal;
         }
 
         #endregion

@@ -564,6 +564,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a6d1dedb3e2a6459953f3a6c500e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopSceneList:
+  - HomeLoading
+  - RoomLobby
   music: {fileID: 622467285}
 --- !u!4 &622467284
 Transform:
