@@ -125,12 +125,13 @@ public class BoardManager : MonoBehaviour, ISaveable
             for (int j = 0; j < 8; j++)
             {
                 all_possible[i, j] = true;
-            } 
+            }
         }
         if (!GameStatus.useRules)
         {
             allowedMoves = all_possible;
-        } else
+        }
+        else
         {
             allowedMoves = Chessmans[x, y].PossibleMoves();
         }
@@ -176,7 +177,8 @@ public class BoardManager : MonoBehaviour, ISaveable
                     if (isWhiteTurn)
                     {
                         Winner(Player1);
-                    } else
+                    }
+                    else
                     {
                         Winner(Player2);
                     }
@@ -186,41 +188,7 @@ public class BoardManager : MonoBehaviour, ISaveable
                 Destroy(c.gameObject);
 
             }
-            if (x == EnPassantMove[0] && y == EnPassantMove[1])
-            {
-                if (isWhiteTurn)
-                    c = Chessmans[x, y - 1];
-                else
-                    c = Chessmans[x, y + 1];
 
-                activeChessman.Remove(c.gameObject);
-                Destroy(c.gameObject);
-            }
-            EnPassantMove[0] = -1;
-            EnPassantMove[1] = -1;
-            if (selectedChessman.GetType() == typeof(Pawn))
-            {
-
-                if(y == 7) // White Promotion
-                {
-                    activeChessman.Remove(selectedChessman.gameObject);
-                    Destroy(selectedChessman.gameObject);
-                    SpawnChessman(1, x, y, true);
-                    selectedChessman = Chessmans[x, y];
-                }
-                else if (y == 0) // Black Promotion
-                {
-                    activeChessman.Remove(selectedChessman.gameObject);
-                    Destroy(selectedChessman.gameObject);
-                    SpawnChessman(7, x, y, false);
-                    selectedChessman = Chessmans[x, y];
-                }
-                EnPassantMove[0] = x;
-                if (selectedChessman.CurrentY == 1 && y == 3)
-                    EnPassantMove[1] = y - 1;
-                else if (selectedChessman.CurrentY == 6 && y == 4)
-                    EnPassantMove[1] = y + 1;
-            }
 
             Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
             selectedChessman.transform.position = GetTileCenter(x, y);
@@ -238,7 +206,8 @@ public class BoardManager : MonoBehaviour, ISaveable
             if (Eat)
             {
                 audio_source.PlayOneShot(Sound_Eat, 0.7F);
-            } else
+            }
+            else
             {
                 audio_source.PlayOneShot(Sound_Move, 0.7F);
             }

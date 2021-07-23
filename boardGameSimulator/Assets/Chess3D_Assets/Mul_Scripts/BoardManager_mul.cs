@@ -56,7 +56,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         settings = gameUI.GetComponent<SettingsUI>();
 
-        photonView.RPC(nameof(Initialized),RpcTarget.AllBuffered);
+        photonView.RPC(nameof(Initialized), RpcTarget.AllBuffered);
 
         if (!GameStatus.isNewGame)
         {
@@ -74,8 +74,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     {
         if (gameOver && Input.GetMouseButtonDown(0))
         {
-            gameOver = false;
-            SceneManager.LoadScene("Chess (3D)_mul");
+            photonView.RPC(nameof(ReloadGame), RpcTarget.AllBuffered);
         }
 
 
@@ -95,45 +94,20 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     {
                         // Move the chessman
                         photonView.RPC(nameof(MoveChessman), RpcTarget.AllBuffered, selectionX, selectionY);
-                        photonView.RPC(nameof(NextTurn),RpcTarget.AllBuffered);
+                        photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
                     }
                 }
             }
         }
     }
 
-    #region RPCs
-    [PunRPC]
-    public void Initialized()
-    {
-        audio_source = GetComponent<AudioSource>();
-        gameOver = false;
-        Instance = this;
-        SpawnAllChessmans();
-        EnPassantMove = new int[2] { -1, -1 };
-        currentPlayer = Player1;
-        localPlayer = PhotonNetwork.LocalPlayer.NickName;
 
-        if (currentPlayer == localPlayer)
-        {
-            is_localPlayer = true;
-        } else
-        {
-            is_localPlayer = false;
-        }
-
-        //log
-
-        settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
-    }
 
     private void SelectChessman(int x, int y)
     {
         if (Chessmans[x, y] == null) return;
-        Debug.Log("Not Null");
 
         if (Chessmans[x, y].isWhite != isWhiteTurn || !is_localPlayer) return;
-        Debug.Log("Selected!");
 
 
         bool hasAtLeastOneMove = false;
@@ -144,12 +118,13 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
             for (int j = 0; j < 8; j++)
             {
                 all_possible[i, j] = true;
-            } 
+            }
         }
         if (!GameStatus.useRules)
         {
             allowedMoves = all_possible;
-        } else
+        }
+        else
         {
             allowedMoves = Chessmans[x, y].PossibleMoves();
         }
@@ -178,6 +153,33 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         BoardHighlights_mul.Instance.HighLightAllowedMoves(allowedMoves);
     }
 
+
+    #region RPCs
+    [PunRPC]
+    public void Initialized()
+    {
+        audio_source = GetComponent<AudioSource>();
+        gameOver = false;
+        Instance = this;
+        SpawnAllChessmans();
+        EnPassantMove = new int[2] { -1, -1 };
+        currentPlayer = Player1;
+        localPlayer = PhotonNetwork.LocalPlayer.NickName;
+
+        if (currentPlayer == localPlayer)
+        {
+            is_localPlayer = true;
+        }
+        else
+        {
+            is_localPlayer = false;
+        }
+
+        //log
+
+        settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
+    }
+
     [PunRPC]
     private void MoveChessman(int x, int y)
     {
@@ -190,13 +192,14 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
             {
                 // Capture a piece
                 Eat = true;
-                if (GameStatus.useRules && c.GetType() == typeof(King))
+                if (GameStatus.useRules && c.GetType() == typeof(King_mul))
                 {
                     // End the game
                     if (isWhiteTurn)
                     {
                         Winner(Player1);
-                    } else
+                    }
+                    else
                     {
                         Winner(Player2);
                     }
@@ -206,41 +209,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                 Destroy(c.gameObject);
 
             }
-            if (x == EnPassantMove[0] && y == EnPassantMove[1])
-            {
-                if (isWhiteTurn)
-                    c = Chessmans[x, y - 1];
-                else
-                    c = Chessmans[x, y + 1];
 
-                activeChessman.Remove(c.gameObject);
-                Destroy(c.gameObject);
-            }
-            EnPassantMove[0] = -1;
-            EnPassantMove[1] = -1;
-            if (selectedChessman.GetType() == typeof(Pawn))
-            {
-
-                if(y == 7) // White Promotion
-                {
-                    activeChessman.Remove(selectedChessman.gameObject);
-                    Destroy(selectedChessman.gameObject);
-                    SpawnChessman(1, x, y, true);
-                    selectedChessman = Chessmans[x, y];
-                }
-                else if (y == 0) // Black Promotion
-                {
-                    activeChessman.Remove(selectedChessman.gameObject);
-                    Destroy(selectedChessman.gameObject);
-                    SpawnChessman(7, x, y, false);
-                    selectedChessman = Chessmans[x, y];
-                }
-                EnPassantMove[0] = x;
-                if (selectedChessman.CurrentY == 1 && y == 3)
-                    EnPassantMove[1] = y - 1;
-                else if (selectedChessman.CurrentY == 6 && y == 4)
-                    EnPassantMove[1] = y + 1;
-            }
 
             Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
             selectedChessman.transform.position = GetTileCenter(x, y);
@@ -261,6 +230,13 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         BoardHighlights_mul.Instance.HideHighlights();
         selectedChessman = null;
+    }
+
+    [PunRPC]
+    public void ReloadGame()
+    {
+        gameOver = false;
+        SceneManager.LoadScene("Chess (3D)_mul");
     }
 
 
@@ -308,7 +284,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         go.transform.SetParent(transform);
         Chessmans[x, y] = go.GetComponent<Chessplayer_mul>();
         Chessmans[x, y].SetPosition(x, y);
-        Chessmans[x, y].photonView.ViewID = 100 + x * 8 + y;
+        Chessmans[x, y].photonView.ViewID = x * 8 + y + 100;
         activeChessman.Add(go);
     }
     #endregion
@@ -328,7 +304,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         }
     }
 
-   
+
 
     private Vector3 GetTileCenter(int x, int y)
     {
@@ -408,7 +384,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
         //log
-      /*  settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
+        /*  settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
     }
 
     public void Winner1()
@@ -421,7 +397,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
         //log
-       /* settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
+        /* settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
     }
 
     public void Winner2()
@@ -435,7 +411,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         //log
 
-      /*  settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");*/
+        /*  settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");*/
 
     }
 
