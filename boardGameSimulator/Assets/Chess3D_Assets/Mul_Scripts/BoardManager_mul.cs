@@ -93,7 +93,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
                     else
                     {
                         // Move the chessman
-                        MoveChessman(selectionX, selectionY);
+                        MoveChessman(selectedChessman.CurrentX,selectedChessman.CurrentY ,selectionX, selectionY);
                         photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
                     }
                 }
@@ -178,11 +178,11 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
     }
 
 
-    private void MoveChessman(int x, int y)
+    private void MoveChessman(int prevX, int prevY , int x, int y)
     {
         if (allowedMoves[x, y])
         {
-            photonView.RPC(nameof(SyncMove), RpcTarget.AllBuffered, x, y);
+            photonView.RPC(nameof(SyncMove), RpcTarget.AllBuffered, prevX, prevY, x, y);
         }
 
         selectedChessman.GetComponent<MeshRenderer>().material = previousMat;
@@ -196,7 +196,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
     [PunRPC]
 
-    private void SyncMove(int x, int y)
+    private void SyncMove(int prevX, int prevY, int x, int y)
     {
         Chessplayer_mul c = Chessmans[x, y];
         bool Eat = false;
@@ -223,7 +223,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
         }
 
-
+        selectedChessman = Chessmans[prevX, prevY];
         Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
         selectedChessman.transform.position = GetTileCenter(x, y);
         selectedChessman.SetPosition(x, y);
