@@ -80,19 +80,9 @@ MonoBehaviour:
   - SyncDirection
   - SyncIndexToKey
   - SyncLastCardInfo
-  - AddLog
-  - LoadMultiGameScene
-  - OnManuallyQuit
-  - DisableWaitForRejoinPanel
-  - EnableGuestQuitPanel
-  - SyncManuallyQuit
-  - OnGuestManuallyQuit
-  - QueryDictionary
-  - SetDictionary
-  - BroadcastUseridToName
-  - PassPlayerName
-  - QueryPlayerName
-  - NameChangeRefresh
+  - SelectChessman
+  - SpawnChessman
+  - SyncMoveChessPiece
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
