@@ -134,7 +134,6 @@ namespace BGS.MenuUI
         {
             SetButtons(true);
             connectingPanel.SetActive(false);
-            Debug.Log("a");
         }
 
         public override void OnDisconnected(DisconnectCause cause)

@@ -89,6 +89,10 @@ MonoBehaviour:
   - OnGuestManuallyQuit
   - QueryDictionary
   - SetDictionary
+  - BroadcastUseridToName
+  - PassPlayerName
+  - QueryPlayerName
+  - NameChangeRefresh
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

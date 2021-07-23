@@ -1855,7 +1855,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -3234,7 +3234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Canvas: {fileID: 684566162}
   gameUI: {fileID: 1898595782}
-  UIs: {fileID: 0}
+  UIs: {fileID: 432812292}
   deck: {fileID: 7505503790088745210}
   discard: {fileID: 7978030338681492029}
   currentHand: {fileID: 1027195748568172364}

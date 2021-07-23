@@ -92,13 +92,11 @@ namespace BGS.UNO
             // Initialize Index to key
             if (mulManager.isHost)
             {
-                Dictionary<int, Photon.Realtime.Player> punPlayers = PhotonNetwork.CurrentRoom.Players;
                 for (int i = 0; i < numOfPlayer; i++)
-                    indexToKey[i] = punPlayers.FirstOrDefault(p => p.Value.NickName == GameStatus.GetNameOfPlayer(i + 1)).Key;
+                    indexToKey[i] = PhotonNetwork.CurrentRoom.Players.Values.ToList()[i].ActorNumber;
                 this.photonView.RPC("SyncIndexToKey", RpcTarget.Others, indexToKey);
             }
 
-            
             // Initialize deck, discard, currenthand;
             
             deckScript.Initialize();
