@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+namespace BGS.Chess_2D {
 public class Chessman : MonoBehaviour
 {
     public GameObject controller;
@@ -341,4 +343,7 @@ public class Chessman : MonoBehaviour
         mpScript.SetReference(gameObject);
         mpScript.SetCoords(BoardX, BoardY);
     }
+} 
+
 }
+

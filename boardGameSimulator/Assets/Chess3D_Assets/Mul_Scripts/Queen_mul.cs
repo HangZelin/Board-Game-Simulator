@@ -1,105 +1,108 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Queen_mul : Chessplayer_mul
+namespace BGS.Chess_3D
 {
-
-    public override bool[,] PossibleMoves()
+    public class Queen_mul : Chessplayer_mul
     {
-        bool[,] r = new bool[8, 8];
 
-        int i, j;
-
-        // Top left
-        i = CurrentX;
-        j = CurrentY;
-        while (true)
+        public override bool[,] PossibleMoves()
         {
-            i--;
-            j++;
-            if (i < 0 || j >= 8) break;
+            bool[,] r = new bool[8, 8];
 
-            if (Move(i, j, ref r)) break;
+            int i, j;
+
+            // Top left
+            i = CurrentX;
+            j = CurrentY;
+            while (true)
+            {
+                i--;
+                j++;
+                if (i < 0 || j >= 8) break;
+
+                if (Move(i, j, ref r)) break;
+            }
+
+            // Top right
+            i = CurrentX;
+            j = CurrentY;
+            while (true)
+            {
+                i++;
+                j++;
+                if (i >= 8 || j >= 8) break;
+
+                if (Move(i, j, ref r)) break;
+            }
+
+            // Down left
+            i = CurrentX;
+            j = CurrentY;
+            while (true)
+            {
+                i--;
+                j--;
+                if (i < 0 || j < 0) break;
+
+                if (Move(i, j, ref r)) break;
+            }
+
+            // Down right
+            i = CurrentX;
+            j = CurrentY;
+            while (true)
+            {
+                i++;
+                j--;
+                if (i >= 8 || j < 0) break;
+
+                if (Move(i, j, ref r)) break;
+            }
+
+            // Right
+            i = CurrentX;
+            while (true)
+            {
+                i++;
+                if (i >= 8) break;
+
+                if (Move(i, CurrentY, ref r)) break;
+            }
+
+            // Left
+            i = CurrentX;
+            while (true)
+            {
+                i--;
+                if (i < 0) break;
+
+                if (Move(i, CurrentY, ref r)) break;
+            }
+
+            // Up
+            i = CurrentY;
+            while (true)
+            {
+                i++;
+                if (i >= 8) break;
+
+                if (Move(CurrentX, i, ref r)) break;
+            }
+
+            // Down
+            i = CurrentY;
+            while (true)
+            {
+                i--;
+                if (i < 0) break;
+
+                if (Move(CurrentX, i, ref r)) break;
+
+            }
+
+            return r;
         }
 
-        // Top right
-        i = CurrentX;
-        j = CurrentY;
-        while (true)
-        {
-            i++;
-            j++;
-            if (i >= 8 || j >= 8) break;
-
-            if (Move(i, j, ref r)) break;
-        }
-
-        // Down left
-        i = CurrentX;
-        j = CurrentY;
-        while (true)
-        {
-            i--;
-            j--;
-            if (i < 0 || j < 0) break;
-
-            if (Move(i, j, ref r)) break;
-        }
-
-        // Down right
-        i = CurrentX;
-        j = CurrentY;
-        while (true)
-        {
-            i++;
-            j--;
-            if (i >= 8 || j < 0) break;
-
-            if (Move(i, j, ref r)) break;
-        }
-
-        // Right
-        i = CurrentX;
-        while (true)
-        {
-            i++;
-            if (i >= 8) break;
-
-            if (Move(i, CurrentY, ref r)) break;
-        }
-
-        // Left
-        i = CurrentX;
-        while (true)
-        {
-            i--;
-            if (i < 0) break;
-
-            if (Move(i, CurrentY, ref r)) break;
-        }
-
-        // Up
-        i = CurrentY;
-        while (true)
-        {
-            i++;
-            if (i >= 8) break;
-
-            if (Move(CurrentX, i, ref r)) break;
-        }
-
-        // Down
-        i = CurrentY;
-        while (true)
-        {
-            i--;
-            if (i < 0) break;
-
-            if (Move(CurrentX, i, ref r)) break;
-
-        }
-
-        return r;
     }
-
 }

@@ -3,48 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public abstract class Chessplayer : MonoBehaviourPunCallbacks, IPunObservable
+namespace BGS.Chess_3D
 {
-
-    public int CurrentX { set; get; }
-    public int CurrentY { set; get; }
-
-    public bool isWhite;
-
-
-    public void SetPosition(int x, int y)
+    public abstract class Chessplayer : MonoBehaviourPunCallbacks, IPunObservable
     {
-        CurrentX = x;
-        CurrentY = y;
-    }
 
-    public virtual bool[,] PossibleMoves()
-    {
-        return new bool[8, 8];
-    }
+        public int CurrentX { set; get; }
+        public int CurrentY { set; get; }
 
-    public bool Move(int x, int y, ref bool[,] r)
-    {
-        if (x >= 0 && x < 8 && y >= 0 && y < 8)
+        public bool isWhite;
+
+
+        public void SetPosition(int x, int y)
         {
-
-            Chessplayer c = BoardManager.Instance.Chessmans[x, y];
-            if (c == null)
-                r[x, y] = true;
-            else
-            {
-                if (isWhite != c.isWhite)
-                    r[x, y] = true;
-                return true;
-            }
+            CurrentX = x;
+            CurrentY = y;
         }
-        return false;
-    }
 
-    #region IPunObservable Implementation
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        //throw new System.NotImplementedException();
+        public virtual bool[,] PossibleMoves()
+        {
+            return new bool[8, 8];
+        }
+
+        public bool Move(int x, int y, ref bool[,] r)
+        {
+            if (x >= 0 && x < 8 && y >= 0 && y < 8)
+            {
+
+                Chessplayer c = BoardManager.Instance.Chessmans[x, y];
+                if (c == null)
+                    r[x, y] = true;
+                else
+                {
+                    if (isWhite != c.isWhite)
+                        r[x, y] = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        #region IPunObservable Implementation
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            //throw new System.NotImplementedException();
+        }
+        #endregion
     }
-    #endregion
 }

@@ -1,58 +1,61 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Rook : Chessplayer
+namespace BGS.Chess_3D
 {
-    public override bool[,] PossibleMoves()
+    public class Rook : Chessplayer
     {
-        bool[,] r = new bool[8, 8];
-
-        int i;
-
-        // Right
-        i = CurrentX;
-        while (true)
+        public override bool[,] PossibleMoves()
         {
-            i++;
-            if (i >= 8) break;
+            bool[,] r = new bool[8, 8];
 
-            if (Move(i, CurrentY, ref r)) break;
+            int i;
+
+            // Right
+            i = CurrentX;
+            while (true)
+            {
+                i++;
+                if (i >= 8) break;
+
+                if (Move(i, CurrentY, ref r)) break;
+            }
+
+            // Left
+            i = CurrentX;
+            while (true)
+            {
+                i--;
+                if (i < 0) break;
+
+                if (Move(i, CurrentY, ref r)) break;
+            }
+
+            // Up
+            i = CurrentY;
+            while (true)
+            {
+                i++;
+                if (i >= 8) break;
+
+                if (Move(CurrentX, i, ref r)) break;
+            }
+
+            // Down
+            i = CurrentY;
+            while (true)
+            {
+                i--;
+                if (i < 0) break;
+
+                if (Move(CurrentX, i, ref r)) break;
+
+            }
+
+            return r;
         }
 
-        // Left
-        i = CurrentX;
-        while (true)
-        {
-            i--;
-            if (i < 0) break;
 
-            if (Move(i, CurrentY, ref r)) break;
-        }
 
-        // Up
-        i = CurrentY;
-        while (true)
-        {
-            i++;
-            if (i >= 8) break;
-
-            if (Move(CurrentX, i, ref r)) break;
-        }
-
-        // Down
-        i = CurrentY;
-        while (true)
-        {
-            i--;
-            if (i < 0) break;
-
-            if (Move(CurrentX, i, ref r)) break;
-
-        }
-
-        return r;
     }
-
-
-
 }
