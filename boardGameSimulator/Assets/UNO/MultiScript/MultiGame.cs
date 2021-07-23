@@ -1,6 +1,5 @@
 using BGS.MenuUI;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +15,7 @@ namespace BGS.UNO
         [SerializeField] GameObject gameUI;
         SettingsUIMul uiScript;
         MultiplayerManager mulManager;
+        [SerializeField] GameObject UIs;
 
         [Header("Containers")]
         [SerializeField] GameObject deck;
@@ -188,6 +188,7 @@ namespace BGS.UNO
                 DisableDeckDraw();
             }
 
+            UIs.transform.SetAsLastSibling();
             nextTurnButton.interactable = false;
             GameStatus.isNewGame = true;
         }

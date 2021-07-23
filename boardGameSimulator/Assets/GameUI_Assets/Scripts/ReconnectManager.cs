@@ -16,13 +16,15 @@ namespace BGS.GameUI
         [SerializeField] Button hostLostButton;
         [SerializeField] GameObject guestQuitPanel;
         [SerializeField] Text guestQuitText;
-        [SerializeField] Button guestQuitButton;
+        [SerializeField] GameObject rejoinFailedPanel;
         [SerializeField] GameObject waitForRejoinPanel;
         [SerializeField] GameObject rejoinPanel;
         [SerializeField] GameObject connectingPanel;
 
         [Header("Properties")]
+        [Tooltip("How long waitForRejoinPanel will live before game ends (in sec).")]
         [SerializeField] float playerTTL;
+
         float timeCount;
 
         Room currentRoom;
@@ -75,16 +77,25 @@ namespace BGS.GameUI
                     currentRoom.IsOpen = false;
                 }
                 else
-                {
+                { 
                     waitForRejoinPanel.SetActive(true);
                     if (PhotonNetwork.IsMasterClient)
                     {
+                        Debug.Log(otherPlayer.IsInactive + " " + currentRoom.Players.ContainsValue(otherPlayer));
+                        currentRoom.StorePlayer(otherPlayer);
+                        currentRoom.IsOpen = true;
                         if (rejoinPlayers.Count == 0)
                             timeCount = 0f;
                         rejoinPlayers.Add(otherPlayer);
                         StartCoroutine(WaitForRejoin());
                     }
                 }
+        }
+
+        List<string> GetUserIdList()
+        {
+            return currentRoom.Players.Values
+                .Select<Player, string>(p => p.UserId).ToList();
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -111,6 +122,12 @@ namespace BGS.GameUI
             {
                 // Room does not exist
                 OnHostInactive();
+            }
+            else if (returnCode == 32748)
+            {
+                // Lose rejoiner reference
+                DisableAllPanels();
+                rejoinFailedPanel.SetActive(true);
             }
         }
 
@@ -204,6 +221,7 @@ namespace BGS.GameUI
             {
                 // All players have rejoined
                 this.photonView.RPC(nameof(DisableWaitForRejoinPanel), RpcTarget.All);
+                currentRoom.IsOpen = false;
             }
         }
 
@@ -216,6 +234,7 @@ namespace BGS.GameUI
         {
             hostLostPanel.SetActive(false);
             guestQuitPanel.SetActive(false);
+            rejoinFailedPanel.SetActive(false);
             waitForRejoinPanel.SetActive(false);
             rejoinPanel.SetActive(false);
             connectingPanel.SetActive(false);
