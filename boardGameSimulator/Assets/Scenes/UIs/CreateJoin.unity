@@ -706,7 +706,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 120}
-  m_SizeDelta: {x: 300, y: 30}
+  m_SizeDelta: {x: 300, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &336363109
 MonoBehaviour:
@@ -741,7 +741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Failed to join room.
+  m_Text: Failed to join room
 --- !u!222 &336363110
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4396,6 +4396,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1394612234650478360, guid: b7d53d204afdd914884a20477c84d788,
+        type: 3}
+      propertyPath: playerTTL
+      value: 60000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1394612234650478360, guid: b7d53d204afdd914884a20477c84d788,
+        type: 3}
+      propertyPath: emptyRoomTTL
+      value: 60000
+      objectReference: {fileID: 0}
     - target: {fileID: 2833054102679892203, guid: b7d53d204afdd914884a20477c84d788,
         type: 3}
       propertyPath: m_Name
@@ -5133,7 +5143,32 @@ PrefabInstance:
     - target: {fileID: 8450675970575827098, guid: 05d82554f1bf19f42854cb58afccdee2,
         type: 3}
       propertyPath: m_FontData.m_Alignment
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450675970575827099, guid: 05d82554f1bf19f42854cb58afccdee2,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450675970575827099, guid: 05d82554f1bf19f42854cb58afccdee2,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450675970575827099, guid: 05d82554f1bf19f42854cb58afccdee2,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450675970575827099, guid: 05d82554f1bf19f42854cb58afccdee2,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 74
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450675970575827099, guid: 05d82554f1bf19f42854cb58afccdee2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 38
       objectReference: {fileID: 0}
     - target: {fileID: 8450675970929058912, guid: 05d82554f1bf19f42854cb58afccdee2,
         type: 3}

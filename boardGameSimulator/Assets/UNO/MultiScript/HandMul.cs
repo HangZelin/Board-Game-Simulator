@@ -12,7 +12,9 @@ namespace BGS.UNO
         [SerializeField] GameObject playerTextLeft;
         [SerializeField] GameObject playerTextRight;
 
-        // Index of hand. Starts from 0. 
+        /// <summary>
+        /// Index of hand. Starts from 0. 
+        /// </summary>
         int num;
 
         // Cards
@@ -22,8 +24,7 @@ namespace BGS.UNO
             get { return cards; }
             set
             {
-                if (value[0].GetComponent<Card>() != null)
-                    cards = value;
+                cards = value;
                 PlaceCards();
             }
         }
@@ -45,6 +46,8 @@ namespace BGS.UNO
             this.discardScript = discardScript;
         }
 
+        #region Card Methods
+
         // Set cards positions
 
         void PlaceCards()
@@ -57,18 +60,41 @@ namespace BGS.UNO
 
             float x = -(cardWidth + ((cards.Count - 1) * d)) / 2f + 0.5f * cardWidth;
             float y = 10f;
+            Quaternion handRotation = GetComponent<RectTransform>().rotation;
 
             foreach (GameObject card in cards)
             {
                 card.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
-                card.GetComponent<RectTransform>().rotation = this.GetComponent<RectTransform>().rotation;
+                card.GetComponent<RectTransform>().rotation = handRotation;
                 x += d;
 
                 card.GetComponent<CardReaction>().enabled = false;
             }
         }
 
-        // Set text position
+        /// <summary>
+        /// Place the card to discard, remove it from hand card list.
+        /// </summary>
+        /// <param name="cardIndex">Index of card to be played.</param>
+        public void PlayCard(int cardIndex)
+        {
+            discardScript.CardToPile(cards[cardIndex]);
+            cards.Remove(cards[cardIndex]);
+            PlaceCards();
+        }
+
+        #endregion
+
+        #region Helpers
+
+        public override string ToString()
+        {
+            return "Hand" + num.ToString();
+        }
+
+        #endregion
+
+        #region IHand Implementation
 
         public void SetTextPosition(float zRotation)
         {
@@ -81,17 +107,7 @@ namespace BGS.UNO
             }
         }
 
-        public void PlayCard(int cardIndex)
-        {
-            discardScript.CardToPile(cards[cardIndex]);
-            cards.Remove(cards[cardIndex]);
-            PlaceCards();
-        }
-
-        public override string ToString()
-        {
-            return "Hand" + num.ToString();
-        }
+        #endregion
 
         #region IContainer Implementation
 
@@ -100,10 +116,17 @@ namespace BGS.UNO
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
+        }
+
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+            PlaceCards();
         }
 
         #endregion

@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class NewGame : MonoBehaviour
 {
+    [SerializeField] int unoMulPlayerNum;
     private void Awake()
     {
         // Set game info
@@ -35,7 +36,7 @@ public class NewGame : MonoBehaviour
         if (GameStatus.is_Multiplayer)
         {
             SceneManager.LoadScene("CreateJoin");
-            GameStatus.NumOfPlayers = 4;
+            GameStatus.NumOfPlayers = unoMulPlayerNum;
             GameStatus.useRules = true;
         }
         else

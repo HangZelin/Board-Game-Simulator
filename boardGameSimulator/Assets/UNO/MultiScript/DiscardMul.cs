@@ -1,5 +1,3 @@
-using Photon.Pun;
-using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,42 +5,37 @@ using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-    public class DiscardMul : MonoBehaviourPun, IPointerClickHandler, IContainer, IPunObservable
+    public class DiscardMul : MonoBehaviour, IPointerClickHandler, IContainer
     {
         // References
         [SerializeField] GameObject currentHand;
-        [SerializeField] UNOInfo unoInfo;
         [SerializeField] AudioSource playCard;
 
         // Cards
         List<GameObject> cards;
         public List<GameObject> Cards { get { return cards; } }
-        public GameObject LastCard { get 
-            {
-                if (cards != null && cards.Count >= 1)
-                    return cards[cards.Count - 1];
-                else
-                {
-                    Debug.LogError("Card list has not been initialized or is empty.");
-                    return null;
-                }
-            } }
 
         // On click event
         public delegate void DiscardOnClick();
         public event DiscardOnClick DiscardOnClickHandler;
 
-        public void Initialize(GameObject currentHand, UNOInfo unoInfo)
+        public void Initialize(GameObject currentHand)
         {
-            this.unoInfo = unoInfo;
             this.currentHand = currentHand;
-
             cards = new List<GameObject>();
 
             name = ToString();
         }
 
-        // Put a card into the discard, place it in the end of the list
+        #region Card Methods
+
+        /// <summary>
+        /// Put a card onto the top of discard.
+        /// </summary>
+        /// <remarks>
+        /// Card's transform is set to discard; card's reference is added to the end of discard card list.
+        /// </remarks>
+        /// <param name="card">Card to put in discard.</param>
         public void CardToPile(GameObject card)
         {
             card.transform.SetParent(gameObject.transform);
@@ -55,8 +48,16 @@ namespace BGS.UNO
             card.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             cards.Add(card);
+
+            // Play audio
             playCard.Play();
+            // Disable outline
+            GetComponent<Outline>().enabled = false;
         }
+
+        #endregion
+
+        #region Button Callbacks
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -68,28 +69,10 @@ namespace BGS.UNO
             }
 
             // For default hotseat mode without rules
-            GameObject card = currentHand.GetComponent<CurrentHandMul>().HighlightedCard;
-            PlayCard(card);
+            currentHand.GetComponent<CurrentHandMul>().PlayCard();
         }
-
-        public void PlayCard(GameObject card)
-        {
-            if (card != null)
-            {
-                CardToPile(card);
-                currentHand.GetComponent<CurrentHandMul>().PlayCard();
-            }
-
-            GetComponent<Outline>().enabled = false;
-        }
-
-
-        #region RPCs
-
-
 
         #endregion
-
 
         #region Helpers
 
@@ -105,7 +88,6 @@ namespace BGS.UNO
 
         #endregion
 
-
         #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
@@ -113,20 +95,16 @@ namespace BGS.UNO
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
         }
 
-        #endregion
-
-
-        #region IPunObservable Implementation
-
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        public void TakeCards(List<GameObject> cards)
         {
-            // throw new System.NotImplementedException();
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
         }
 
         #endregion

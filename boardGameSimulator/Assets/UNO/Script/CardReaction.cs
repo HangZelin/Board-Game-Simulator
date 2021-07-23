@@ -42,11 +42,14 @@ namespace BGS.UNO
 
         public void PutBack()
         {
-            Vector2 v = GetComponent<RectTransform>().anchoredPosition;
-            v.y -= this.y;
-            GetComponent<RectTransform>().anchoredPosition = v;
-            gameObject.transform.SetSiblingIndex(siblingsIndex);
-            isHighlight = false;
+            if (isHighlight)
+            {
+                Vector2 v = GetComponent<RectTransform>().anchoredPosition;
+                v.y -= this.y;
+                GetComponent<RectTransform>().anchoredPosition = v;
+                gameObject.transform.SetSiblingIndex(siblingsIndex);
+                isHighlight = false;
+            }
         }
 
         void OnEnable()

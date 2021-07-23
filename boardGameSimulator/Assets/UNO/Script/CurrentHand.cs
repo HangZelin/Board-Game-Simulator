@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace BGS.UNO
 {
-   public class CurrentHand : MonoBehaviour, IContainer, ICurrentHand
+   public class CurrentHand : MonoBehaviour, ICurrentHand
     {
         // References
         GameObject discard;
@@ -115,8 +115,12 @@ namespace BGS.UNO
 
         public void SkipTurn()
         {
-            if (highlightedCard != null) 
+            if (highlightedCard != null)
+            {
                 highlightedCard.GetComponent<CardReaction>().PutBack();
+                highlightedCard.GetComponent<CardReaction>().enabled = false;
+                HighlightedCard = null;
+            }
             foreach (GameObject card in cards)
                 card.GetComponent<CardReaction>().enabled = false;
             deck.GetComponent<Deck>().Interactable = false;
@@ -133,18 +137,28 @@ namespace BGS.UNO
             cover.gameObject.SetActive(false);
         }
 
-        // IContainer Method
+
+        #region IContainer Implementation
 
         public void TransferAllCards(Transform parent, out List<GameObject> transferedCards)
         {
             foreach (GameObject card in cards)
                 card.transform.SetParent(parent);
 
-            transferedCards = new List<GameObject>();
-            transferedCards.AddRange(cards);
+            transferedCards = new List<GameObject>(cards);
 
             cards = new List<GameObject>();
         }
+
+        public void TakeCards(List<GameObject> cards)
+        {
+            this.cards.AddRange(cards);
+            foreach (GameObject card in cards)
+                card.transform.SetParent(transform);
+            PlaceCards();
+        }
+
+        #endregion
 
         public override string ToString()
         {

@@ -1,6 +1,4 @@
 using Photon.Pun;
-using Photon.Realtime;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +18,8 @@ namespace BGS.UNO
 
         [Header("UIs")]
         [SerializeField] Button deckButton;
-        [SerializeField] SettingsUI gameUI;
+        [SerializeField] GameObject gameUIObj;
+        SettingsUIMul gameUI;
         [SerializeField] GameObject selectColorTab;
         [SerializeField] Button nextTurnButton;
         [SerializeField] GameObject unoButton;
@@ -43,6 +42,7 @@ namespace BGS.UNO
             discardScript.DiscardOnClickHandler += CheckValid;
 
             deckButton.onClick.AddListener(delegate { DeckDraw(); });
+            gameUI = gameUIObj.GetComponent<SettingsUIMul>();
 
             this.gameScript = GetComponent<MultiGame>();
 
@@ -57,7 +57,7 @@ namespace BGS.UNO
 
         IEnumerator DrawFirstCard()
         {
-            while (!deckScript.cardsInitialized)
+            while (!deckScript.CardsInitialized)
                 yield return new WaitForSeconds(0.1f);
             List<GameObject> firstCard = deckScript.DrawCards(1, gameObject.transform);
             discardScript.CardToPile(firstCard[0]);
@@ -81,11 +81,13 @@ namespace BGS.UNO
             GameObject currCard = cHandScript.HighlightedCard;
             if (currCard == null) return;
 
-            Card cardScript = currCard.GetComponent<Card>();
-            if (isAllowed(cardScript.cardInfo))
+            if (isAllowed(currCard.GetComponent<Card>().cardInfo))
             {
-                discardScript.PlayCard(currCard);
+                cHandScript.PlayCard();
+                cHandScript.SkipTurn();
+                deckScript.Interactable = false;
 
+                // Special cards effects
                 switch (lastCardInfo.cardType)
                 {
                     case CardType.reverse: 
@@ -107,11 +109,9 @@ namespace BGS.UNO
                         break;
                 }
 
-                cHandScript.SkipTurn();
-
                 if (cHandScript.Cards.Count == 0)
                 {
-                    gameUI.AddLog(cHandScript.PlayerName + " wins!");
+                    gameUI.AddLogToAll(cHandScript.PlayerName + " wins!");
                     return;
                 }
                 else if (cHandScript.Cards.Count == 1)
@@ -130,10 +130,15 @@ namespace BGS.UNO
                 return true;
             }
 
-            gameUI.AddLog(currentHand.GetComponent<CurrentHandMul>().PlayerName + ": Invalid play.");
+            gameUI.AddLogToAll(cHandScript.PlayerName + ": Invalid play.");
             return false;
         }
 
+        /// <summary>
+        /// Check if a given card is allowed to play based on last card.
+        /// </summary>
+        /// <param name="currCardInfo">Current card info.</param>
+        /// <returns>If the given card is allowd to play.</returns>
         bool isAllowedHelper(CardInfo currCardInfo)
         {
             switch (currCardInfo.cardType)
@@ -187,6 +192,8 @@ namespace BGS.UNO
             if (wildCardPlayed)
             {
                 lastCardInfo.cardColor = selectColorTab.GetComponent<SelectColorTabMul>().color;
+                gameUI.AddLogToOthers(string.Format("{0} chose <color={1}>{2}</color>.", cHandScript.PlayerName
+                    , Colors.ColorToHex(lastCardInfo.cardColor), lastCardInfo.cardColor));
                 selectColorTab.SetActive(false);
                 wildCardPlayed = false;
             }
@@ -199,6 +206,8 @@ namespace BGS.UNO
             nextTurnButton.interactable = true;
         }
 
+        #region CheckUno Methods
+
         IEnumerator CheckUno()
         {
             CurrentHandMul cHScript = currentHand.GetComponent<CurrentHandMul>();
@@ -209,7 +218,7 @@ namespace BGS.UNO
             isCheckUno = true;
             unoButton.SetActive(true);
 
-            gameUI.AddLog(cHandScript.PlayerName + " has 1 card left.");
+            gameUI.AddLogToAll(cHandScript.PlayerName + " has 1 card left.");
             int i = 30;
             while (i > 0 && !unoButtonClicked && !isNextTurn)
             {
@@ -221,15 +230,17 @@ namespace BGS.UNO
 
             if (!unoButtonClicked)
             {
-                gameUI.AddLog(player + " did not say UNO. Draw 2 cards.");
+                gameUI.AddLogToAll(player + " did not say UNO. Draw 2 cards.");
                 if (!isNextTurn)
                 {
-                    for (int j = 0; j < 2; j++) gameScript.DealCard();
+                    GameObject currPlayer = gameScript.CurrentPlayer;
+                    currPlayer.GetComponent<PlayerMul>().TakeCards(gameScript.DealCards(2, currPlayer));
                     cHScript.SkipTurn();
+                    deckScript.Interactable = false;
                 }
             }
             else
-                gameUI.AddLog(player + ": UNO!");
+                gameUI.AddLogToAll(player + ": UNO!");
 
             isCheckUno = false;
         }
@@ -249,6 +260,8 @@ namespace BGS.UNO
                 isCheckUno = false;
             }
         }
+
+        #endregion
 
         public void UpdateLastCardInfo()
         {

@@ -8,9 +8,9 @@ namespace BGS.UNO
 {
     public class Rules : MonoBehaviour, ISaveable
     {
+        Game gameScript;
         GameObject currentHand;
         Discard discardScript;
-        Game gameScript;
         [SerializeField] SettingsUI gameUI;
         [SerializeField] GameObject selectColorTab;
         [SerializeField] Button nextTurnButton;
@@ -27,16 +27,13 @@ namespace BGS.UNO
         CardInfo lastCardInfo;
         public CardColor lastCardColor { set { lastCardInfo.cardColor = value; } }
 
-        public void Initialize(GameObject currentHand, GameObject discard, GameObject deck, Game gameScript)
+        public void Initialize(GameObject currentHand, GameObject discard, GameObject deck)
         {
+            gameScript = GetComponent<Game>();
             this.currentHand = currentHand;
-
             discardScript = discard.GetComponent<Discard>();
             discard.GetComponent<Discard>().DiscardOnClickHandler += CheckValid;
-
             deck.GetComponent<Deck>().drawACardButton.onClick.AddListener(delegate { DeckDraw(); });
-
-            this.gameScript = gameScript;
 
             List<GameObject> discardCards = discard.GetComponent<Discard>().Cards;
             if (GameStatus.isNewGame)
@@ -50,6 +47,12 @@ namespace BGS.UNO
                 CardInfo info = discardCards[discardCards.Count - 1].GetComponent<Card>().cardInfo;
                 lastCardInfo.cardType = info.cardType;
                 lastCardInfo.num = info.num;
+
+                if (info.cardType == CardType.draw4 || info.cardType == CardType.wild)
+                {
+                    gameUI.AddLog(string.Format("Last player chose <color={0}>{1}</color>.",
+                        Colors.ColorToHex(lastCardInfo.cardColor), lastCardInfo.cardColor));
+                }
             }
 
             unoButton.transform.SetAsLastSibling();
@@ -170,15 +173,6 @@ namespace BGS.UNO
             }
         }
 
-        void DeckDraw()
-        {
-            CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
-            cHScript.SkipTurn();
-            cHScript.Cards[cHScript.Cards.Count - 1].GetComponent<CardReaction>().enabled = true;
-
-            nextTurnButton.interactable = true;
-        }
-
         IEnumerator CheckUno()
         {
             CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
@@ -214,11 +208,6 @@ namespace BGS.UNO
             isCheckUno = false;
         }
 
-        public void UNOButtonOnClick()
-        {
-            unoButtonClicked = true;
-        }
-
         public void IsNextTurn()
         {
             if (isCheckUno)
@@ -230,6 +219,25 @@ namespace BGS.UNO
             }
         }
 
+        #region Button Callbacks
+
+        public void UNOButtonOnClick()
+        {
+            unoButtonClicked = true;
+        }
+
+        void DeckDraw()
+        {
+            CurrentHand cHScript = currentHand.GetComponent<CurrentHand>();
+            cHScript.SkipTurn();
+            cHScript.Cards[cHScript.Cards.Count - 1].GetComponent<CardReaction>().enabled = true;
+            nextTurnButton.interactable = true;
+        }
+
+        #endregion
+
+        #region ISaveable Implementation
+
         public void PopulateSaveData(SaveData sd)
         {
             sd.unoSaveData.lastCardColor = lastCardInfo.cardColor.ToString();
@@ -239,6 +247,8 @@ namespace BGS.UNO
         {
             Enum.TryParse<CardColor>(sd.unoSaveData.lastCardColor, out lastCardInfo.cardColor);
         }
+
+        #endregion
     }
 }
 

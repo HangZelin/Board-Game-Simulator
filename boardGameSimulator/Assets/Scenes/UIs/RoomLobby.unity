@@ -3752,8 +3752,6 @@ MonoBehaviour:
   startButton: {fileID: 1445394323}
   playerBarPrefab: {fileID: 7549939534488526407, guid: 87a99066ea4159741988796da477904f,
     type: 3}
-  playerTimeToLive: 0
-  emptyRoomTimeToLive: 0
 --- !u!114 &1609570883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4551,7 +4549,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1609570882}
         m_TargetAssemblyTypeName: BGS.MenuUI.RoomLobby, Assembly-CSharp
-        m_MethodName: RefreshPlayerList
+        m_MethodName: OnRefreshButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

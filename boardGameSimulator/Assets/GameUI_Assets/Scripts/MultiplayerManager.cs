@@ -1,7 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,7 +16,14 @@ namespace BGS.MenuUI
         public int roomIndex;
         public int playerIndex;
 
-        [SerializeField] byte createRoomTimes;
+        [SerializeField] byte createRoomTimesMax;
+        byte createRoomTimes;
+
+        [Header("Room properties")]
+        [Tooltip("Time To Live (TTL) for an 'actor' in a room. If a client disconnects, this actor is inactive first and removed after this timeout.In milliseconds.")]
+        [SerializeField] int playerTTL;
+        [Tooltip("Time To Live (TTL) for a room when the last player leaves. Keeps room in memory for case a player re-joins soon. In milliseconds.")]
+        [SerializeField] int emptyRoomTTL;
 
         #region Monobehaviour callbacks
 
@@ -75,7 +81,7 @@ namespace BGS.MenuUI
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.LogWarning("Create room failed with return code " + returnCode + ": " + message);
-            if (createRoomTimes < 5)
+            if (createRoomTimes < createRoomTimesMax)
             {
                 createRoomTimes++;
                 CreateRoom();
@@ -108,10 +114,13 @@ namespace BGS.MenuUI
         {
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = Convert.ToByte(GameStatus.NumOfPlayers);
+            roomOptions.PlayerTtl = this.playerTTL;
+            roomOptions.EmptyRoomTtl = this.emptyRoomTTL;
+            roomOptions.PublishUserId = true;
 
             this.roomIndex = random.Next(0, 9999);
 
-            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + this.roomIndex.ToString("D4"));
+            PhotonNetwork.CreateRoom("BGS_" + GameStatus.GetNameOfGame() + "_" + this.roomIndex.ToString("D4"), roomOptions);
         }
             
         void CreateOrJoinRoom()
@@ -126,6 +135,17 @@ namespace BGS.MenuUI
         {
             if (next.name == "Home" || next.name == "NewGame")
                 Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// Return name of the latest created room. Return "" if latest created room does not exist.
+        /// </summary>
+        /// <returns></returns>
+        public string GetRoomName()
+        {
+            if (roomIndex == 0 || GameStatus.GetNameOfGame() == "Board Game")
+                return "";
+            return "BGS_" + GameStatus.GetNameOfGame() + "_" + roomIndex.ToString("D4");
         }
     }
 }

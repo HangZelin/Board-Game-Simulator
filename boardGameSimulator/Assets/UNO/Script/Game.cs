@@ -106,7 +106,7 @@ namespace BGS.UNO
             // Initialize rules script
             GetComponent<Rules>().enabled = GameStatus.useRules;
             if (GameStatus.useRules)
-                GetComponent<Rules>().Initialize(currentHand, discard, deck, this);
+                GetComponent<Rules>().Initialize(currentHand, discard, deck);
 
             // Initialize direaction Icons
             directionIcons.GetComponent<DirectionIcons>().Interactable = !GameStatus.useRules;
@@ -144,6 +144,7 @@ namespace BGS.UNO
             // Initialize first turn
             SetHand();
             nextTurnButton.interactable = false;
+            deckScript.Interactable = false;
             foreach (GameObject player in players)
                 player.GetComponent<Player>().PlaceCards();
             currentHand.GetComponent<CurrentHand>().EnableCover();
@@ -293,29 +294,6 @@ namespace BGS.UNO
             currentPlayerIndex = sd.playerInTurn;
             this.antiClockWise = sd.antiClockwise;
         }
-    }
-
-    public interface Card
-    {
-        /** 
-         * <summary>Assign true/false to toggle card to face/back.</summary>
-         */
-        public bool IsFace { get; set; }
-        public CardInfo cardInfo { get; }
-    }
-
-    public interface IContainer
-    {
-        public List<GameObject> Cards { get; }
-
-        /**
-         * <summary>
-         * Transfer all cards from current transform to target transform.
-         * </summary>
-         * <param name="parent">Target transform</param>
-         * <param name="transferedCards">List of transfered cards</param>
-         */
-        public void TransferAllCards(Transform parent, out List<GameObject> transferedCards);
     }
 }
 
