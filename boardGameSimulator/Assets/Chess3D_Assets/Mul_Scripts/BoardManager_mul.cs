@@ -196,7 +196,7 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
 
     [PunRPC]
 
-    private void SyncMove(int prevX, int prevY, int x, int y)
+    private void SyncMove(int prevX, int prevY, int x, int y, PhotonMessageInfo info)
     {
         Chessplayer_mul c = Chessmans[x, y];
         bool Eat = false;
@@ -228,6 +228,11 @@ public class BoardManager_mul : MonoBehaviourPunCallbacks, IPunObservable, ISave
         selectedChessman.transform.position = GetTileCenter(x, y);
         selectedChessman.SetPosition(x, y);
         Chessmans[x, y] = selectedChessman;
+
+        if (!info.Sender.Equals(PhotonNetwork.LocalPlayer))
+        {
+            selectedChessman = null;
+        }
 
         if (Eat)
         {
