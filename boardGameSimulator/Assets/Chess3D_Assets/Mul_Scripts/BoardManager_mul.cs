@@ -67,6 +67,10 @@ namespace BGS.Chess_3D
                 settings.AddLog(GameStatus.GetNameOfGame() + ": Load Complete.");
                 return;
             }
+            else
+            {
+                SpawnAllChessmans();
+            }
 
 
         }
@@ -109,10 +113,11 @@ namespace BGS.Chess_3D
             audio_source = GetComponent<AudioSource>();
             gameOver = false;
             Instance = this;
-            SpawnAllChessmans();
             EnPassantMove = new int[2] { -1, -1 };
             currentPlayer = Player1;
             localPlayer = PhotonNetwork.LocalPlayer.NickName;
+            activeChessman = new List<GameObject>();
+            Chessmans = new Chessplayer_mul[8, 8];
 
             if (currentPlayer == localPlayer)
             {
@@ -331,8 +336,6 @@ namespace BGS.Chess_3D
 
         private void SpawnAllChessmans()
         {
-            activeChessman = new List<GameObject>();
-            Chessmans = new Chessplayer_mul[8, 8];
 
             /////// White ///////
 
