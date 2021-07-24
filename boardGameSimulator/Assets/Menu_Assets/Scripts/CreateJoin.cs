@@ -28,6 +28,7 @@ namespace BGS.MenuUI
 
         [Header ("Reminder Text")]
         [SerializeField] GameObject reminderText;
+        [SerializeField] GameObject hasWhiteSpaceText;
         [SerializeField] GameObject connectionFailedText;
         [SerializeField] GameObject joinFailedText;
         string joinFailedOrignal;
@@ -80,12 +81,14 @@ namespace BGS.MenuUI
         {
             if (createPanelInput.text == "")
                 StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, reminderText));
+            else if (GameStatus.IsNameInvalid(createPanelInput.text))
+                StartCoroutine(GameObjectForSeconds(reminderEnableSec, hasWhiteSpaceText));
             else if (!PhotonNetwork.IsConnected)
                 StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, joinFailedText));
             else
             {
                 connectingPanel.SetActive(true);
-                mulManager.playerName = createPanelInput.text;
+                mulManager.playerName = createPanelInput.text.Length > 12 ? createPanelInput.text.Substring(0, 12) : createPanelInput.text;
                 mulManager.OnConfirmClicked();
             }   
         }
@@ -115,12 +118,14 @@ namespace BGS.MenuUI
             if (joinPlayerNameInput.text == "" || joinRoomIndexInput.text == "" || 
                 !int.TryParse(joinRoomIndexInput.text, out mulManager.roomIndex))
                 StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, reminderText));
+            else if (GameStatus.IsNameInvalid(joinPlayerNameInput.text))
+                StartCoroutine(GameObjectForSeconds(reminderEnableSec, hasWhiteSpaceText));
             else if (!PhotonNetwork.IsConnected)
                 StartCoroutine(GameObjectForSeconds(reminderEnableSec == 0 ? 3f : reminderEnableSec, joinFailedText));
             else
             {
                 connectingPanel.SetActive(true);
-                mulManager.playerName = joinPlayerNameInput.text;
+                mulManager.playerName = joinPlayerNameInput.text.Length > 12 ? joinPlayerNameInput.text.Substring(0, 12) : joinPlayerNameInput.text;
                 mulManager.OnConfirmClicked();
             }
         }
@@ -157,6 +162,7 @@ namespace BGS.MenuUI
             {
                 // JoinFailedFoundInactiveJoiner: the list of InactiveActors already contains an actor with the requested ActorNror UserId.
                 PhotonNetwork.RejoinRoom(mulManager.GetRoomName());
+                return;
             }
 
             connectingPanel.SetActive(false);

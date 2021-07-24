@@ -209,7 +209,7 @@ namespace BGS.GameUI
             {
                 timeCount += 0.1f;
                 yield return new WaitForSeconds(0.1f);
-                rejoinPlayers = rejoinPlayers.Where(p => !p.HasRejoined).ToList();
+                rejoinPlayers = rejoinPlayers.Where(p => p.IsInactive).ToList();
             }
 
             if (timeCount > playerTTL || mustQuit)
@@ -219,6 +219,7 @@ namespace BGS.GameUI
             }
             else
             {
+                Debug.Log("Timecount > playerttl: " + (timeCount > playerTTL) + " " + rejoinPlayers.Count.ToString());
                 // All players have rejoined
                 this.photonView.RPC(nameof(DisableWaitForRejoinPanel), RpcTarget.All);
                 currentRoom.IsOpen = false;

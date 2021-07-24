@@ -28,6 +28,7 @@ namespace BGS.MenuUI
         [SerializeField] GameObject isHostText;
         [SerializeField] GameObject distinctNameText;
         [SerializeField] GameObject invalidInputText;
+        [SerializeField] GameObject hasWhiteSpaceText;
 
         [Header("Panels")]
         [SerializeField] GameObject disconnectPanel;
@@ -76,7 +77,10 @@ namespace BGS.MenuUI
             startButton.interactable = false;
 
             if (multiplayerManager.isHost)
+            {
+                currentRoom.PlayerTtl = 0;
                 SetPlayerList();
+            }
             else
                 RefreshPlayerList();
 
@@ -141,19 +145,23 @@ namespace BGS.MenuUI
         {
             if (renamePanelInput.text == "" || renamePanelInput.text == null)
                 EnableReminderText(invalidInputText);
+            else if (GameStatus.IsNameInvalid(renamePanelInput.text))
+                EnableReminderText(hasWhiteSpaceText);
             else
             {
+                string s = renamePanelInput.text.Length > 12 ? renamePanelInput.text.Substring(0, 12) : renamePanelInput.text;
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    multiplayerManager.playerName = renamePanelInput.text;
+                    multiplayerManager.playerName = s;
                     userIdToName[PhotonNetwork.LocalPlayer.UserId] = multiplayerManager.playerName;
                     RefreshPlayerList();
                 }
                 else
                 {
-                    this.temp = renamePanelInput.text;
+                    this.temp = s;
                     this.photonView.RPC(nameof(NameChangeRefresh), RpcTarget.MasterClient);
                 }
+                DisableRenamePanel();
             }
         }
 
@@ -300,7 +308,7 @@ namespace BGS.MenuUI
             {
                 GameObject playerBar = Instantiate(playerBarPrefab, playerList.transform);
                 playerBars.Add(playerBar);
-                playerBar.GetComponent<LobbyPlayerBar>().Initialize(userIdToName[p.UserId], p.Equals(PhotonNetwork.MasterClient), p.Equals(PhotonNetwork.LocalPlayer), p.IsInactive);
+                playerBar.GetComponent<LobbyPlayerBar>().Initialize(userIdToName[p.UserId], p.Equals(PhotonNetwork.MasterClient), p.Equals(PhotonNetwork.LocalPlayer));
                 playerBar.GetComponent<RectTransform>().anchoredPosition = v;
                 if (p == PhotonNetwork.LocalPlayer)
                     playerBar.GetComponent<Button>().onClick.AddListener(delegate { EnableRenamePanel(); });

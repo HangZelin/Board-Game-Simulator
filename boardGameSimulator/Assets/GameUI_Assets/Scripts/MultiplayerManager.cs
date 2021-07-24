@@ -30,7 +30,6 @@ namespace BGS.MenuUI
         private void Awake()
         {
             SceneManager.activeSceneChanged += OnSceneChange;
-
             // Singleton
             if (multiplayerManager == null)
             {
@@ -135,6 +134,13 @@ namespace BGS.MenuUI
         {
             if (next.name == "Home" || next.name == "NewGame")
                 Destroy(gameObject);
+            if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
+            {
+                if (next.name == "RoomLobby" || current.name == "CreateJoin")
+                    PhotonNetwork.CurrentRoom.PlayerTtl = 0;
+                else if (next.name.EndsWith("mul"))
+                    PhotonNetwork.CurrentRoom.PlayerTtl = playerTTL;
+            }
         }
 
         /// <summary>

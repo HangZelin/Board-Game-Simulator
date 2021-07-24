@@ -9,40 +9,62 @@ public class LoadPageUI : MonoBehaviour
     // References of Game Objects
 
     // SaveBar prefab
-    public GameObject saveBar;
-    // Canvas
-    public GameObject canvas;
+    [SerializeField] GameObject saveBarPrefab;
+    // Scroll view
+    [SerializeField] ScrollRect scrollRect;
+    // Scroll bar content
+    [SerializeField] GameObject scrollBarContent;
     // Text for "No saved profiles found".
-    public GameObject text;
+    [SerializeField] GameObject text;
 
     // A list of SaveBarUIs
     List<SaveBarUI> saveBars;
 
     // The height of saveBar.
-    public float height = 62f;
+    [SerializeField] float height = 62f;
 
     void Awake()
     {
         saveBars = new List<SaveBarUI>();
-        Vector2 v = new Vector2(0f, -83f);
+        Vector2 v = new Vector2(0f, 0f);
+        int caCount = 0;
+        int twoDCount = 0;
+        int threeDCount = 0;
 
         string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
         for (int i = 0; i < fileNames.Length; i++)
             fileNames[i] = Path.GetFileName(fileNames[i]);
+        scrollBarContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, height * fileNames.Length);
         foreach (string s in fileNames)
         {
-            GameObject go = Instantiate(saveBar, Vector3.zero, Quaternion.identity, canvas.transform);
+            GameObject go = Instantiate(saveBarPrefab, Vector3.zero, Quaternion.identity, scrollBarContent.transform);
             SaveBarUI saveBarUI = go.GetComponent<SaveBarUI>();
             saveBars.Add(saveBarUI);
             saveBarUI.Activate(s, v);
-            v.y = v.y - height;
+            v.y -= height;
+
+            switch(s.Substring(0, 2))
+            {
+                case "2D":
+                    twoDCount++; break;
+                case "3D":
+                    threeDCount++; break;
+                case "Ca":
+                    caCount++; break;
+            }
         }
 
         if (fileNames.Length == 0)
         {
             SaveLoadManager.ResetNumOfSave();
             text.SetActive(true);
-        }   
+        }
+        else
+        {
+            if (twoDCount == 0) SaveLoadManager.ResetTypeSaveNum(GameType.TwoD);
+            if (threeDCount == 0) SaveLoadManager.ResetTypeSaveNum(GameType.ThreeD);
+            if (caCount == 0) SaveLoadManager.ResetTypeSaveNum(GameType.Card);
+        }
     }
 
     // For each SaveBar, set the delete toggle to active
