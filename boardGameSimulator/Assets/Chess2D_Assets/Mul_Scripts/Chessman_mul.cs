@@ -20,6 +20,7 @@ namespace BGS.Chess_2D
         private string player;
         private float ratio;
 
+
         //Sprites for chesspieces
         public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
         public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
@@ -41,6 +42,7 @@ namespace BGS.Chess_2D
             //Getting access to controller
             controller = GameObject.FindGameObjectWithTag("GameController");
 
+            ratio = (float)Screen.height / Screen.width;
             //Take the instantiated location and adjust the transform
             SetCoords();
 
