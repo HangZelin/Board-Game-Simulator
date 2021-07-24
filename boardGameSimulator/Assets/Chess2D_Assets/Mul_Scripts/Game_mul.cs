@@ -13,7 +13,7 @@ namespace BGS.Chess_2D
         public GameObject chesspiece;
         public GameObject gameUI;
         public GameObject Board;
-        SettingsUI settings;
+        SettingsUIMul settings;
 
         //Positions and team for other chesspiece
         private GameObject[,] positions = new GameObject[8, 8];
@@ -32,7 +32,7 @@ namespace BGS.Chess_2D
         // Start is called before the first frame update
         void Start()
         {
-            settings = gameUI.GetComponent<SettingsUI>();
+            settings = gameUI.GetComponent<SettingsUIMul>();
 
             if (!GameStatus.isNewGame)
             {

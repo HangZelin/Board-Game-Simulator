@@ -12,7 +12,7 @@ namespace BGS.Chess_3D
     {
         public static BoardManager_mul Instance { get; set; }
         public GameObject gameUI;
-        SettingsUI settings;
+        SettingsUIMul settings;
         private bool[,] allowedMoves { get; set; }
 
         private const float TILE_SIZE = 1.0f;
@@ -56,7 +56,7 @@ namespace BGS.Chess_3D
         void Awake()
         {
 
-            settings = gameUI.GetComponent<SettingsUI>();
+            settings = gameUI.GetComponent<SettingsUIMul>();
 
             Initialized();
 
