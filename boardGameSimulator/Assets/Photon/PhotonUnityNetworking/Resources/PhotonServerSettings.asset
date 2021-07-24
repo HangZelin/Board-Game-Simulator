@@ -85,6 +85,14 @@ MonoBehaviour:
   - SyncMoveChessPiece
   - ReloadGame
   - SyncMove
+  - AddLog
+  - BroadcastUseridToName
+  - DisableWaitForRejoinPanel
+  - EnableGuestQuitPanel
+  - LoadMultiGameScene
+  - NameChangeRefresh
+  - PassPlayerName
+  - QueryPlayerName
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
