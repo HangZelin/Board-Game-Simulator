@@ -149,8 +149,13 @@ namespace BGS.Chess_3D
                 for (int j = 0; j < 8; j++)
                 {
                     all_possible[i, j] = true;
+                    if (Chessmans[i, j] != null && Chessmans[i, j].isWhite == isWhiteTurn)
+                    {
+                        all_possible[i, j] = false;
+                    }
                 }
             }
+
             if (!GameStatus.useRules)
             {
                 allowedMoves = all_possible;

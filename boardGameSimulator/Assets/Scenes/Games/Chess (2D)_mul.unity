@@ -372,6 +372,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8649c1226c2134087788f4c49e6762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &162690198 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3682944194899876319, guid: be27e96e36404704196c4d21e75ab9e7,
+    type: 3}
+  m_PrefabInstance: {fileID: 162690195}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162690196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4b9b84f0763dd34687fd0fb1ee600a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &163883791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1841,7 +1853,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 162690198}
         m_TargetAssemblyTypeName: BGS.GameUI.ReconnectManager, Assembly-CSharp
         m_MethodName: OnRejoinButtonClicked
         m_Mode: 1
@@ -3199,7 +3211,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 162690198}
     - target: {fileID: 1139765757110718214, guid: 3e6fc3b9301671a46ab15e84b4a97591,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -3837,7 +3849,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 162690198}
         m_TargetAssemblyTypeName: BGS.GameUI.ReconnectManager, Assembly-CSharp
         m_MethodName: OnGuestQuitButtonClicked
         m_Mode: 1
@@ -4667,7 +4679,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 162690198}
         m_TargetAssemblyTypeName: BGS.GameUI.ReconnectManager, Assembly-CSharp
         m_MethodName: OnGuestQuitButtonClicked
         m_Mode: 1
