@@ -25,6 +25,7 @@ namespace NamePage
 
         [Header("Reminder Text")]
         [SerializeField] GameObject hasWhiteSpaceText;
+        [SerializeField] GameObject note;
 
         private void Start()
         {
@@ -66,6 +67,8 @@ namespace NamePage
             continueButton.name = "ContinueButton";
             continueButton.GetComponent<RectTransform>().anchoredPosition = pos;
             continueButton.GetComponent<Button>().onClick.AddListener(delegate { OnContinueClicked(); });
+
+            StartCoroutine(GameObjectForSeconds(10f, note));
         }
 
         void OnContinueClicked()

@@ -26,17 +26,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5435551265833206486}
   m_LocalRotation: {x: -0.08295822, y: 0.08295822, z: 0.7022236, w: 0.7022236}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 12.583128}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8094630892705144557}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -13.475, y: 0, z: 90}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 0}
-  m_SizeDelta: {x: 80, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 108, y: 20}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &3249861467272301518
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -105,17 +105,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6902463693166797309}
   m_LocalRotation: {x: -0.08295822, y: -0.08295822, z: -0.7022236, w: 0.7022236}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 9.320835}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8094630892705144557}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -13.475, y: 0, z: -90}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 80, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 108, y: 20}
+  m_Pivot: {x: 1, y: 0}
 --- !u!222 &6964000902299205388
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -151,13 +151,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 
 --- !u!1 &7349295050839003814
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,7 +253,6 @@ MonoBehaviour:
   playerText: {fileID: 7876195743518887583}
   playerTextLeft: {fileID: 5435551265833206486}
   playerTextRight: {fileID: 6902463693166797309}
-  num: 0
 --- !u!1 &7876195743518887583
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,7 +288,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: -2, y: 0}
-  m_SizeDelta: {x: 80, y: 20}
+  m_SizeDelta: {x: 108, y: 20}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7235470896581305237
 CanvasRenderer:
@@ -332,4 +331,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: wwwwwwwwwwww

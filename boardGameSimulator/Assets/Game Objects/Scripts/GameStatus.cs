@@ -62,6 +62,8 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static void SetNameOfPlayer(int index, string name)
     {
+        if (name.Length > 12)
+            name = name.Substring(0, 12);
         if (nameOfPlayers.Count < index)
         {
             while (nameOfPlayers.Count < index - 1)

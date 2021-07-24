@@ -341,7 +341,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: 80, y: 16}
+  m_SizeDelta: {x: 108, y: 16}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1349698299742080105
 CanvasRenderer:
@@ -384,4 +384,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Player1
+  m_Text: 

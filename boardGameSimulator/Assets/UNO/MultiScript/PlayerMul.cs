@@ -85,7 +85,6 @@ namespace BGS.UNO
         [PunRPC]
         public void PlayCard(int cardIndex)
         {
-            Debug.Log(playerName + " play a card in playermul script.");
             if (!isClient)
                 hand.GetComponent<HandMul>().PlayCard(cardIndex);
             else

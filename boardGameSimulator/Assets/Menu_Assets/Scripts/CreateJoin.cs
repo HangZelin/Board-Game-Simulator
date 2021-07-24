@@ -88,7 +88,7 @@ namespace BGS.MenuUI
             else
             {
                 connectingPanel.SetActive(true);
-                mulManager.playerName = createPanelInput.text;
+                mulManager.playerName = createPanelInput.text.Length > 12 ? createPanelInput.text.Substring(0, 12) : createPanelInput.text;
                 mulManager.OnConfirmClicked();
             }   
         }
@@ -125,7 +125,7 @@ namespace BGS.MenuUI
             else
             {
                 connectingPanel.SetActive(true);
-                mulManager.playerName = joinPlayerNameInput.text;
+                mulManager.playerName = joinPlayerNameInput.text.Length > 12 ? joinPlayerNameInput.text.Substring(0, 12) : joinPlayerNameInput.text;
                 mulManager.OnConfirmClicked();
             }
         }
