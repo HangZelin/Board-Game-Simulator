@@ -39,30 +39,30 @@ public class SaveLoadManager : MonoBehaviour
         switch (GameStatus.TypeOfGame)
         {
             case GameType.TwoD:
-                if (FileManager.WriteToFile("2D_SaveData" + i + ".dat", sd.ToJson()))
+                if (FileManager.WriteToFile("2D_SaveData" + i.ToString("D2") + ".dat", sd.ToJson()))
                 {
                     AddNumOfSave(GameType.TwoD);
-                    Debug.Log("Save successful in 2D_SaveData" + i + ".dat");
+                    Debug.Log("Save successful in 2D_SaveData" + i.ToString("D2") + ".dat");
                     GameObject gameUI = GameObject.Find("GameUI");
                     if (gameUI != null)
-                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in 2D_SaveData" + i + ".");
+                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in 2D_SaveData" + i.ToString("D2") + ".");
                 }
                 break;
             case GameType.ThreeD:
-                if (FileManager.WriteToFile("3D_SaveData" + i + ".dat", sd.ToJson()))
+                if (FileManager.WriteToFile("3D_SaveData" + i.ToString("D2") + ".dat", sd.ToJson()))
                 {
                     AddNumOfSave(GameType.ThreeD);
-                    Debug.Log("Save successful in 3D_SaveData" + i + ".dat");
+                    Debug.Log("Save successful in 3D_SaveData" + i.ToString("D2") + ".dat");
                 }
                 break;
             case GameType.Card:
-                if (FileManager.WriteToFile("Card_SaveData" + i + ".dat", sd.ToJson()))
+                if (FileManager.WriteToFile("Card_SaveData" + i.ToString("D2") + ".dat", sd.ToJson()))
                 {
                     AddNumOfSave(GameType.Card);
-                    Debug.Log("Save successful in Card_SaveData" + i + ".dat");
+                    Debug.Log("Save successful in Card_SaveData" + i.ToString("D2") + ".dat");
                     GameObject gameUI = GameObject.Find("GameUI");
                     if (gameUI != null)
-                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in Card_SaveData" + i + ".");
+                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in Card_SaveData" + i.ToString("D2") + ".");
                 }
                 break;
         }
@@ -102,6 +102,11 @@ public class SaveLoadManager : MonoBehaviour
     {
         foreach (GameType type in Enum.GetValues(typeof(GameType)))
             PlayerPrefs.SetInt(type + lastSaveKey, 0);
+    }
+
+    public static void ResetTypeSaveNum(GameType type)
+    {
+        PlayerPrefs.SetInt(type + lastSaveKey, 0);
     }
 }
 

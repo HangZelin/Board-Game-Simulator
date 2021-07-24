@@ -28,6 +28,7 @@ namespace BGS.MenuUI
         [SerializeField] GameObject isHostText;
         [SerializeField] GameObject distinctNameText;
         [SerializeField] GameObject invalidInputText;
+        [SerializeField] GameObject hasWhiteSpaceText;
 
         [Header("Panels")]
         [SerializeField] GameObject disconnectPanel;
@@ -76,7 +77,10 @@ namespace BGS.MenuUI
             startButton.interactable = false;
 
             if (multiplayerManager.isHost)
+            {
+                currentRoom.PlayerTtl = 0;
                 SetPlayerList();
+            }
             else
                 RefreshPlayerList();
 
@@ -141,6 +145,8 @@ namespace BGS.MenuUI
         {
             if (renamePanelInput.text == "" || renamePanelInput.text == null)
                 EnableReminderText(invalidInputText);
+            else if (GameStatus.IsNameInvalid(renamePanelInput.text))
+                EnableReminderText(hasWhiteSpaceText);
             else
             {
                 if (PhotonNetwork.IsMasterClient)
@@ -154,6 +160,7 @@ namespace BGS.MenuUI
                     this.temp = renamePanelInput.text;
                     this.photonView.RPC(nameof(NameChangeRefresh), RpcTarget.MasterClient);
                 }
+                DisableRenamePanel();
             }
         }
 

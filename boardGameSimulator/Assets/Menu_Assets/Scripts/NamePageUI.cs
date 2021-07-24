@@ -23,6 +23,9 @@ namespace NamePage
         [SerializeField] Vector2 initialPosition;
         [SerializeField] float nameBarHeight;
 
+        [Header("Reminder Text")]
+        [SerializeField] GameObject hasWhiteSpaceText;
+
         private void Start()
         {
             nameOfGame.text = GameStatus.GetNameOfGame();
@@ -76,15 +79,23 @@ namespace NamePage
             GameStatus.useRules = ruleToggle.isOn;
 
 
-            // Check if all names are unique
-            if (GameStatus.IsNameUnique())
+            if (GameStatus.IsPlayerNamesInvalid())
+            {
+                StartCoroutine(GameObjectForSeconds(3f, hasWhiteSpaceText));
+            }
+            else if (!GameStatus.IsNameUnique())
+            {
+                continueButton.transform.Find("InvalidInput").gameObject.SetActive(true);
+
+            }
+            else
             {
                 // Load the game scene
                 SceneManager.LoadScene("HomeLoading");
                 return;
             }
 
-            continueButton.transform.Find("InvalidInput").gameObject.SetActive(true);
+
         }
 
         void ChangeName()
@@ -96,6 +107,19 @@ namespace NamePage
             // Fill the PlayerOfNames with default names
             GameStatus.FillNameOfPlayer();
             GameStatus.PrintLog();
+        }
+
+        void DisableAllReminder()
+        {
+            hasWhiteSpaceText.SetActive(false);
+        }
+
+        IEnumerator GameObjectForSeconds(float sec, GameObject go)
+        {
+            DisableAllReminder();
+            go.SetActive(true);
+            yield return new WaitForSeconds(sec);
+            go.SetActive(false);
         }
     }
 }

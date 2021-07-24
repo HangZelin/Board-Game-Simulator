@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameStatus : MonoBehaviour, ISaveable
@@ -65,7 +66,7 @@ public class GameStatus : MonoBehaviour, ISaveable
         {
             while (nameOfPlayers.Count < index - 1)
             {
-                nameOfPlayers.Add("Player " + (nameOfPlayers.Count + 1));
+                nameOfPlayers.Add("Player" + (nameOfPlayers.Count + 1));
             }
             nameOfPlayers.Add(name);
         }
@@ -81,12 +82,12 @@ public class GameStatus : MonoBehaviour, ISaveable
         {
             if (nameOfPlayers[i] == "")
             {
-                nameOfPlayers[i] = "Player " + (i + 1);
+                nameOfPlayers[i] = "Player" + (i + 1);
             }
         }
         while (nameOfPlayers.Count < numOfPlayers)
         {
-            nameOfPlayers.Add("Player " + (nameOfPlayers.Count + 1));
+            nameOfPlayers.Add("Player" + (nameOfPlayers.Count + 1));
         }
     }
 
@@ -132,14 +133,7 @@ public class GameStatus : MonoBehaviour, ISaveable
 
     public static bool IsNameUnique()
     {
-        List<string> list = new List<string>(nameOfPlayers);
-        list.Sort();
-        for (int i = 1; i < list.Count; i++)
-        {
-            if (list[i] == list[i - 1])
-                return false;
-        }
-        return true;
+        return nameOfPlayers.Distinct().Count() == nameOfPlayers.Count;
     }
 
     public static void PrintLog()
@@ -164,6 +158,16 @@ public class GameStatus : MonoBehaviour, ISaveable
         is_Multiplayer = false;
         hasRules = true;
         useRules = false;
+    }
+
+    public static bool IsNameInvalid(string name)
+    {
+        return name == null || name == "" || name.Any(Char.IsWhiteSpace);
+    }
+
+    public static bool IsPlayerNamesInvalid()
+    {
+        return nameOfPlayers.Any(IsNameInvalid);
     }
 
     // ISaveable Methods
