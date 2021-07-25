@@ -57,6 +57,7 @@ namespace BGS.Chess_3D
         {
 
             settings = gameUI.GetComponent<SettingsUIMul>();
+            settings.Initialize();
 
             Initialized();
 
@@ -100,7 +101,6 @@ namespace BGS.Chess_3D
                         {
                             // Move the chessman
                             MoveChessman(selectedChessman.CurrentX, selectedChessman.CurrentY, selectionX, selectionY);
-                            photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
                         }
                     }
                 }
@@ -180,6 +180,7 @@ namespace BGS.Chess_3D
 
             BoardHighlights_mul.Instance.HideHighlights();
             selectedChessman = null;
+            photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
         }
 
         #region RPCs
