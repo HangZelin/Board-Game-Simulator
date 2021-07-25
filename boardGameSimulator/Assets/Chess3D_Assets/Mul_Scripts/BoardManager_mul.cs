@@ -174,13 +174,13 @@ namespace BGS.Chess_3D
             if (allowedMoves[x, y])
             {
                 photonView.RPC(nameof(SyncMove), RpcTarget.AllBuffered, prevX, prevY, x, y);
+                photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
             }
 
             selectedChessman.GetComponent<MeshRenderer>().material = previousMat;
 
             BoardHighlights_mul.Instance.HideHighlights();
             selectedChessman = null;
-            photonView.RPC(nameof(NextTurn), RpcTarget.AllBuffered);
         }
 
         #region RPCs
