@@ -334,7 +334,6 @@ namespace BGS.Chess_2D
 
             //Keep Track of everything in the script.
             MovePlate_mul mpScript = mp.GetComponent<MovePlate_mul>();
-            mpScript.photonView.ViewID = BoardX * 8 + BoardY + 200;
             mpScript.attack = true;
             is_attack = 1;
             mpScript.SetReference(gameObject);
