@@ -5451,6 +5451,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1676088913}
     m_Modifications:
+    - target: {fileID: 1627896045279620694, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627896045279620694, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1079474953}
+    - target: {fileID: 1627896045279620694, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 1627896045279620694, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8109590862322173608, guid: f9a8bf0954eb82b4d8205772efa8e577,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -5604,6 +5624,31 @@ PrefabInstance:
     - target: {fileID: 8109590863300337578, guid: f9a8bf0954eb82b4d8205772efa8e577,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209827568417538105, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209827568417538105, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209827568417538105, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209827568417538105, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209827568417538105, guid: f9a8bf0954eb82b4d8205772efa8e577,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
