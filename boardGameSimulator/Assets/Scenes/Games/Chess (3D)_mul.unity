@@ -351,8 +351,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SettingsUI, Assembly-CSharp
+      - m_Target: {fileID: 513512771}
+        m_TargetAssemblyTypeName: SettingsUIMul, Assembly-CSharp
         m_MethodName: CloseUI
         m_Mode: 1
         m_Arguments:
