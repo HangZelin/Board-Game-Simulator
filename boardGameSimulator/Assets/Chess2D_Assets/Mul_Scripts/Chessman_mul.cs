@@ -146,18 +146,6 @@ namespace BGS.Chess_2D
         public void InitiateMovePlates()
         {
             audio_source.PlayOneShot(Sound_Capture, 0.7F);
-            if (!GameStatus.useRules)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    for (int y = 0; y < 8; y++)
-                    {
-                        PointMovePlate(x, y);
-                    }
-                }
-            }
-            else
-            {
                 switch (this.name)
                 {
                     case "black_queen":
@@ -200,7 +188,6 @@ namespace BGS.Chess_2D
                         PawnMovePlate(xBoard, yBoard + 1);
                         break;
                 }
-            }
         }
         #endregion
 

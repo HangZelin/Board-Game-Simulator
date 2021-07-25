@@ -49,8 +49,6 @@ namespace BGS.Chess_2D
             Initialized();
         }
 
-        #region RPCs
-        [PunRPC]
         public void Initialized()
         {
 
@@ -83,6 +81,8 @@ namespace BGS.Chess_2D
             // Log
             settings.AddLog(GameStatus.GetNameOfGame() + ": New Game.");
         }
+
+        #region RPCs
 
         [PunRPC]
         public void NextTurn()

@@ -142,28 +142,7 @@ namespace BGS.Chess_3D
 
 
             bool hasAtLeastOneMove = false;
-            bool[,] all_possible = new bool[8, 8];
-
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    all_possible[i, j] = true;
-                    if (Chessmans[i, j] != null && Chessmans[i, j].isWhite == isWhiteTurn)
-                    {
-                        all_possible[i, j] = false;
-                    }
-                }
-            }
-
-            if (!GameStatus.useRules)
-            {
-                allowedMoves = all_possible;
-            }
-            else
-            {
-                allowedMoves = Chessmans[x, y].PossibleMoves();
-            }
+            allowedMoves = Chessmans[x, y].PossibleMoves();
             audio_source.PlayOneShot(Sound_Capture, 0.7F);
             for (int i = 0; i < 8; i++)
             {
@@ -187,7 +166,7 @@ namespace BGS.Chess_3D
             selectedChessman.GetComponent<MeshRenderer>().material = selectedMat;
 
             BoardHighlights_mul.Instance.HighLightAllowedMoves(allowedMoves);
-        }
+       }
 
 
         private void MoveChessman(int prevX, int prevY, int x, int y)
