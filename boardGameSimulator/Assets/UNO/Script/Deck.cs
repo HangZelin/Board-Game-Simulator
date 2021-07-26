@@ -43,7 +43,7 @@ namespace BGS.UNO
         [SerializeField] AudioSource drawCardAudio;
 
         [SerializeField] bool enableCardsCount;
-        [SerializeField] GameObject cardsCount;
+        [SerializeField] CardsCount cardsCount;
 
         List<GameObject> cards;
         public List<GameObject> Cards
@@ -75,7 +75,6 @@ namespace BGS.UNO
 
             if (!GameStatus.isNewGame)
             {
-                cardsCount.SetActive(enableCardsCount);
                 return;
             }
 
@@ -145,7 +144,8 @@ namespace BGS.UNO
             while (cards[0].GetComponent<Card>().cardInfo.cardType == CardType.draw4 || cards[0].GetComponent<Card>().cardInfo.cardType == CardType.wild)
                 Shuffle(cards);
 
-            cardsCount.SetActive(enableCardsCount);
+            cardsCount.gameObject.SetActive(enableCardsCount);
+            cardsCount.Initialize(cards.Count);
         }
 
         /** <summary>
@@ -182,6 +182,8 @@ namespace BGS.UNO
             cards.RemoveRange(0, num);
 
             drawCardAudio.Play();
+
+            cardsCount.OnCardsCountChanged(cards.Count);
 
             return drawCards; 
         }
@@ -271,6 +273,9 @@ namespace BGS.UNO
                 this.cards.Add(card);
                 i += listCount;
             }
+
+            cardsCount.gameObject.SetActive(enableCardsCount);
+            cardsCount.Initialize(cards.Count);
         }
 
         public override string ToString()
