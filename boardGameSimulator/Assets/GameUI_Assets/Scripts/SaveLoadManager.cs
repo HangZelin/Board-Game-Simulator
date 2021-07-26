@@ -54,6 +54,9 @@ public class SaveLoadManager : MonoBehaviour
                 {
                     AddNumOfSave(GameType.ThreeD);
                     Debug.Log("Save successful in 3D_SaveData" + i.ToString("D2") + ".dat");
+                    GameObject gameUI = GameObject.Find("GameUI");
+                    if (gameUI != null)
+                        gameUI.GetComponent<SettingsUI>().AddLog("Save successful in 3D_SaveData" + i.ToString("D2") + ".");
                 }
                 break;
             case GameType.Card:
