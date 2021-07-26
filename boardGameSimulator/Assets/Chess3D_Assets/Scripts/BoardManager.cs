@@ -346,7 +346,7 @@ namespace BGS.Chess_3D
 
             GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
-            // settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+             /*settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
         }
 
         public void Winner1()
@@ -358,7 +358,7 @@ namespace BGS.Chess_3D
 
             GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
-            // settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");
+            /*settings.AddLog("<b>" + Player1 + "</b> is the winner! " + "Tap to restart.");*/
         }
 
         public void Winner2()
@@ -371,7 +371,7 @@ namespace BGS.Chess_3D
             GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
 
 
-            // settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");
+            /*settings.AddLog("<b>" + Player2 + "</b> is the winner! " + "Tap to restart.");*/
         }
 
         public void PopulateSaveData(SaveData sd)
