@@ -449,7 +449,7 @@ namespace BGS.Chess_3D
                     case "White_Queen(Clone)": SpawnChessman(1, mp.num / 8, mp.num % 8, true); break;
                     case "White_Rook(Clone)": SpawnChessman(2, mp.num / 8, mp.num % 8, true); break;
                     case "White_Bishop(Clone)": SpawnChessman(3, mp.num / 8, mp.num % 8, true); break;
-                    case "White_Kight(Clone)": SpawnChessman(4, mp.num / 8, mp.num % 8, true); break;
+                    case "White_Knight(Clone)": SpawnChessman(4, mp.num / 8, mp.num % 8, true); break;
                     case "White_Pawn(Clone)": SpawnChessman(5, mp.num / 8, mp.num % 8, true); break;
 
                     //Black chess
@@ -457,7 +457,7 @@ namespace BGS.Chess_3D
                     case "Black_Queen(Clone)": SpawnChessman(7, mp.num / 8, mp.num % 8, false); break;
                     case "Black_Rook(Clone)": SpawnChessman(8, mp.num / 8, mp.num % 8, false); break;
                     case "Black_Bishop(Clone)": SpawnChessman(9, mp.num / 8, mp.num % 8, false); break;
-                    case "Black_Kight(Clone)": SpawnChessman(10, mp.num / 8, mp.num % 8, false); break;
+                    case "Black_Knight(Clone)": SpawnChessman(10, mp.num / 8, mp.num % 8, false); break;
                     case "Black_Pawn(Clone)": SpawnChessman(11, mp.num / 8, mp.num % 8, false); break;
                 }
             }
