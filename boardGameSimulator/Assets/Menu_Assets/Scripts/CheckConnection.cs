@@ -7,7 +7,7 @@ namespace BGS
 {
     public class CheckConnection : MonoBehaviourPunCallbacks
     {
-        Color green = new Color(0.4264017f, 1f, 0.3349057f);
+        Color green = new Color(0.1137255f, 0.6901961f, 0.4078431f);
         Color red = Color.red;
 
         [SerializeField] Image image;
