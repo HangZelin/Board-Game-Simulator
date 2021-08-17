@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6730530993434636184}
-  - component: {fileID: 1533097959905140640}
+  - component: {fileID: 919184159627598092}
   - component: {fileID: 6730530993434636187}
   - component: {fileID: 9010728864195878568}
   - component: {fileID: 7112988206061486304}
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1533097959905140640
+--- !u!114 &919184159627598092
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,11 +44,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6730530993434636186}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 974ead3374ef6af4096b15874c8e0df8, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e9448fc97bab43438021189c70f31ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 3551374404534158586, guid: 18422213171be8f4c841209f1def32a8,
-    type: 3}
+  controller: {fileID: 0}
   stepDialog: {fileID: 8734426569582722331, guid: 5e4feb02b8a2c6042b9be6d4dc91b054,
     type: 3}
   attack: 0
@@ -243,7 +242,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 919184159627598092}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
